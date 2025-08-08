@@ -1,0 +1,6 @@
+product [2, 3, 4]
+= 2 * product [3, 4]
+= 2 * 3 * product [4]
+= 2 * 3 * 4 * product []
+= 2 * 3 * 4 * 1
+= 24

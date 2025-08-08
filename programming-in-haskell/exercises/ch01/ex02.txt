@@ -1,0 +1,4 @@
+sum n
+= sum n + sum []
+= sum n + 0
+= n
