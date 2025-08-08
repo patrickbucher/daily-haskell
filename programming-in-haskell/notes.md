@@ -72,11 +72,10 @@ The Quicksort algorithm can be implemented as follows:
 ```haskell
 qsort :: Ord a => [a] -> [a]
 qsort [] = []
-qsort (x:xs) =
-    qsort smaller ++ [x] ++ qsort larger
-    where
-        smaller = [a | a <- xs, a <= x]
-        larger = [b | b <- xs, b > x]
+qsort (x:xs) = qsort smaller ++ [x] ++ qsort larger
+  where
+    smaller = [a | a <- xs, a <= x]
+    larger = [b | b <- xs, b > x]
 ```
 
 - For any ordered type, the function maps a list of this type to a list of the same type.
@@ -88,11 +87,10 @@ The `sqn` function takes a list of input/output actions, performs them, and retu
 ```haskell
 seqn :: [IO a] -> IO [a]
 seqn [] = return []
-seqn (act:acts) =
-    do
-        x <- act
-        xs <- seqn acts
-        return (x:xs)
+seqn (act:acts) = do
+  x <- act
+  xs <- seqn acts
+  return (x : xs)
 ```
 
 - For a list of `IO` actions that produce a value of type `a`, the function returns a single `IO` action of a list of type `a`.
