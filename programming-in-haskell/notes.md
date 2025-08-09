@@ -128,4 +128,79 @@ Haskell is based on historical developments:
 - 2003: publication of the Haskell Report (first stable version of the language)
 - 2010: publication of the revised Haskell Report
 
+# First Steps
+
+The Glasgow Haskell Compiler (GHC) features an interactive mode (GHCi) that can be started using the `ghci` command. The interactive prompt `>` can be used to evaluate numerical expressions:
+
+```ghci
+> sqrt (3^2 + 4^2)
+5.0
+```
+
+Besides mathematical operators, the _standard prelude_ provides various functions that operate on lists:
+
+- `head`: get the first element of a non-empty list
+- `tail`: get all but the first element of a list
+- `!!`: get the `n`-th element of a list (zero-based index)
+- `take`: get the first `n` elements of a list
+- `drop`: get all but the first `n` elements of a list
+- `length`: get the length of a list
+- `sum`: calculate the sum of the list's elements
+- `product`: calculate the product of the list's elements
+- `++`: append two lists
+- `reverse`: reverse the order of a list
+
+Examples:
+
+```ghci
+> head [1, 2, 3]
+1
+> tail [1, 2, 3]
+[2, 3]
+> [1, 2, 3] !! 2
+3
+> take 2 [1, 2, 3]
+[1, 2]
+> drop 2 [1, 2, 3]
+[3]
+> length [1, 2, 3]
+3
+> sum [1, 2, 3, 4]
+10
+> product [1, 2, 3, 4]
+24
+> [1, 2, 3] ++ [4, 5]
+[1, 2, 3, 4, 5]
+> reverse [1, 2, 3]
+[3, 2, 1]
+```
+
+Function application has the highest operator precedence and does not require explicit parentheses, i.e. `f x` and `f(x)` are equivalent. A function expecting two arguments can be written as a infix operator within backticks:
+
+```ghci
+> div 10 3
+3
+> 10 `div` 3
+3
+```
+
+By convention, Haskell scripts are stored in files with the extension `.hs`. Such a script (e.g. `test.hs`) can be loaded into `hgci` as follows:
+
+```bash
+$ ghci test.hs
+```
+
+After modifying the script, it can be reloaded using the `:reload` command. Commands can be abbreviated using their first letter, e.g. `r` for `reload`. Some common commands:
+
+- `:load PATH`: load a script under its path
+- `:reload`: reload the current script
+- `:set editor NAME`: define the editor to be used for the `:edit` command
+- `:edit PATH`: edit the script under its path using the defined `editor`
+- `:type EXPR`: determine the type of an expression
+- `:?`: show all commands
+- `quit`: quit GHCi
+
+Function names start with a lower-case letter, followed by letters (upper- and lowercase), digits, underscores, and forward single quotes. The suffix `s` denotes plurals, e.g. `xs` stands for a list, `ns` for a list of numbers, and `css` for a list of lists of characters.
+
+Indentation matters; definitions within a `where` block must be aligned. Grouping of expressions can be achieved using `{` and `}`. Spaces should be used rather than tabs. There are single-line comments starting with `--` and multi-line comments within `{-` and `-}`.
 
