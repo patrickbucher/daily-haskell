@@ -204,3 +204,94 @@ Function names start with a lower-case letter, followed by letters (upper- and l
 
 Indentation matters; definitions within a `where` block must be aligned. Grouping of expressions can be achieved using `{` and `}`. Spaces should be used rather than tabs. There are single-line comments starting with `--` and multi-line comments within `{-` and `-}`.
 
+# Types and classes
+
+The notation `v :: T` means that value `v` has type `T`. More general, `e :: T` means that the yet unevaluated expression `e` produces a value of type `T` upon evaluation. The determination of the type of an expression is handled by a process called _type inference_ that works as follows: If a function `f` that maps arguments of type `A` to results of type `B` (`f :: A -> B`), and `e` is an expression of type `A` (`e :: A`), then the application of `f` has type `B` (`f e :: B`). Since type inference happens before evaluation, Haskell programs are said to be _type safe_.
+
+Haskell supports various basic types:
+
+- `Bool`: the logical values `True` and `False`
+- `Char`: single Unicode characters enclosed in single quotes, e.g. `'a'`
+- `String`: sequences of characters enclosed in double quotes, e.g. `"abc"`
+- `Int`: fixed-precision integers from `-2^63` to `2^63-1`
+- `Integer`: arbitrary-precision integers without lower and upper limits
+- `Float`: single-precision floating-point numbers
+- `Double`: double-precision floating-point numbers
+
+A numeric expression can match different data types.
+
+A list is a sequence of elements written comma-separated within square brackets (`[]`) of the same type with potential unlimited size.
+
+A tuple is a finite sequence of components written comma-separated within parentheses (`()`) of possibly different types and limited size. The number of components is called the tuple's _arity_. The empty tuple `()` is allowed, but not tuples with the size of one for syntactic reasons.
+
+Lists and tuples can be combined to tuples of lists, lists of tuples, etc.
+
+Functions can expect multiple arguments as tuples (`hypot`) or one by one using _currying_ (`hypot'`):
+
+```haskell
+hypot :: (Float, Float) -> Float
+hypot (a, b) = sqrt (a ^ 2 + b ^ 2)
+
+hypot' :: Float -> (Float -> Float)
+hypot' a b = sqrt (a ^ 2 + b ^ 2)
+```
+
+- The `hypot` function expects a tuple of arity 2 and returns a `Float` value.
+- The `hypot'` function expects a single `Float` value and returns another function that expects another `Float` value and returns a `Float` value.
+
+The functions are called as follows:
+
+```ghci
+> hypot (3.0, 4.0)
+5.0
+> ((hypot' 3.0) 4.0)
+5.0
+```
+
+Since the operator `->` in type definitions associates to the right, and function application associates to the left, the type definition and invocation of `hypot'` can be simplified as follows (i.e. the parentheses can be left away):
+
+```haskell
+hypot' :: Float -> Float -> Float
+hypot' 3.0 4.0
+```
+
+_Type variables_ begin with a small letter and can stand for different types, e.g. `length :: [a] -> Int` for the `length` function that works on any type denoted by the variable `a` rather than a concrete type.
+
+_Class constraints_ are written as `C a`, where `C` is the name of a type class and `a` the type variable restricted by the class. Type `a` is said to be an _instance_ of class `C`. A type containing at least one constraint is called _overloaded_, e.g. the operator `+` (defined as the function `(+)`) is defined as:
+
+```haskell
+(+) :: Num a => a -> a -> a
+```
+
+Which means that the type variable `a` must stand for any type of class `Num` (i.e. any numeric type).
+
+Haskell supports many type classes that support different operatiosn:
+
+- `Eq`: equality types (all basic types, tuples, list—but not functions)
+    - `(==) :: a -> a -> Bool`: equality
+    - `(/=) :: a -> a -> Bool`: inequality
+- `Ord`: types of `Eq` that also can be ordered and compared
+    - `(<) :: a -> a -> Bool`: lesser than
+    - `(<=) :: a -> a -> Bool`: lesser than or equal to
+    - `(>) :: a -> a -> Bool`: greater than
+    - `(>=) :: a -> a -> Bool`: greater than or equal to
+    - `min :: a -> a -> a`: the smaller of the two values
+    - `max :: a -> a -> a`: the smaller of the two values
+- `Show`: showable types, i.e. values that can be represented as a `String`
+    - `show :: a -> String`: show as a `String`
+- `Read`: readable types, i.e. `String` values that can be parsed to other types
+    - `read :: String -> a`: parse from a `String`
+- `Num`: numeric types
+    - `(+) :: a -> a -> a`: addition
+    - `(-) :: a -> a -> a`: subtraction
+    - `(*) :: a -> a -> a`: multiplication
+    - `(negate) :: a -> a`: change of sign
+    - `(abs) :: a -> a`: absolute value
+    - `(signum) :: a -> a`: determine sign
+- `Integral`: integer types (`Int` and `Integer`)
+    - `div :: a -> a -> a`: integer division
+    - `mod :: a -> a -> a`: remainder of integer division
+- `Fractional`: floating-point types (`Float` and `Double`)
+    - `(/) :: a -> a -> a`: fractal division
+    - `recip :: a -> a`: fractional reciprocation (i.e. `1/x`)
+
