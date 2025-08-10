@@ -1,3 +1,7 @@
+# Day 3 (Su, 2025-08-10)
+
+I worked through chapter 3 in _Programming Haskell_.
+
 # Day 2 (Sa, 2025-08-09)
 
 Having been out all day long, I found time to work through chapter 2 of _Programming Haskell_.
