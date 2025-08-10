@@ -1,0 +1,1 @@
+Functions can take parameters of types with infinite possible values, e.g. lists of umlimited lengths, or arbitrary-precision integers. For those kinds of arguments it is impossible to tell if two functions map _all_ the values to the same results.
