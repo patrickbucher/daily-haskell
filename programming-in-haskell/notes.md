@@ -295,3 +295,20 @@ Haskell supports many type classes that support different operatiosn:
     - `(/) :: a -> a -> a`: fractal division
     - `recip :: a -> a`: fractional reciprocation (i.e. `1/x`)
 
+# Defining functions
+
+In Haskell, for `if` _conditionals_, both the `then` and `else` branches must return a value of the same type:
+
+```haskell
+isPositive :: (Num a, Ord a) => a -> Bool
+isPositive x = if x > 0 then True else False
+```
+
+The same function can also be expressed using _guards_:
+
+```haskell
+isPositive' :: (Num a, Ord a) => a -> Bool
+isPositive' x
+  | x > 0 = True
+  | otherwise = False
+```
