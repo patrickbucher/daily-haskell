@@ -1,3 +1,7 @@
+# Day 4 (Su, 2025-08-11)
+
+Today I received the book _Learn You a Haskell for Greater Good_. I only tried working through it on my commutes roughly ten years ago, but must have given up on it. Having read the introduction and the first chapter, the book seems dense, informal, and fun, but never to the point of being daft. I like it as an informal companion to _Programming Haskell_. Unfortunately, the book has no exercises.
+
 # Day 3 (Su, 2025-08-10)
 
 I worked through chapter 3 in _Programming Haskell_.
