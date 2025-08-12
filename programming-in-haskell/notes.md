@@ -312,3 +312,55 @@ isPositive' x
   | x > 0 = True
   | otherwise = False
 ```
+
+The `|` sumbol is read as "such that". Unlike the `else` clause, an `otherwise` clause (which is defined as `True`) is _not_ mandatory, this means a function is not required to be _total_, i.e. to handle all possible cases.
+
+Functions can be defined using _pattern matching_, in which arguments are matched—fully or partially—against specific values:
+
+```haskell
+factorial :: Integral a => a -> a
+factorial 0 = 1
+factorial x = x * factorial (x - 1)
+```
+
+Pattern matching also works for tuples and lists:
+
+```haskell
+middle :: (a, b, c) -> b
+middle (_, x, _) = x
+
+isPrefixA :: [Char] -> Bool
+isPrefixA ('A':_) = True
+isPrefixA (_:_) = False
+```
+
+_Lambda expressions_ are functions without a name. They are useful when passed as an argument to or returned from a function:
+
+```haskell
+applyTwice :: (Int -> Int) -> (Int -> Int)
+applyTwice f = \x -> f (f x)
+
+incrementBy :: Int -> (Int -> Int)
+incrementBy x = \y -> x + y
+```
+
+```ghci
+> succ 1
+2
+(applyTwice succ) 1
+
+> (incrementBy 1) 3
+4
+> (incrementBy 5) 3
+8
+```
+
+Lambda expressions using operators can be succinctly expressed using _operator sections_. Given an operator (e.g. `/` or `^`) and a first or second operand (`1` or `2`), an operation can be turned into a lambda function expecting the missing operand as follows:
+
+```ghci
+> map (1/) [1..5]
+[1.0,0.5,0.3333333333333333,0.25,0.2]
+> map (^2) [1..5]
+[1,4,9,16,25]
+```
+
