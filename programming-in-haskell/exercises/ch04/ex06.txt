@@ -1,0 +1,3 @@
+True && b = if b then True else False
+False && _ = False
+
