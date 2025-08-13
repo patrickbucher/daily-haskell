@@ -1,3 +1,7 @@
+# Day 6 (We, 2025-08-13)
+
+Little time today; I started working through chapter 5 (on list comprehensions) in the morning.
+
 # Day 5 (Tu, 2025-08-12)
 
 I finished working through chapter 4, for which I wrote a rather terse summary. I'm not getting disciplined in leaving things away—the kind of discipline that _saves_ effort. As usual, I was not interested in the exercises dealing with formal definitions; I'm rather interested in how to express my thoughts in Haskell, for which this chapter had a couple of great exercises, forcing the reader to solve the same problem using various approaches. That's what I expect from a text book.
