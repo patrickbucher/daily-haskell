@@ -364,3 +364,90 @@ Lambda expressions using operators can be succinctly expressed using _operator s
 [1,4,9,16,25]
 ```
 
+# List comprehensions
+
+In mathematics, comprehensions are used to create sets of existing sets, e.g. all numbers of the range from 1 to 5 squared: ${x^2 | x \in {1..5}}$. In Haskell, the same concept (albeit with a slightly different syntax) is used to create lists based on existing lists:
+
+```ghci
+> [x^2 | x <- [1..5]]
+[1,4,9,16,25]
+```
+
+The symbol `|` is read as _such that_, and `<-` as _drawn from_, which the expression `x <- [1..5]` being called a _generator_. The values can be drawn from multiple generators:
+
+```ghci
+> [(n,c) | n <- [1, 2, 3], c <- ['a', 'b', 'c']]
+[(1,'a'),(1,'b'),(1,'c'),(2,'a'),(2,'b'),(2,'c'),(3,'a'),(3,'b'),(3,'c')]
+```
+
+The values drawn from the left generator change less frequently than the ones drawn from the right one. (The left generator can be thought of as the outer and the right as the inner loop in terms of structured programming.)
+
+Later generators can draw values from earlier generators:
+
+```ghci
+> [(x, y) | x <- [1, 2, 3], y <- [x..3]]
+[(1,1),(1,2),(1,3),(2,2),(2,3),(3,3)]
+```
+
+This mechanism is useful for applications such as concatenating lists:
+
+```haskell
+concat :: [[a]] -> [a]
+concat xss = [x | xs <- xss, x <- xs]
+```
+
+The wildcard pattern `_` can be used to dismiss parts of drawn values:
+
+```haskell
+firsts :: [(a,b)] -> [a]
+firsts ps = [x | (x, _) <- ps]
+```
+
+The length of a list can be determined using the same technique:
+
+```haskell
+length :: [a] -> Int
+length xs = sum [1 | _ <- xs]
+```
+
+Values drawn from generators can be filtered using _gaurds_:
+
+```haskell
+factors :: Int -> [Int]
+factors n = [x | x <- [1..n], n `mod` x == 0]
+```
+
+A table (i.e. a list of key-value pairs) can be filtered by a given key in order to find its respective value:
+
+```haskell
+find :: Eq a => a -> [(a, b)] -> [b]
+find k t = [v | (k', v) <- t, k == k']
+```
+
+The `zip` function pairs up values of two lists in tuples until the shorter of the two lists is exhausted:
+
+```haskell
+rank :: [a] -> [(Int, a)]
+rank xs = zip [1..] xs
+```
+
+This technique can be used in combination with a list comprehension to check if a list is sorted in ascending order:
+
+```haskell
+ascending :: Ord a => [a] -> Bool
+ascending xs = and [x <= y | (x, y) <- zip xs (tail xs)]
+```
+
+Or to find the indices of a value in a list:
+
+```haskell
+indices :: Eq a => a -> [a] -> [Int]
+indices x xs = [i | (i, v) <- zip [0..] xs, v == x]
+```
+
+Since strings are lists of characters, they can be built using list comprehensions, which then are called _string comprehensions_:
+
+```haskell
+alphabet :: Int -> String
+alphabet n = take n [c | c <- ['a'..]]
+```
