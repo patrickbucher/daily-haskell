@@ -1,3 +1,7 @@
+# Day 7 (We, 2025-08-14)
+
+I continued with chapter 5 and managed so summarize the first part. The second part is an extended example, which I save for later (or tomorrow).
+
 # Day 6 (We, 2025-08-13)
 
 Little time today; I started working through chapter 5 (on list comprehensions) in the morning.
