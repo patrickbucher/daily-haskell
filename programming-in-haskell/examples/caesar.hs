@@ -60,3 +60,19 @@ freqs :: String -> [Float]
 freqs xs = [percent (count x xs) n | x <- ['a' .. 'z']]
   where
     n = lowers xs
+
+chisqr :: [Float] -> [Float] -> Float
+chisqr os es = sum [((o - e) ^ 2) / e | (o, e) <- zip os es]
+
+rotate :: Int -> [a] -> [a]
+rotate n xs = drop n xs ++ take n xs
+
+positions :: Eq a => a -> [a] -> [Int]
+positions x xs = [i | (i, x') <- zip [0 ..] xs, x' == x]
+
+crack :: String -> String
+crack xs = decode factor xs
+  where
+    factor = head (positions (minimum chitab) chitab)
+    chitab = [chisqr (rotate n table') table | n <- [0 .. 25]]
+    table' = freqs xs
