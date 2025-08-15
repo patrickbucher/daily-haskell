@@ -1,4 +1,8 @@
-# Day 7 (We, 2025-08-14)
+# Day 8 (Fr, 2025-08-15)
+
+I worked through the extended Caesar cipher example and worked through all of the exercises, which were rather easy.
+
+# Day 7 (Th, 2025-08-14)
 
 I continued with chapter 5 and managed so summarize the first part. The second part is an extended example, which I save for later (or tomorrow).
 
