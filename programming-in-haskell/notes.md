@@ -451,3 +451,69 @@ Since strings are lists of characters, they can be built using list comprehensio
 alphabet :: Int -> String
 alphabet n = take n [c | c <- ['a'..]]
 ```
+
+# Recursive functions
+
+A _recursive function_ is a function that is defined in terms of itself, e.g. this function to compute the factorial of a number:
+
+```haskell
+factorial :: Int -> Int
+factorial 0 = 1
+factorial n = n * factorial (n - 1)
+```
+
+The first equation is the _base case_, the second equation the _recursive case_. Recursion ultimately ends as the recursive case reduces the problem towards the base case.
+
+Since Haskell has no loops, lists are processed element by element using recursion:
+
+```haskell
+sum :: Num a => [a] -> a
+sum [] = 0
+sum (n:ns) = n + sum ns
+```
+
+Since 0 is the neutral element of the addition, the sum of the empty list is defined as 0 (base case). The sum of a non-empty list is the first element of the list added to the sum of its tail (recursive case).
+
+The `zip` function accepts two lists and therefore requirs two base cases:
+
+```haskell
+zip :: [a] -> [b] -> [(a, b)]
+zip [] _ = []
+zip _ [] = []
+zip (x:xs) (y:ys) = (x, y) : zip xs ys
+```
+
+In _multi recursion_, a function is defined in terms of multiple recursive calls, e.g. for calculating the Fibonacci numbers:
+
+```haskell
+fib :: Int -> Int
+fib 0 = 0
+fib 1 = 1
+fib n = fib (n - 2) + fib (n - 1)
+```
+
+In _mutual recursion_, two functions repeatedly call one another. A pair of functions that check if a number is odd or even, respectively, can be (inefficiently) implemented as follows:
+
+```haskell
+even :: Int -> Bool
+even 0 = True
+even n = odd (n - 1)
+
+odd :: Int -> Bool
+odd 0 = False
+odd n = even (n - 1)
+```
+
+A number is even when its predecessor is odd, or odd when its predecessor is even, respectively.
+
+In general, recursive functions can be defined using this five-step process:
+
+1. define the type
+2. enumerate the cases
+3. define the base case(s)
+4. define the recursive case
+5. generalise and simplify
+    - types can be generalized (e.g. `Num` instead of `Int`)
+    - definitions can be simplified (e.g. using library functions)
+    - base cases can be merged
+
