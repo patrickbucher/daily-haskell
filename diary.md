@@ -1,3 +1,7 @@
+# Day 9 (Fr, 2025-08-16)
+
+Having read chapter 6 quickly yesterday evening, I summarized it today and worked through the exercises, which were rather easy. (The nine months of working through the first three chapters of SICP really paid off!) Now comes the most interesting chapter for me of the first part: higher-order functions.
+
 # Day 8 (Fr, 2025-08-15)
 
 I worked through the extended Caesar cipher example and worked through all of the exercises, which were rather easy.
