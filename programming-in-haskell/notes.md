@@ -517,3 +517,108 @@ In general, recursive functions can be defined using this five-step process:
     - definitions can be simplified (e.g. using library functions)
     - base cases can be merged
 
+# Higher-order functions
+
+A _higher-order function_ takes a function as an argument, returns a function as its results, or does both. Since functions returning other functions is denoted as currying in the appropriate context, the term higher-order function commonly refers to functions taking other functions as their arguments. Many higher-order functions for list processing are provided in the prelude.
+
+The `map` function applies a given function to each element of a list, thereby producing a list of return values. This function can be defined using a list comprehension:
+
+```haskell
+map :: (a -> b) -> [a] -> [b]
+map f xs = [f x | x <- xs]
+```
+
+For example:
+
+```ghci
+> map (*2) [1, 2, 3]
+[2, 4, 6]
+```
+
+The `filter` function expects a predicate function to perform a test on each element of a list and returns a list of the elements satisfying the predicate:
+
+```haskell
+filter :: (a -> Bool) -> [a] -> [a]
+filter p xs = [x | x <- xs, p x]
+```
+
+For example:
+
+```ghci
+> filter (\x -> x `mod` 2 == 0) [1,2,3,4,5]
+[2, 4]
+```
+
+Some additional often-used higher-order functions from the prelude are:
+
+- `all`: checks if all elements satisfy a predicate
+- `any`: checks if at least one element satisfies a predicate
+- `takeWhile`: selects element from a list as long as they satisfy a predicate
+- `dropWhile`: discards element from a list as long as they satisfy a predicate
+
+Many functions `f` processing lists using an operator `#` can be defined using this recursive pattern:
+
+```haskell
+f :: [a] -> a
+f [] = v
+f (x:xs) = x # f xs
+```
+
+The operator `#` is applied to the head of the list, and its tail is processed recursively until the base case matches the empty list, for which the pre-defined value `v` is returned.
+
+The `foldr` (_fold right_) function encapsulates this behaviour and accepts the operator `#` as well as the value `v` as an argument:
+
+```haskell
+foldr :: (a -> b -> b) -> b -> [a] -> b
+foldr f v [] = v
+foldr f v (x:xs) = f x (foldr f v xs)
+```
+
+This function folds up the list by applying the function to the list's head and to the result of folding the list's tail. The operator `f` is assumed to associate to the right, with the list's last element and the value `v` being processed first:
+
+```plain
+> foldr (+) 0 [1, 2, 3]
+= 1 + (foldr (+) 0 [2, 3])
+= 1 + (2 + (foldr (+) 0 [3]))
+= 1 + (2 + (3 + (foldr (+) 0 [])))
+= 1 + (2 + (3 + 0))
+= 1 + (2 + 3)
+= 1 + 5
+= 6
+```
+
+The function `foldl` implements the same mechanism for left-associative operators:
+
+```haskell
+foldl :: (a -> b -> a) -> a -> [b] -> a
+foldl f v [] = v
+foldl f v (x:xs) = foldl f (f v x) xs
+```
+
+While `foldr` first recursively builds up a sequence of calculations, which are then performed, `foldl` processes the initial value using the operator and passes this _accumulator_ along to the recursive call:
+
+```plain
+> foldl (+) 0 [1, 2, 3]
+= foldl (+) (0 + 1) [2, 3]
+= foldl (+) 1 [2, 3]
+= foldl (+) (1 + 2) [3]
+= foldl (+) 3 [3]
+= foldl (+) (3 + 3) []
+= foldl (+) 6 []
+= 6
+```
+
+The higher-order operator `.` composes two functoins, returning a new function:
+
+```haskell
+(.) :: (b -> c) -> (a -> b) -> (a -> c)
+f . g = \x -> f (g x)
+```
+
+This is read as _f composed with g_ and can be applied as follows:
+
+```ghci
+> ((+1) . (*2)) 3
+7
+```
+
