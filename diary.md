@@ -1,3 +1,7 @@
+# Day 10 (Su, 2025-08-17)
+
+I worked through the first part of chapter 7. Now I understand that `foldl` can be thought of in terms of forwarding an accumulator, while `foldr` builds up a chain of recursive function calls.
+
 # Day 9 (Sa, 2025-08-16)
 
 Having read chapter 6 quickly yesterday evening, I summarized it today and worked through the exercises, which were rather easy. (The nine months of working through the first three chapters of SICP really paid off!) Now comes the most interesting chapter for me of the first part: higher-order functions.
