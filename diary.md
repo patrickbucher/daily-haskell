@@ -1,4 +1,4 @@
-# Day 9 (Fr, 2025-08-16)
+# Day 9 (Sa, 2025-08-16)
 
 Having read chapter 6 quickly yesterday evening, I summarized it today and worked through the exercises, which were rather easy. (The nine months of working through the first three chapters of SICP really paid off!) Now comes the most interesting chapter for me of the first part: higher-order functions.
 
