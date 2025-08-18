@@ -25,4 +25,3 @@ applyTwice f = \x -> f (f x)
 
 incrementBy :: Int -> (Int -> Int)
 incrementBy x = \y -> x + y
-
