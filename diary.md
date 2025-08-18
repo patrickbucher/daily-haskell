@@ -1,3 +1,7 @@
+# Day 11 (Mo, 2025-08-18)
+
+Only little time in the morning: I worked through the two extended examples in chapter 7, but haven't done the exercises yet, which will have to wait until tomorrow.
+
 # Day 10 (Su, 2025-08-17)
 
 I worked through the first part of chapter 7. Now I understand that `foldl` can be thought of in terms of forwarding an accumulator, while `foldr` builds up a chain of recursive function calls.
