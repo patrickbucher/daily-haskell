@@ -622,3 +622,172 @@ This is read as _f composed with g_ and can be applied as follows:
 7
 ```
 
+# Declaring types and classes
+
+New types can be declared in terms of existing types using the `type` mechanism:
+
+```haskell
+type String = [Char]
+type Position = (Int, Int)
+type Move = Position -> Position
+```
+
+The name of the new type must start with a capital letter.
+
+Types must not be recursive:
+
+```haskell
+type Tree (Int, [Tree])
+```
+
+For this purpose, the `data` mechanism (see below) can be used.
+
+Type declarations can use parameters:
+
+```haskell
+type Pair a = (a, a)
+type Table k v = [(k, v)]
+```
+
+New types can be declared using the `data` mechanism:
+
+```haskell
+data Bool = False | True
+data Directon = Up | Right | Down | Left
+```
+
+The `|` is read as _or_ and separates the _constructors_, which must have globally unique names. The names have no particular meaning on their own but must be defined by the programmer.
+
+A constructor can accept arguments:
+
+```haskell
+data Shape = Circle Float | Rect Float Float | Square Float
+```
+
+Those constructors are automatically turned into (curried) functions:
+
+```haskell
+Circle :: Float -> Shape
+Rect :: Float -> Float -> Shape
+Square :: Float -> Shape
+```
+
+Data declarations can be parametrised:
+
+```haskell
+data Maybe a = Nothing | Just a
+```
+
+This mechanism can be used to create safe versions of the `div` and `tail` functions:
+
+```haskell
+safediv :: Int -> Int -> Maybe Int
+safediv _ 0 = Nothing
+safediv m n = Just (m `div` n)
+
+safetail :: [a] -> Maybe [a]
+safetail [] = Nothing
+safetail xs = Just (tail xs)
+```
+
+For a new type with a single constructor and a single argument, the `newtype` mechanism can be used:
+
+```haskell
+newtype Nat = N Int
+```
+
+`Nat` and `Int` are different types—unlike the result of the declaration `type Nat = Int`, which introduces the type name `Nat` as a mere synonym for `Int`. Unlike the `data` mechanism, `newtype` does not incur a perrformance penalty.
+
+Unlike `type`, `data` allows for recursive definitions:
+
+```haskell
+data Nat = Zero | Succ Nat
+```
+
+This type can be used to express numbers in a recusive manner. These two functions connect between those two worlds:
+
+```haskell
+nat2int :: Nat -> Int
+nat2int Zero = 0
+nat2int (Succ n) = 1 + (nat2int n)
+
+int2nat :: Int -> Nat
+int2nat 0 = Zero
+int2nat n = Succ (int2nat (n - 1))
+```
+
+In order to display values of the `Nat` type, the `Show` type class must be derived (more of which further below):
+
+```haskell
+data Nat = Zero | Succ Nat
+  deriving Show
+```
+
+A new list type can be defined in terms of `Cons` cells:
+
+```haskell
+data List a = Nil | Cons a (List a)
+
+listLength :: List a -> Int
+listLength Nil = 0
+listLength (Cons _ x) = 1 + (listLength x)
+```
+
+Which can be used as follows:
+
+```ghci
+> listLength (Cons 3 (Cons 2 (Cons 1 Nil)))
+3
+```
+
+A binary tree can be declared as follows:
+
+```haskell
+data Tree a = Leaf a | Node (Tree a) a Node (Tree a)
+```
+
+It either is a `Leaf` with a single value or a `Node` with a left subtree, a value, and a right subtree.
+
+Type classes are declared using the `class` mechanism:
+
+```haskell
+class Eq a where
+  (==), (/=) :: a -> a -> Bool
+  x /= y = not (x == y)
+```
+
+(Type classes are similar to _abstract classes_ in object-oriented programming languages, which can pre-define some operations, and requir the implementation of other operations by a concrete class.)
+
+A specific instance (i.e. a type) of that class must fill in the missing definitions (i.e. `==`, in whose terms `/=` is already provided):
+
+```haskell
+instance Eq Bool where
+  False == False = True
+  True == True = True
+  _ == _ = False
+```
+
+A class can be defined as extending another class. E.g. the `Ord` class requires its types to be of class `Eq` and support additional operations:
+
+```haskell
+class Eq a => Ord a where
+  (<), (<=), (>), (>=) :: a -> a -> Bool
+  min, max :: a -> a -> a
+
+  min x y | x <= y = x
+          | otherwise = y
+  max x y | x <= y = y
+          | otherwise = x
+```
+
+A type can be automatically made an instance of another type using the `deriving` mechanism:
+
+```haskell
+data Bool = False | True
+            deriving (Eq, Ord, Show, Read)
+```
+
+The order of constructor definitions is used to establish the `Ord` implementation: because `False` appears before `True`, `False < True` holds true.
+
+For parametrized types, `deriving` requires that the parameter type satisfies the deriving type.
+
