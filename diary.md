@@ -1,3 +1,7 @@
+# Day 15 (We, 2025-08-22)
+
+This morning, my laptop refused to boot for the first time in almost ten years due to a Kernel Panic, which I need to investigate later. So I started working on the tautology checker example from chapter 8, but have some issues with functions that were defined earlier on. Unfortunately, I have little time today, because I have ten lessons to teach.
+
 # Day 14 (We, 2025-08-21)
 
 I worked through the theory part of chapter 8 on types and type classes. I leave the extended examples for tomorrow and will tackle the exercises on Saturday.
