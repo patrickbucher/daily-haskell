@@ -4,12 +4,16 @@ type Subst = Assoc Char Bool
 
 type Bit = Int
 
-find :: Eq a => a -> [(a, b)] -> [b]
-find k t = [v | (k', v) <- t, k == k']
+find :: Eq a => a -> Assoc a b -> b
+find k t = head [v | (k', v) <- t, k == k']
 
 int2bin :: Int -> [Bit]
 int2bin 0 = []
 int2bin n = n `mod` 2 : int2bin (n `div` 2)
+
+rmdups :: Eq a => [a] -> [a]
+rmdups [] = []
+rmdups (x:xs) = x : filter (/= x) (rmdups xs)
 
 data Prop
   = Const Bool
@@ -33,9 +37,15 @@ vars (And p q) = vars p ++ vars q
 vars (Imply p q) = vars p ++ vars q
 
 bools :: Int -> [[Bool]]
-bools n = map (reverse . map conv . make n . int2bin) range
+bools 0 = [[]]
+bools n = map (False :) bss ++ map (True :) bss
   where
-    range = [0 .. (2 ^ n) - 1]
-    make n bs = take n (bs ++ repeat 0)
-    conv 0 = False
-    conv 1 = True
+    bss = bools (n - 1)
+
+substs :: Prop -> [Subst]
+substs p = map (zip vs) (bools (length vs))
+  where
+    vs = rmdups (vars p)
+
+isTaut :: Prop -> Bool
+isTaut p = and [eval s p | s <- substs p]
