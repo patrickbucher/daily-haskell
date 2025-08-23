@@ -1,6 +1,6 @@
 # Day 16 (Sa, 2025-08-23)
 
-Little time today; I just managed to finish up the tautology checker, which required some modifications to the existing `find` function.
+Little time today; I just managed to finish up the tautology checker, which required some modifications to the existing `find` function. In the evening, I also worked through the abstract machien example. I leave the exercises for tomorrow.
 
 # Day 15 (Fr, 2025-08-22)
 
