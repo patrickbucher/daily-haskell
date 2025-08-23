@@ -1,8 +1,12 @@
-# Day 15 (We, 2025-08-22)
+# Day 16 (Sa, 2025-08-23)
+
+Little time today; I just managed to finish up the tautology checker, which required some modifications to the existing `find` function.
+
+# Day 15 (Fr, 2025-08-22)
 
 This morning, my laptop refused to boot for the first time in almost ten years due to a Kernel Panic, which I need to investigate later. So I started working on the tautology checker example from chapter 8, but have some issues with functions that were defined earlier on. Unfortunately, I have little time today, because I have ten lessons to teach.
 
-# Day 14 (We, 2025-08-21)
+# Day 14 (Th, 2025-08-21)
 
 I worked through the theory part of chapter 8 on types and type classes. I leave the extended examples for tomorrow and will tackle the exercises on Saturday.
 
