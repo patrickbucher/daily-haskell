@@ -1,3 +1,7 @@
+# Day 17 (Su, 2025-08-24)
+
+I worked through the exercises of chapter 8. Especially the last one was quite hard, so I looked up a solution from earlier. It's exactly the initial idea that I had: dumb but effective. Anyway, onwards to chaper 9 (tomorrow)!
+
 # Day 16 (Sa, 2025-08-23)
 
 Little time today; I just managed to finish up the tautology checker, which required some modifications to the existing `find` function. In the evening, I also worked through the abstract machien example. I leave the exercises for tomorrow.
