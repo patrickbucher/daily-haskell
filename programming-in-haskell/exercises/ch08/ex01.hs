@@ -15,7 +15,8 @@ add :: Nat -> Nat -> Nat
 add Zero n = n
 add (Succ m) n = Succ (add m n)
 
--- nat2int (mul (int2nat 5) (int2nat 12))
+-- > nat2int (mul (int2nat 5) (int2nat 12))
+-- 60
 mul :: Nat -> Nat -> Nat
 mul Zero _ = Zero
 mul (Succ m) n = add n (mul m n)
