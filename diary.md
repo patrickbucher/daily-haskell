@@ -1,3 +1,7 @@
+# Day 18 (Mo, 2025-08-25)
+
+I worked through the initial version of the countdown problem, but I didn't have time for the optimizations yet, and neither for the exercises.
+
 # Day 17 (Su, 2025-08-24)
 
 I worked through the exercises of chapter 8. Especially the last one was quite hard, so I looked up a solution from earlier. It's exactly the initial idea that I had: dumb but effective. Anyway, onwards to chaper 9 (tomorrow)!
