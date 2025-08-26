@@ -1,3 +1,7 @@
+# Day 19 (Mo, 2025-08-26)
+
+I worked through the optimisations of the countdown problem. Then I started with the exercises, where I got stuck at exercise 2. I'd like to do them thoroughly, which will take some time. So the second part of the book probably has to wait until Thursday.
+
 # Day 18 (Mo, 2025-08-25)
 
 I worked through the initial version of the countdown problem, but I didn't have time for the optimizations yet, and neither for the exercises.
