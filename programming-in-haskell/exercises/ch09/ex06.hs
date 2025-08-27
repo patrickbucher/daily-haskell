@@ -104,7 +104,11 @@ solutions :: [Int] -> Int -> [Expr]
 solutions ns n = [e | ns' <- choices ns, e <- exprs ns', eval e == [n]]
 
 solutions' :: [Int] -> Int -> [Expr]
-solutions' ns n = [e | ns' <- choices ns, (e, m) <- results ns', m == n]
+solutions' ns n =
+  map snd
+    $ sortBy
+        (\l -> \r -> compare (fst l) (fst r))
+        [(complexity e, e) | ns' <- choices ns, (e, m) <- results ns', m == n]
 
 approximateSolutions :: [Int] -> Int -> [Expr]
 approximateSolutions ns n = take 10 $ map snd candidates
@@ -122,9 +126,20 @@ solutions'' ns n =
   where
     exactSolutions = solutions' ns n
 
+complexity :: Expr -> Int
+complexity (Val n) = 1
+complexity (App o l r) = cmpx o + complexity l + complexity r
+  where
+    cmpx Add = 1
+    cmpx Sub = 2
+    cmpx Mul = 3
+    cmpx Div = 4
+    cmpx Exp = 5
+
 main :: IO ()
--- main = print (solutions' [1, 3, 7, 10, 25, 50] 765)
-main = print (solutions'' [1, 3, 7, 10, 25, 50] 831)
+main = print (solutions' [1, 3, 7, 10, 25, 50] 765)
+-- 6b)
+-- main = print (solutions'' [1, 3, 7, 10, 25, 50] 831)
 -- 10*(((50+1)+7)+25) = 830
 -- 10*((50+(7+1))+25) = 830
 -- ...
