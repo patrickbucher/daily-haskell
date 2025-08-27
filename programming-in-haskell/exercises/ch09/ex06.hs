@@ -110,7 +110,9 @@ approximateSolutions :: [Int] -> Int -> [Expr]
 approximateSolutions ns n = take 10 $ map snd candidates
   where
     candidates =
-      sortBy (\l -> \r -> compare (fst l) (fst r)) [((abs (m - n), e)) | ns' <- choices ns, (e, m) <- results ns']
+      sortBy
+        (\l -> \r -> compare (fst l) (fst r))
+        [((abs (m - n), e)) | ns' <- choices ns, (e, m) <- results ns']
 
 solutions'' :: [Int] -> Int -> [Expr]
 solutions'' ns n =
