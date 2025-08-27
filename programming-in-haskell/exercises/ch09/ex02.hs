@@ -5,7 +5,5 @@ discardFirst x (y:ys)
   | otherwise = y : discardFirst x ys
 
 isChoice :: Eq a => [a] -> [a] -> Bool
-isChoice [] [] = True
-isChoice xs [] = False
-isChoice [] xs = True
-isChoice (x:xs) (y:ys) = False -- FIXME
+isChoice [] _ = True
+isChoice (x:xs) ys = elem x ys && isChoice xs (discardFirst x ys)
