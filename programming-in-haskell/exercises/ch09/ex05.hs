@@ -12,7 +12,7 @@ instance Show Op where
 
 valid :: Op -> Int -> Int -> Bool
 valid Add _ _ = True
-valid Sub x y = x > y
+valid Sub _ _ = True
 valid Mul _ _ = True
 valid Div _ y = y /= 0
 
