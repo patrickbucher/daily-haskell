@@ -1,4 +1,8 @@
-# Day 19 (Mo, 2025-08-26)
+# Day 20 (We, 2025-08-27)
+
+I worked through the remaining exercises of chapter 9, which turned out to not be as terribly hard as I was afraid of. However, I had completely different results for exercises 4 and 5 as stated in the book, but I decided to move ahead nonetheless. I also stumbled upon some practical issues, for example how to use `sortBy`, and that one needs to `import Data.List` in order to use it. And on Arch Linux: the `ghc -dynamic` flag has to be used for compilation. (I already read that Arch's native Haskell deployment is not a good fit for Haskell programmers, but rather for users of Haskell programs such as `pandoc`.)
+
+# Day 19 (Tu, 2025-08-26)
 
 I worked through the optimisations of the countdown problem. Then I started with the exercises, where I got stuck at exercise 2. I'd like to do them thoroughly, which will take some time. So the second part of the book probably has to wait until Thursday.
 
