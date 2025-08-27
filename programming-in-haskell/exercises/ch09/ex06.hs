@@ -1,3 +1,5 @@
+import Data.List
+
 data Op
   = Add
   | Sub
@@ -104,5 +106,23 @@ solutions ns n = [e | ns' <- choices ns, e <- exprs ns', eval e == [n]]
 solutions' :: [Int] -> Int -> [Expr]
 solutions' ns n = [e | ns' <- choices ns, (e, m) <- results ns', m == n]
 
+approximateSolutions :: [Int] -> Int -> [Expr]
+approximateSolutions ns n = take 10 $ map snd candidates
+  where
+    candidates =
+      sortBy (\l -> \r -> compare (fst l) (fst r)) [((abs (m - n), e)) | ns' <- choices ns, (e, m) <- results ns']
+
+solutions'' :: [Int] -> Int -> [Expr]
+solutions'' ns n =
+  if length exactSolutions > 0
+    then exactSolutions
+    else approximateSolutions ns n
+  where
+    exactSolutions = solutions' ns n
+
 main :: IO ()
-main = print (solutions' [1, 3, 7, 10, 25, 50] 765)
+-- main = print (solutions' [1, 3, 7, 10, 25, 50] 765)
+main = print (solutions'' [1, 3, 7, 10, 25, 50] 831)
+-- 10*(((50+1)+7)+25) = 830
+-- 10*((50+(7+1))+25) = 830
+-- ...
