@@ -791,3 +791,72 @@ The order of constructor definitions is used to establish the `Ord` implementati
 
 For parametrized types, `deriving` requires that the parameter type satisfies the deriving type.
 
+# Interactive programming
+
+In a pure language like Haskell, side effects are implemented by accepting the state of the entire world as an argument and returning an updated version of it, which is expressed by the `IO` type:
+
+```haskell
+type IO = World -> World
+```
+
+In order to allow for effectful functions returning a value, this type is parametrized:
+
+```haskell
+type IO a = World -> (a, World)
+```
+
+A function returning the type `IO Char` produces a character using a side-effect, while `IO ()` is an effectful functions that returns nothing.
+
+In fact, since it's infeasible to pass the entire state of the world around as a function argument, the `IO` type is implemented as a built-in language primitive. However, the above explanation serves as a useful mental model to understand effectful functions in the context of a pure language.
+
+Characters can be read and written using the following functions:
+
+```haskell
+getChar :: IO Char
+putChar :: Char -> IO ()
+```
+
+The `return` function is a bridge from the pure to the impure world. There's no way back—once impure, always impure:
+
+```haskell
+return :: a -> IO a
+```
+
+The `do` notation combines a sequence of `IO` actions into a single composite action:
+
+```haskell
+do v1 <- a1
+   v2 <- a2
+   ...
+   return (f v1 v2 ...)
+```
+
+The result of action `a1` is stored in `v1`, the result of action `a2` in `v2`, etc. (The `<-` syntax is the same that is used for generators in list comprehensions.)
+
+The `do` block allows for transparent handling of effectful functions, but requires re-wrapping of the stripped `IO` type using `return`. Within the `do` block, the type `IO a` is automatically unwrapped as `a`. However, the `IO` has to be put back into the type using return. If `f` produces a value of type `b`, then `return` produces a value of type `IO b`.
+
+The provided `getChar` and `putChar` functions can be combined to handle the input and output of entire lines of text:
+
+```haskell
+getLine :: IO String
+getLine = do
+  c <- getChar
+  if c == '\n'
+    then return []
+    else do
+      cs <- getLine
+      return
+      (c : cs)
+
+putString :: String -> IO ()
+putString [] = return ()
+
+putString (c:cs) = do
+  putChar c
+  putString cs
+
+putLine :: String -> IO ()
+putLine cs = do
+  putString cs
+  putChar '\n'
+```
