@@ -2,6 +2,8 @@
 
 I finished the examples of chapter 10 and managed to do 5/6 exercises in the morning. The last one I have to leave for later, unfortunately, because today is a teaching day (10 lessons).
 
+Having finished the 10 lessons, I managed to solve exercise 6 in the evening. I don't like the solution, but the task itself is a messy one, so I don't mind. I wrote a recursive function that applies the backspaces after the fact by processing the string in reverse. It was a good exercise, after all. No on towards chapter 11 (tomorrow).
+
 # Day 21 (Th, 2025-08-28)
 
 I already gave chapter 10 a quick read yesterday and then seriously worked through the theory part this morning. Having summarized that, I stopped after the first extended example and leave the rest for later or tomorrow.
