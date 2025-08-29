@@ -1,3 +1,7 @@
+# Day 22 (Fr, 2025-08-29)
+
+I finished the examples of chapter 10 and managed to do 5/6 exercises in the morning. The last one I have to leave for later, unfortunately, because today is a teaching day (10 lessons).
+
 # Day 21 (Th, 2025-08-28)
 
 I already gave chapter 10 a quick read yesterday and then seriously worked through the theory part this morning. Having summarized that, I stopped after the first extended example and leave the rest for later or tomorrow.
