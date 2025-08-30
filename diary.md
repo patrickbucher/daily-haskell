@@ -1,3 +1,7 @@
+# Day 23 (Sa, 2025-08-30)
+
+I started working through chapter 11, which I first read once completely, and then summarized the first of three parts of it.
+
 # Day 22 (Fr, 2025-08-29)
 
 I finished the examples of chapter 10 and managed to do 5/6 exercises in the morning. The last one I have to leave for later, unfortunately, because today is a teaching day (10 lessons).

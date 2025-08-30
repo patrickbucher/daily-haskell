@@ -860,3 +860,101 @@ putLine cs = do
   putString cs
   putChar '\n'
 ```
+
+# Unbeatable tic-tac-toe
+
+The game _tic-tac-toe_ is played on a 3x3 grid by two players, X and O, which take turns putting their mark in the grid. The player to place three of his marks in a row—horizontally, vetically, or diagonally—is the winner. If the grid is filled without any player creating a winning row, the game ends in a draw. When playing perfectly, each player can force a draw, no matter in which order they begin.
+
+Implementing the game requirs functinoality from these modules:
+
+```haskell
+import Data.Char
+import Data.List
+import System.IO
+```
+
+The grid size shall be adjustable:
+
+```haskell
+size :: Int
+size = 3
+```
+
+The grid is a list of rows of possible player marks:
+
+```haskell
+type Grid = [[Player]]
+```
+
+Whereas the players—X, O, and B for "blank"—are a new data type:
+
+```haskell
+data Player
+  = O
+  | B
+  | X
+  deriving (Eq, Ord, Show)
+```
+
+By deriving the `Ord` trait, the order is given as `O < B < X`.
+
+Players are swapped as follows, with the case for `B` being only included for completeness:
+
+```haskell
+next :: Player -> Player
+next O = X
+next B = B
+next X = O
+```
+
+The game starts on an empty grid:
+
+```haskell
+empty :: Grid
+empty = replicate size (replicate size B)
+```
+
+The grid is full if there are no blanks left:
+
+```haskell
+full :: Grid -> Bool
+full = all (/= B) . concat
+```
+
+The next turn's player is determined by th enumber of present marks:
+
+```haskell
+turn :: Grid -> Player
+turn g =
+  if os <= xs
+    then O
+    else X
+  where
+    os = length (filter (== O) ps)
+    xs = length (filter (== X) ps)
+    ps = concat g
+```
+
+Player O is assumed to go first because `turn empty` evaluates to `O`.
+
+If a player is the winner on a given grid is determined as follows:
+
+```haskell
+wins :: Player -> Grid -> Bool
+wins p g = any line (rows ++ cols ++ dias)
+  where
+    line = all (== p)
+    rows = g
+    cols = transpose g
+    dias = [diag g, diag (map reverse g)]
+```
+
+The `transpose` function from `Data.List` flips a grid represented as a list of rows into a list of columns.
+
+The main diagonal of a grid is determined by collecting the fields with equal row and column index:
+
+```haskell
+diag :: Grid -> [Player]
+diag g = [g !! n !! n | n <- [0 .. size - 1]]
+```
+
