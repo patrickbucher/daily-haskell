@@ -958,3 +958,43 @@ diag :: Grid -> [Player]
 diag g = [g !! n !! n | n <- [0 .. size - 1]]
 ```
 
+The grid is printed line by line (note: this is a simplified implementation compared to the book):
+
+```haskell
+putGrid :: Grid -> IO ()
+putGrid = putStrLn . concat . interleave "\n" . map showRow
+```
+
+The `interleave` function puts a separator in between a sequence of items:
+
+```haskell
+interleave :: a -> [a] -> [a]
+interleave x [] = []
+interleave x [y] = [y]
+interleave x (y:ys) = y : x : interleave x ys
+```
+
+This can also be used as a column separator to output rows:
+
+```haskell
+showRow :: [Player] -> String
+showRow = foldr1 (++) . interleave "|" . map showPlayer
+```
+
+The player mark is printed as a space for blanks and using the derived `show` implementation for player marks:
+
+```haskell
+showPlayer :: Player -> String
+showPlayer B = " "
+showPlayer x = show x
+```
+
+A grid can now be printed as follows:
+
+```ghci
+> putGrid [[B,O,O],[O,X,O],[X,X,X]]
+ |O|O
+O|X|O
+X|X|X
+```
+

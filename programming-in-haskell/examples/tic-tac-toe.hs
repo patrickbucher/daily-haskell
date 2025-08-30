@@ -44,3 +44,19 @@ wins p g = any line (rows ++ cols ++ dias)
 
 diag :: Grid -> [Player]
 diag g = [g !! n !! n | n <- [0 .. size - 1]]
+
+putGrid :: Grid -> IO ()
+putGrid = putStrLn . concat . interleave "\n" . map showRow
+
+interleave :: a -> [a] -> [a]
+interleave x [] = []
+interleave x [y] = [y]
+interleave x (y:ys) = y : x : interleave x ys
+
+showRow :: [Player] -> String
+showRow = foldr1 (++) . interleave "|" . map showPlayer
+
+showPlayer :: Player -> String
+showPlayer B = " "
+showPlayer x = show x
+

@@ -1,6 +1,6 @@
 # Day 23 (Sa, 2025-08-30)
 
-I started working through chapter 11, which I first read once completely, and then summarized the first of three parts of it.
+I started working through chapter 11, which I first read once completely, and then summarized the first of three parts of it. Later on, I also implemented the printing of a grid, but decided to simplify considerabely compared with the book's implementation.
 
 # Day 22 (Fr, 2025-08-29)
 
