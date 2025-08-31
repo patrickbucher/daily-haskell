@@ -1,3 +1,7 @@
+# Day 24 (Su, 2025-08-31)
+
+I didn't manage to finish chapter 11 yet, I just was able to implement the interactive game. I again deviated from the book by using a `Maybe Grid` with `Just grid` and `Nothing` instead of `[Grid]` with a singleton `[grid]` and empty list `[]`. I leave game trees for later—or for tomorrow, because I have a lot of lessons to prepare for tomorrow.
+
 # Day 23 (Sa, 2025-08-30)
 
 I started working through chapter 11, which I first read once completely, and then summarized the first of three parts of it. Later on, I also implemented the printing of a grid, but decided to simplify considerabely compared with the book's implementation.

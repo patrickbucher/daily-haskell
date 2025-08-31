@@ -998,3 +998,104 @@ O|X|O
 X|X|X
 ```
 
+In order to identify moes, the flattened grid is indexed by the natural numbers from 0 to 8. This range, and the initial emptiness of the picked field, needs to be validated:
+
+```haskell
+valid :: Grid -> Int -> Bool
+valid g i = 0 <= i && i < size ^ 2 && concat g !! i == B
+```
+
+A valid move is applied to the grid, and a new version of the grid is returned, wrapped in a `Maybe`: for an invalid move, `Nothing` is returned; for a valid move, `Just` the updated grid:
+
+```haskell
+move :: Grid -> Int -> Player -> Maybe Grid
+move g i p =
+  if valid g i
+    then Just (chop size (xs ++ [p] ++ ys))
+    else Nothing
+  where
+    (xs, B:ys) = splitAt i (concat g)
+```
+
+The flattened grid is split at the given index `i`, which must match a blank field `B`.
+
+The `chop` function turns the flattened and updated grid back into its previous row-column structure:
+
+```haskell
+chop :: Int -> [a] -> [[a]]
+chop n [] = []
+chop n xs = take n xs : chop n (drop n xs)
+```
+
+The player shall be prompted to enter his move:
+
+```haskell
+prompt :: Player -> String
+prompt p = "Player " ++ show p ++ ", enter your move: "
+```
+
+Since the player must only enter a natural number as its move, a function to only read such input shall be defined, using the `isDigit` predicate function from `Data.Char`:
+
+```haskell
+getNat :: String -> IO Int
+getNat prompt = do
+  putStr prompt
+  xs <- getLine
+  if xs /= [] && all isDigit xs
+    then return (read xs)
+    else do
+      putStrLn "ERROR: Invalid number"
+      getNat prompt
+```
+
+The function `tictactoe` starts the game:
+
+```haskell
+tictactoe :: IO ()
+tictactoe = run empty O
+```
+
+The game starts on an empty grid with player O. Two mutually recursive functions—`run` (for drawing and top-level control) and `run'` (to handle individual moves)—are requird for playing the game:
+
+```haskell
+run :: Grid -> Player -> IO ()
+run g p = do
+  cls
+  goto (1, 1)
+  putGrid g
+  run' g p
+```
+
+The function `putGrid` was defined earlier.
+
+The function `cls` clears the screen:
+
+```haskell
+cls :: IO ()
+cls = putStr "\ESC[2J"
+```
+
+The function `goto` continues drawing at a particular x and y coordinate on the screen:
+
+```haskell
+goto :: (Int, Int) -> IO ()
+goto (x, y) = putStr ("\ESC[" ++ show y ++ ";" ++ show x ++ "H")
+```
+
+The handling of a move is implemented in `run'`, which returns control to the `run` function after a move has been performed:
+
+```haskell
+run' :: Grid -> Player -> IO ()
+run' g p
+  | wins O g = putStrLn "Player O wins!\n"
+  | wins X g = putStrLn "Player X wins!\n"
+  | full g = putStrLn "It's a draw!\n"
+  | otherwise = do
+    i <- getNat (prompt p)
+    case move g i p of
+      Nothing -> do
+        putStrLn "ERROR: Invalid move"
+        run' g p
+      Just g' -> run g' (next p)
+```
+
