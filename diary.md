@@ -1,3 +1,9 @@
+# Day 25 (Mo, 2025-09-01)
+
+I continued working through chapter 11 and managed to finish the part about the minimax algorithm. My decision to use `Maybe` instead of empty or singleton lists fired a bit back, but I managed to find a workaround for it.
+
+I'll need another day for the rest of the chapter, and probably quite some time more for the exercises, among which alpha-beta pruning has to be implemented. But this is all very good stuff, so I'll take my time. Chapter 12 on Functors, Applicatives, and Monads will be the most important one for me, to which I'm looking forward.
+
 # Day 24 (Su, 2025-08-31)
 
 I didn't manage to finish chapter 11 yet, I just was able to implement the interactive game. I again deviated from the book by using a `Maybe Grid` with `Just grid` and `Nothing` instead of `[Grid]` with a singleton `[grid]` and empty list `[]`. I leave game trees for later—or for tomorrow, because I have a lot of lessons to prepare for tomorrow.

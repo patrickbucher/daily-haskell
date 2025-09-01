@@ -1027,6 +1027,8 @@ chop n [] = []
 chop n xs = take n xs : chop n (drop n xs)
 ```
 
+## Human Player Interaction
+
 The player shall be prompted to enter his move:
 
 ```haskell
@@ -1098,4 +1100,90 @@ run' g p
         run' g p
       Just g' -> run g' (next p)
 ```
+
+## Implementing a Minimax Bot
+
+A game tree representing all possible moves and their outcomes starting from the empty grid can be represented using this generic tree structure:
+
+```haskell
+data Tree a =
+  Node a [Tree a]
+  deriving (Show)
+```
+
+Each `Node` consists of a list of `Tree` items. A leaf is a `Node` without any children, i.e. with an empty list of `Tree` items. The type parameter `a` allows for any type being represented as such a tree.
+
+The entire game tree can be built up recursively by processing all possible moves from a given position:
+
+```haskell
+gametree :: Grid -> Player -> Tree Grid
+gametree g p = Node g [gametree g' (next p) | g' <- moves g p]
+```
+
+The possible moves from a given grid are determined using the `moves` function:
+
+```haskell
+moves :: Grid -> Player -> [Grid]
+moves g p
+  | wins p g = []
+  | full g = []
+  | otherwise = concat [maybeToList (move g i p) | i <- [0 .. ((size ^ 2) - 1)]]
+  where
+    maybeToList (Just x) = [x]
+    maybeToList Nothing = []
+```
+
+A tree's depth, and the time requird to build it up, can be limited by _pruning_ it:
+
+```haskell
+prune :: Int -> Tree a -> Tree a
+prune 0 (Node x _) = Node x []
+prune n (Node x ts) = Node x [prune (n - 1) t | t <- ts]
+```
+
+Thanks to lazy evaluation, `prune 5 (gametree empty O)` won't generate more than five levels in the first place. However, with a simple game like tic-tac-toe, modern hardware allows for building up the entire game tree in little time:
+
+```haskell
+depth :: Int
+depth = 9
+```
+
+Given a game tree, the best next move can be determined using the _minimax_ algorithm.
+
+First, every node needs to be labelled with a player:
+
+- Leaves are labelled with the winning player `O` or `X`, or `B` in case of a draw.
+- Other nodes are labelled depending on whose player's turn it is on the basis of the labels of the child nodes:
+    - On player O's turn, the _minimum_ of the children's labels.
+    - On player X's turn, the _maximum_ of the children's labels.
+
+The choice of minimum and maximum is due to the relationship `O < B < X`: Agent O strives for the minimum, agent X for the maximum.
+
+The tree of grids is labelled as follows, returning a tree of _labelled_ grids:
+
+```haskell
+minimax :: Tree Grid -> Tree (Grid, Player)
+minimax (Node g [])
+  | wins O g = Node (g, O) []
+  | wins X g = Node (g, X) []
+  | otherwise = Node (g, B) []
+minimax (Node g ts)
+  | turn g == O = Node (g, minimum ps) ts'
+  | turn g == X = Node (g, maximum ps) ts'
+  where
+    ts' = map minimax ts
+    ps = [p | Node (_, p) _ <- ts']
+```
+
+Second, the best move for a given player and grid is determined by picking the first child of the current game node in the three that matches the player with its label. (This is the same label as the one in the root node, since the tree is built up for every move from the current player's perspective.)
+
+```haskell
+bestmove :: Grid -> Player -> Grid
+bestmove g p = head [g' | Node (g', p') _ <- ts, p' == best]
+  where
+    tree = prune depth (gametree g p)
+    Node (_, best) ts = minimax tree
+```
+
+Notice that there may be multiple possible best moves leading to the best possible outcome, from which the first one is selected.
 
