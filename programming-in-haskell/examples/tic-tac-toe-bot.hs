@@ -88,34 +88,11 @@ getNat prompt = do
       putStrLn "ERROR: Invalid number"
       getNat prompt
 
-tictactoe :: IO ()
-tictactoe = run empty O
-
-run :: Grid -> Player -> IO ()
-run g p = do
-  cls
-  goto (1, 1)
-  putGrid g
-  run' g p
-
 cls :: IO ()
 cls = putStr "\ESC[2J"
 
 goto :: (Int, Int) -> IO ()
 goto (x, y) = putStr ("\ESC[" ++ show y ++ ";" ++ show x ++ "H")
-
-run' :: Grid -> Player -> IO ()
-run' g p
-  | wins O g = putStrLn "Player O wins!\n"
-  | wins X g = putStrLn "Player X wins!\n"
-  | full g = putStrLn "It's a draw!\n"
-  | otherwise = do
-    i <- getNat (prompt p)
-    case move g i p of
-      Nothing -> do
-        putStrLn "ERROR: Invalid move"
-        run' g p
-      Just g' -> run g' (next p)
 
 data Tree a =
   Node a [Tree a]
@@ -157,3 +134,31 @@ bestmove g p = head [g' | Node (g', p') _ <- ts, p' == best]
   where
     tree = prune depth (gametree g p)
     Node (_, best) ts = minimax tree
+
+main :: IO ()
+main = do
+  hSetBuffering stdout NoBuffering
+  play empty O
+
+play :: Grid -> Player -> IO ()
+play g p = do
+  cls
+  goto (1, 1)
+  putGrid g
+  play' g p
+
+play' :: Grid -> Player -> IO ()
+play' g p
+  | wins O g = putStrLn "PLayer O wins!\n"
+  | wins X g = putStrLn "Player X wins!\n"
+  | full g = putStrLn "It's a draw!\n"
+  | p == O = do
+    i <- getNat (prompt p)
+    case move g i p of
+      Nothing -> do
+        putStrLn "ERROR: Invalid move"
+        play' g p
+      Just g' -> play g' (next p)
+  | p == X = do
+    putStr "Player X is thinking..."
+    (play $! (bestmove g p)) (next p)

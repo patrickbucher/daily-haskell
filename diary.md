@@ -1,3 +1,11 @@
+# Day 26 (Tu, 2025-09-02)
+
+Little time today, since I had to prepare today's lessons in the morning after a heavy headache today after teaching.
+
+However, I managed to finished the instruction part of the chapter. There must be something wrong with the minimax implementation, because the bot is absolutely beatable. I need to figure that out. (Probably it's just a typo in the code I copied from the book.)
+
+I'll tackle the exercises tomorrow, finally.
+
 # Day 25 (Mo, 2025-09-01)
 
 I continued working through chapter 11 and managed to finish the part about the minimax algorithm. My decision to use `Maybe` instead of empty or singleton lists fired a bit back, but I managed to find a workaround for it.

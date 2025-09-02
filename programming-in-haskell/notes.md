@@ -1187,3 +1187,49 @@ bestmove g p = head [g' | Node (g', p') _ <- ts, p' == best]
 
 Notice that there may be multiple possible best moves leading to the best possible outcome, from which the first one is selected.
 
+Since the minimax algorithm is computationally expensive, the script shall be turned into a compiled program with a `main` function:
+
+```haskell
+main :: IO ()
+main = do
+  hSetBuffering stdout NoBuffering
+  play empty 0
+```
+
+Output buffering is disabled so that output appears on the screen at once.
+
+The mutually recursive `run` and `run'` functions are replaced with the mutually recursive `play` and `play'` functions:
+
+```haskell
+play :: Grid -> Player -> IO ()
+play g p = do
+  cls
+  goto (1, 1)
+  putGrid g
+  play' g p
+
+play' :: Grid -> Player -> IO ()
+play' g p
+  | wins O g = putStrLn "PLayer O wins!\n"
+  | wins X g = putStrLn "Player X wins!\n"
+  | full g = putStrLn "It's a draw!\n"
+  | p == O = do
+    i <- getNat (prompt p)
+    case move g i p of
+      Nothing -> do
+        putStrLn "ERROR: Invalid move"
+        play' g p
+      Just g' -> play g' (next p)
+  | p == X = do
+    putStr "Player X is thinking..."
+    (play $! (bestmove g p)) (next p)
+```
+
+The operator `$!` forces evaluation of the best move to prevent a delay while playing.
+
+The program `tic-tac-toe-bot.hs` can be compiled an run as follows:
+
+```bash
+ghc -dynamic -O2 tic-tac-toe-bot.hs
+./tic-tac-toe-bot
+```
