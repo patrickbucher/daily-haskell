@@ -1125,12 +1125,15 @@ The possible moves from a given grid are determined using the `moves` function:
 ```haskell
 moves :: Grid -> Player -> [Grid]
 moves g p
-  | wins p g = []
+  | won g = []
   | full g = []
   | otherwise = concat [maybeToList (move g i p) | i <- [0 .. ((size ^ 2) - 1)]]
   where
     maybeToList (Just x) = [x]
     maybeToList Nothing = []
+
+won :: Grid -> Bool
+won g = wins O g || wins X g
 ```
 
 A tree's depth, and the time requird to build it up, can be limited by _pruning_ it:
