@@ -34,6 +34,9 @@ turn g =
     xs = length (filter (== X) ps)
     ps = concat g
 
+won :: Grid -> Bool
+won g = wins O g || wins X g
+
 wins :: Player -> Grid -> Bool
 wins p g = any line (rows ++ cols ++ dias)
   where
@@ -103,7 +106,7 @@ gametree g p = Node g [gametree g' (next p) | g' <- moves g p]
 
 moves :: Grid -> Player -> [Grid]
 moves g p
-  | wins p g = []
+  | won g = []
   | full g = []
   | otherwise = concat [maybeToList (move g i p) | i <- [0 .. ((size ^ 2) - 1)]]
   where

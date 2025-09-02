@@ -34,6 +34,9 @@ turn g =
     xs = length (filter (== X) ps)
     ps = concat g
 
+won :: Grid -> Bool
+won g = wins O g || wins X g
+
 wins :: Player -> Grid -> Bool
 wins p g = any line (rows ++ cols ++ dias)
   where

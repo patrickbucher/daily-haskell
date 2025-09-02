@@ -16,19 +16,18 @@ data Tree a =
   deriving (Show)
 
 -- > treesize $ gametree empty O
--- 740170
+-- 549946
 -- > treesize $ gametree empty X
--- 740170
+-- 549946
 treesize :: Tree a -> Int
-treesize (Node _ []) = 1
-treesize (Node _ children) = 1 + sum (map treesize children)
+treesize (Node _ ts) = 1 + sum (map treesize ts)
 
 -- > depth $ gametree empty O
--- 10
+-- 9
 -- > depth $ gametree empty X
--- 10
+-- 9
 depth :: Tree a -> Int
-depth (Node _ []) = 1
+depth (Node _ []) = 0
 depth (Node _ children) = 1 + maximum (map depth children)
 
 empty :: Grid
@@ -44,12 +43,15 @@ next X = O
 
 moves :: Grid -> Player -> [Grid]
 moves g p
-  | wins p g = []
+  | won g = []
   | full g = []
   | otherwise = concat [maybeToList (move g i p) | i <- [0 .. ((size ^ 2) - 1)]]
   where
     maybeToList (Just x) = [x]
     maybeToList Nothing = []
+
+won :: Grid -> Bool
+won g = wins O g || wins X g
 
 wins :: Player -> Grid -> Bool
 wins p g = any line (rows ++ cols ++ dias)
