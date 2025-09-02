@@ -4,7 +4,7 @@ Little time today, since I had to prepare today's lessons in the morning after a
 
 However, I managed to finished the instruction part of the chapter. There must be something wrong with the minimax implementation, because the bot is absolutely beatable. I need to figure that out. (Probably it's just a typo in the code I copied from the book.)
 
-I'll tackle the exercises tomorrow, finally.
+In the evening, I managed to get exercises 1 and 2 done. I also figured out the issue I had with the bot: I used the `wins` function instead of `won`, which I need to fix in my notes. After the fix, the bot is really unbeatable.
 
 # Day 25 (Mo, 2025-09-01)
 
