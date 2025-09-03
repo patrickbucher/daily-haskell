@@ -1,3 +1,9 @@
+# Day 27 (We, 2025-09-03)
+
+I worked through exercises 3 and 4a. Then I decided to skip 4b, 4c, 4d for the moment. I'd like to come back to those, but first I'd like to learn more about the language. I'd also like to implement Reversi in Haskell, for which I'd also like to write the minimax algorithm again from scratch for better understanding it. After that, I'll tackle those exercises.
+
+On towards the core of the second part: Chapter 12, titled _Monads and more_!
+
 # Day 26 (Tu, 2025-09-02)
 
 Little time today, since I had to prepare today's lessons in the morning after a heavy headache today after teaching.
