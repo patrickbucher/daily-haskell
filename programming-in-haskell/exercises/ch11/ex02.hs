@@ -156,7 +156,7 @@ play g p = do
 
 play' :: Grid -> Player -> IO ()
 play' g p
-  | wins O g = putStrLn "PLayer O wins!\n"
+  | wins O g = putStrLn "Player O wins!\n"
   | wins X g = putStrLn "Player X wins!\n"
   | full g = putStrLn "It's a draw!\n"
   | p == O = do
