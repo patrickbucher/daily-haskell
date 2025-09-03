@@ -4,6 +4,8 @@ I worked through exercises 3 and 4a. Then I decided to skip 4b, 4c, 4d for the m
 
 On towards the core of the second part: Chapter 12, titled _Monads and more_!
 
+Having written this, I decided to adjust my plans slightly: In order to digest everything I've learned in chapter 11, I'll take a break with _Programming in Haskell_. Instead of continuing with chapter 12, I'll implement the game of Reversi in Haskell. This is the ideal candidate for minimax and alpha-beta pruning, since every board yields an objective score among the two players. So this will take up a week at least, for I'd rather struggle through it than looking stuff up.
+
 # Day 26 (Tu, 2025-09-02)
 
 Little time today, since I had to prepare today's lessons in the morning after a heavy headache today after teaching.
