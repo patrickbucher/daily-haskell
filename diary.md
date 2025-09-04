@@ -1,3 +1,13 @@
+# Day 28 (Th, 2025-09-04)
+
+I started with my Reversi implementation today. I figured a way to trace the path along all eight directions on the grid using operator sections.
+
+I learned that `(-1)` is a syntactic special case: it's just the value negative one, not a function. One has to write `(subtract 1)` instead.
+
+Having done that, I wrote a function to return all the horizontal, vertical, and diagonal paths on the grid from a starting point, which is done in a relatively elegant way using a list comprehension.
+
+Having laid that groundwork, I can now write the next building block to validate moves.
+
 # Day 27 (We, 2025-09-03)
 
 I worked through exercises 3 and 4a. Then I decided to skip 4b, 4c, 4d for the moment. I'd like to come back to those, but first I'd like to learn more about the language. I'd also like to implement Reversi in Haskell, for which I'd also like to write the minimax algorithm again from scratch for better understanding it. After that, I'll tackle those exercises.
