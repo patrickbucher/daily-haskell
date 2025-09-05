@@ -2,6 +2,7 @@ data Player
   = X
   | O
   | E
+  deriving (Eq)
 
 instance Show Player where
   show X = "X"
@@ -38,17 +39,36 @@ initial =
   , [E, E, E, E, E, E, E, E]
   ]
 
+opponent :: Player -> Player
+opponent X = O
+opponent O = X
+opponent E = E
+
 display :: Grid -> String
 display g = concat [concat ((map show ps) ++ ["\n"]) | ps <- g]
 
 paths :: Grid -> Pos -> [[Player]]
-paths g pos = map (follow pos g) directions
+paths g pos = map (follow g pos) directions
 
-follow :: Pos -> Grid -> (Shift, Shift) -> [Player]
-follow (r, c) g (dx, dy) =
+follow :: Grid -> Pos -> (Shift, Shift) -> [Player]
+follow g (r, c) (dx, dy) =
   [ g !! x !! y
   | (x, y) <-
       zip
         (takeWhile (\x -> x `elem` [0 .. 7]) (iterate dx c))
         (takeWhile (\y -> y `elem` [0 .. 7]) (iterate dy r))
   ]
+
+validMove :: Grid -> Pos -> Player -> Bool
+validMove g (r, c) p = (length validPaths) > 0
+  where
+    allPaths = paths g (r, c)
+    validPaths = filter (projectsStraight p) allPaths
+
+projectsStraight :: Player -> [Player] -> Bool
+projectsStraight p path = startsEmpty && gapsOpposite && reachesOwn
+  where
+    op = opponent p
+    startsEmpty = (head path) == E
+    gapsOpposite = length (takeWhile (== op) (tail path)) > 0
+    reachesOwn = head (dropWhile (== op) (tail path)) == p
