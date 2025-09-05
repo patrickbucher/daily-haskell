@@ -59,6 +59,7 @@ follow g (r, c) (dx, dy) =
         (takeWhile (\y -> y `elem` [0 .. 7]) (iterate dy r))
   ]
 
+-- TODO: a move is valid, if its application affects the grid
 validMove :: Grid -> Pos -> Player -> Bool
 validMove g (r, c) p = (length validPaths) > 0
   where
@@ -72,3 +73,22 @@ projectsStraight p path = startsEmpty && gapsOpposite && reachesOwn
     startsEmpty = (head path) == E
     gapsOpposite = length (takeWhile (== op) (tail path)) > 0
     reachesOwn = head (dropWhile (== op) (tail path)) == p
+
+applyMove :: Grid -> Pos -> Player -> Grid
+applyMove g (r, c) p = g -- FIXME
+-- idea: recursive function taking a Grid, a Pos, a Shift
+-- returns affected coords
+
+-- TODO: given a grid, a set of coordinates, and a new value, set the value at coords
+
+applyChanges :: Grid -> [Pos] -> Player -> Grid
+applyChanges g coords p = g -- FIXME
+
+reproduce :: Grid -> Grid
+reproduce g = g
+  where
+    coords = [(x,y) | x <- [0..(length (g !! 0))], y <- [0..(length g)]]
+
+chop :: [a] -> Int -> [[a]]
+chop [] _ = []
+chop xs n = take n xs : chop (drop n xs) n

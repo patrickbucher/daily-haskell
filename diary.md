@@ -1,3 +1,9 @@
+# Day 29 (Fr, 2025-09-05)
+
+I continued working on my Reversi implementation. I managed to validate moves, which wasn't too hard.
+
+Now comes the hard part: applying the moves. Using the validation logic, I can figure out which fields are affected on a grid. But I have no idea how to apply them. Given a grid, a list of affected coordinates, and a new value, a new grid shall be returned with the given value at the affected coordinates. I have no idea yet how to do this. So that's what I'll be thinking about today.
+
 # Day 28 (Th, 2025-09-04)
 
 I started with my Reversi implementation today. I figured a way to trace the path along all eight directions on the grid using operator sections.
@@ -7,6 +13,8 @@ I learned that `(-1)` is a syntactic special case: it's just the value negative 
 Having done that, I wrote a function to return all the horizontal, vertical, and diagonal paths on the grid from a starting point, which is done in a relatively elegant way using a list comprehension.
 
 Having laid that groundwork, I can now write the next building block to validate moves.
+
+I also gave chapter 12 a quick read in the afternoon. I'll have to work through that particular chapter very slowly, especially the example on the _State Monad_ left me puzzling.
 
 # Day 27 (We, 2025-09-03)
 
