@@ -76,18 +76,21 @@ projectsStraight p path = startsEmpty && gapsOpposite && reachesOwn
 
 applyMove :: Grid -> Pos -> Player -> Grid
 applyMove g (r, c) p = g -- FIXME
+
 -- idea: recursive function taking a Grid, a Pos, a Shift
 -- returns affected coords
-
 -- TODO: given a grid, a set of coordinates, and a new value, set the value at coords
-
 applyChanges :: Grid -> [Pos] -> Player -> Grid
 applyChanges g coords p = g -- FIXME
 
 reproduce :: Grid -> Grid
-reproduce g = g
-  where
-    coords = [(x,y) | x <- [0..(length (g !! 0))], y <- [0..(length g)]]
+reproduce g =
+  chop
+    [ g !! y !! x
+    | x <- [0 .. (length (g !! 0) - 1)]
+    , y <- [0 .. (length g) - 1]
+    ]
+    8
 
 chop :: [a] -> Int -> [[a]]
 chop [] _ = []
