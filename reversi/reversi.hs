@@ -15,6 +15,7 @@ type Pos = (Int, Int)
 
 type Shift = Int -> Int
 
+-- TODO: (dr, dc) instead of (dc, dr)
 directions :: [(Shift, Shift)]
 directions =
   [ (id, (subtract 1)) -- north
@@ -79,25 +80,24 @@ applyMove :: Grid -> Pos -> Player -> Grid
 applyMove g (r, c) p = g -- FIXME
 
 affectedCoordinates :: Grid -> Pos -> Player -> (Shift, Shift) -> [Pos] -> [Pos]
-affectedCoordinates g (r, c) p (dx, dy) acc =
+affectedCoordinates g (r, c) p (dr, dc) acc =
   case (field, acc) of
-    (Just E, []) -> affectedCoordinates g (dy r, dx c) p (dx, dy) [(r, c)]
+    (Nothing, _) -> []
+    (Just E, []) -> affectedCoordinates g (r', c') p (dr, dc) [(r, c)]
     (Just E, _) -> []
-    (Just opp, []) -> []
-    (Just opp, _) ->
-      affectedCoordinates g (dy r, dx c) p (dx, dy) ((r, c) : acc)
+    (Just op, []) -> []
+    (Just op, _) -> affectedCoordinates g (r', c') p (dr, dc) ((r, c) : acc)
     (Just p, []) -> []
     (Just p, [_]) -> []
-    (Just p, _) -> acc
-    _ -> []
+    (Just p, _) -> reverse acc
   where
     field =
-      if c `elem` [0 .. 7] && r `elem` [0 .. 7]
+      if r `elem` [0 .. 7] && c `elem` [0 .. 7]
         then Just (g !! r !! c)
         else Nothing
-    opp = opponent p
-    valid = acc == [] && field == Just E || length acc > 0 && field == Just opp
-    closing = length acc > 0 && field == Just p
+    r' = dr r
+    c' = dc c
+    op = opponent p
 
 applyChanges :: Grid -> [Pos] -> Player -> Grid
 applyChanges g coords p =
