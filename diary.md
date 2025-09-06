@@ -1,3 +1,13 @@
+# Day 30 (Sa, 2025-09-06)
+
+I was thinking about Reversi yesterday, and once more thought that the logic to validate and apply moves are quite similar; figuring out which stones the application logic has to turn is exactly what is already done in the validation logic.
+
+So instead of just returning a boolean, indicating whether or not the move is legal, it could return a list of affected coordinates. However, the validation logic is way easier to implement without the notion of coordinates by dissecting the grid into what I call "paths".
+
+Writing the logic to apply the moves requires me to rethink the approach of the validation logic: I'll need those coordinates! But first, I'd like to figure out how to apply them.
+
+I managed to write a function that applies the changes to a grid given a set of coordinates. Now I just need to figure out the coordinates, which I'll do later or maybe tomorrow (little time today).
+
 # Day 29 (Fr, 2025-09-05)
 
 I continued working on my Reversi implementation. I managed to validate moves, which wasn't too hard.

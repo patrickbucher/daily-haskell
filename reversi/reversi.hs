@@ -59,7 +59,6 @@ follow g (r, c) (dx, dy) =
         (takeWhile (\y -> y `elem` [0 .. 7]) (iterate dy r))
   ]
 
--- TODO: a move is valid, if its application affects the grid
 validMove :: Grid -> Pos -> Player -> Bool
 validMove g (r, c) p = (length validPaths) > 0
   where
@@ -74,23 +73,28 @@ projectsStraight p path = startsEmpty && gapsOpposite && reachesOwn
     gapsOpposite = length (takeWhile (== op) (tail path)) > 0
     reachesOwn = head (dropWhile (== op) (tail path)) == p
 
+-- idea: recursive function taking a Grid, a Pos, a Shift
+-- returns affected coords
 applyMove :: Grid -> Pos -> Player -> Grid
 applyMove g (r, c) p = g -- FIXME
 
--- idea: recursive function taking a Grid, a Pos, a Shift
--- returns affected coords
--- TODO: given a grid, a set of coordinates, and a new value, set the value at coords
-applyChanges :: Grid -> [Pos] -> Player -> Grid
-applyChanges g coords p = g -- FIXME
+-- TODO: Given a grid, a position, and a direction (two shifts), and a player,
+-- write a recursive function that returns the coordinates of the fields that
+-- need to be set to that player.
 
-reproduce :: Grid -> Grid
-reproduce g =
+applyChanges :: Grid -> [Pos] -> Player -> Grid
+applyChanges g coords p =
   chop
-    [ g !! y !! x
-    | x <- [0 .. (length (g !! 0) - 1)]
-    , y <- [0 .. (length g) - 1]
+    [ if ((r, c) `elem` coords)
+      then p
+      else (g !! r !! c)
+    | r <- [0 .. rows - 1]
+    , c <- [0 .. cols - 1]
     ]
-    8
+    rows
+  where
+    rows = length g
+    cols = length (g !! 0)
 
 chop :: [a] -> Int -> [[a]]
 chop [] _ = []
