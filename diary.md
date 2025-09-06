@@ -8,6 +8,8 @@ Writing the logic to apply the moves requires me to rethink the approach of the 
 
 I managed to write a function that applies the changes to a grid given a set of coordinates. Now I just need to figure out the coordinates, which I'll do later or maybe tomorrow (little time today).
 
+Later on, I worked on a function `affectedCoordinates`. I figured out a tail-recursive logic using an accumulator. This is not for the sake of tail recursion, but to distinguish two cases: How to deal with a particular field value depends on if there was already an affected field found.
+
 # Day 29 (Fr, 2025-09-05)
 
 I continued working on my Reversi implementation. I managed to validate moves, which wasn't too hard.

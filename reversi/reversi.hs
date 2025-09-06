@@ -17,13 +17,13 @@ type Shift = Int -> Int
 
 directions :: [(Shift, Shift)]
 directions =
-  [ ((+ 0), (subtract 1)) -- north
+  [ (id, (subtract 1)) -- north
   , ((+ 1), (subtract 1)) -- north-east
-  , ((+ 1), (+ 0)) -- east
+  , ((+ 1), id) -- east
   , ((+ 1), (+ 1)) -- south-easth
-  , ((+ 0), (+ 1)) -- south
+  , (id, (+ 1)) -- south
   , ((subtract 1), (+ 1)) -- south-west
-  , ((subtract 1), (+ 0)) -- west
+  , ((subtract 1), id) -- west
   , ((subtract 1), (subtract 1)) -- north-west
   ]
 
@@ -52,11 +52,11 @@ paths g pos = map (follow g pos) directions
 
 follow :: Grid -> Pos -> (Shift, Shift) -> [Player]
 follow g (r, c) (dx, dy) =
-  [ g !! x !! y
+  [ g !! y !! x
   | (x, y) <-
       zip
-        (takeWhile (\x -> x `elem` [0 .. 7]) (iterate dx c))
-        (takeWhile (\y -> y `elem` [0 .. 7]) (iterate dy r))
+        (takeWhile (\i -> i `elem` [0 .. 7]) (iterate dy r))
+        (takeWhile (\i -> i `elem` [0 .. 7]) (iterate dx c))
   ]
 
 validMove :: Grid -> Pos -> Player -> Bool
@@ -78,9 +78,26 @@ projectsStraight p path = startsEmpty && gapsOpposite && reachesOwn
 applyMove :: Grid -> Pos -> Player -> Grid
 applyMove g (r, c) p = g -- FIXME
 
--- TODO: Given a grid, a position, and a direction (two shifts), and a player,
--- write a recursive function that returns the coordinates of the fields that
--- need to be set to that player.
+affectedCoordinates :: Grid -> Pos -> Player -> (Shift, Shift) -> [Pos] -> [Pos]
+affectedCoordinates g (r, c) p (dx, dy) acc =
+  case (field, acc) of
+    (Just E, []) -> affectedCoordinates g (dy r, dx c) p (dx, dy) [(r, c)]
+    (Just E, _) -> []
+    (Just opp, []) -> []
+    (Just opp, _) ->
+      affectedCoordinates g (dy r, dx c) p (dx, dy) ((r, c) : acc)
+    (Just p, []) -> []
+    (Just p, [_]) -> []
+    (Just p, _) -> acc
+    _ -> []
+  where
+    field =
+      if c `elem` [0 .. 7] && r `elem` [0 .. 7]
+        then Just (g !! r !! c)
+        else Nothing
+    opp = opponent p
+    valid = acc == [] && field == Just E || length acc > 0 && field == Just opp
+    closing = length acc > 0 && field == Just p
 
 applyChanges :: Grid -> [Pos] -> Player -> Grid
 applyChanges g coords p =
