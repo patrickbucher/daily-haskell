@@ -81,17 +81,17 @@ applyMove g (r, c) p = g -- FIXME
 
 affectedCoordinates :: Grid -> Pos -> Player -> (Shift, Shift) -> [Pos] -> [Pos]
 affectedCoordinates g (r, c) p (dr, dc) acc =
-  case (field, acc) of
+  case (f, acc) of
     (Nothing, _) -> []
     (Just E, []) -> affectedCoordinates g (r', c') p (dr, dc) [(r, c)]
     (Just E, _) -> []
-    (Just op, []) -> []
-    (Just op, _) -> affectedCoordinates g (r', c') p (dr, dc) ((r, c) : acc)
-    (Just p, []) -> []
-    (Just p, [_]) -> []
-    (Just p, _) -> reverse acc
+    (Just p', []) -> []
+    (Just p', (_:cs))
+      | p' == op -> affectedCoordinates g (r', c') p (dr, dc) ((r, c) : acc)
+      | p' == p && null cs -> []
+      | otherwise -> reverse acc
   where
-    field =
+    f =
       if r `elem` [0 .. 7] && c `elem` [0 .. 7]
         then Just (g !! r !! c)
         else Nothing
