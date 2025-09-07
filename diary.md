@@ -1,3 +1,9 @@
+# Day 31 (Su, 2025-09-07)
+
+Having been unable to figure out the issue with my `affectedCoordinates` implementation, I [reached out](https://discourse.haskell.org/t/reversi-applying-moves-with-case-of-and-pattern-matching/12922) to the Haskell community. As I expected, the compiler warnings pointed me into the right direction: I simply had a misconception about pattern matching. Having resolved that issue, the code works as expected. So I now only found a working solution for one of the hardest problems of the program, I only learned something about pattern matching. And my confidence towards compiler warnings also grew: Those messages can be really useful!
+
+Having resolved this issue, I now can write the code to actually apply the move. But first, I need to reshape my shifts table from `(x,y)` coordinates to `(r,c)` coordinates. This is just more consistent.
+
 # Day 30 (Sa, 2025-09-06)
 
 I was thinking about Reversi yesterday, and once more thought that the logic to validate and apply moves are quite similar; figuring out which stones the application logic has to turn is exactly what is already done in the validation logic.
