@@ -15,17 +15,16 @@ type Pos = (Int, Int)
 
 type Shift = Int -> Int
 
--- TODO: (dr, dc) instead of (dc, dr)
 directions :: [(Shift, Shift)]
 directions =
-  [ (id, (subtract 1)) -- north
-  , ((+ 1), (subtract 1)) -- north-east
-  , ((+ 1), id) -- east
-  , ((+ 1), (+ 1)) -- south-easth
-  , (id, (+ 1)) -- south
-  , ((subtract 1), (+ 1)) -- south-west
-  , ((subtract 1), id) -- west
-  , ((subtract 1), (subtract 1)) -- north-west
+  [ (subtract 1, id) -- north
+  , (subtract 1, (+ 1)) -- north-east
+  , (id, (+ 1)) -- east
+  , ((+ 1), (+ 1)) -- south-east
+  , ((+ 1), id) -- south
+  , ((+ 1), subtract 1) -- south-west
+  , (id, subtract 1) -- west
+  , (subtract 1, subtract 1) -- north-west
   ]
 
 initial :: Grid
@@ -52,12 +51,12 @@ paths :: Grid -> Pos -> [[Player]]
 paths g pos = map (follow g pos) directions
 
 follow :: Grid -> Pos -> (Shift, Shift) -> [Player]
-follow g (r, c) (dx, dy) =
-  [ g !! y !! x
-  | (x, y) <-
+follow g (r, c) (dr, dc) =
+  [ g !! r' !! c'
+  | (r', c') <-
       zip
-        (takeWhile (\i -> i `elem` [0 .. 7]) (iterate dy r))
-        (takeWhile (\i -> i `elem` [0 .. 7]) (iterate dx c))
+        (takeWhile (\i -> i `elem` [0 .. 7]) (iterate dr r))
+        (takeWhile (\i -> i `elem` [0 .. 7]) (iterate dc c))
   ]
 
 validMove :: Grid -> Pos -> Player -> Bool
@@ -74,10 +73,12 @@ projectsStraight p path = startsEmpty && gapsOpposite && reachesOwn
     gapsOpposite = length (takeWhile (== op) (tail path)) > 0
     reachesOwn = head (dropWhile (== op) (tail path)) == p
 
--- idea: recursive function taking a Grid, a Pos, a Shift
--- returns affected coords
 applyMove :: Grid -> Pos -> Player -> Grid
-applyMove g (r, c) p = g -- FIXME
+applyMove g (r, c) p = applyChanges g coords p
+  where
+    perDirection =
+      map (\shifts -> affectedCoordinates g (r, c) p shifts []) directions
+    coords = concat perDirection
 
 affectedCoordinates :: Grid -> Pos -> Player -> (Shift, Shift) -> [Pos] -> [Pos]
 affectedCoordinates g (r, c) p (dr, dc) acc =
@@ -116,3 +117,9 @@ applyChanges g coords p =
 chop :: [a] -> Int -> [[a]]
 chop [] _ = []
 chop xs n = take n xs : chop (drop n xs) n
+
+score :: Player -> Grid -> Int
+score p = length . filter (== p) . concat
+
+diff :: Player -> Grid -> Int
+diff p g = score p g - score (opponent p) g

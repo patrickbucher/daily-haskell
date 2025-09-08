@@ -1,3 +1,9 @@
+# Day 32 (Mo, 2025-09-08)
+
+Now with a working `affectedCoordinates` under my belt, applying moves was very easy. One major lesson with Haskell so far is that you absolutely need to dissect the problem top-down and build up the solution bottom-up. I'm also glad that I worked through a good deal of SICP since my first serious encounter with Haskell five years ago. Sometimes, tail-recursive functions with accumulators are very useful, even if not necessary that often in Haskell. Unfortunately, pattern matching has no option for _pinning_, i.e. match against the values of existing bindings, at least not to my knowledge; this was my major misunderstanding when first implementing `affectedCoordinates`. But it's possible to work around that.
+
+Busy day today, I'll be thinking of what to implement next for Reversi. Probably it's interactive gameplay.
+
 # Day 31 (Su, 2025-09-07)
 
 Having been unable to figure out the issue with my `affectedCoordinates` implementation, I [reached out](https://discourse.haskell.org/t/reversi-applying-moves-with-case-of-and-pattern-matching/12922) to the Haskell community. As I expected, the compiler warnings pointed me into the right direction: I simply had a misconception about pattern matching. Having resolved that issue, the code works as expected. So I now only found a working solution for one of the hardest problems of the program, I only learned something about pattern matching. And my confidence towards compiler warnings also grew: Those messages can be really useful!
