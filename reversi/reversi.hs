@@ -1,3 +1,5 @@
+import Data.Char
+
 data Player
   = X
   | O
@@ -5,9 +7,9 @@ data Player
   deriving (Eq)
 
 instance Show Player where
-  show X = "X"
-  show O = "O"
-  show E = "-"
+  show X = "X" -- black
+  show O = "O" -- white
+  show E = "-" -- empty
 
 type Grid = [[Player]]
 
@@ -32,8 +34,8 @@ initial =
   [ [E, E, E, E, E, E, E, E]
   , [E, E, E, E, E, E, E, E]
   , [E, E, E, E, E, E, E, E]
-  , [E, E, E, X, O, E, E, E]
   , [E, E, E, O, X, E, E, E]
+  , [E, E, E, X, O, E, E, E]
   , [E, E, E, E, E, E, E, E]
   , [E, E, E, E, E, E, E, E]
   , [E, E, E, E, E, E, E, E]
@@ -43,9 +45,6 @@ opponent :: Player -> Player
 opponent X = O
 opponent O = X
 opponent E = E
-
-display :: Grid -> String
-display g = concat [concat ((map show ps) ++ ["\n"]) | ps <- g]
 
 paths :: Grid -> Pos -> [[Player]]
 paths g pos = map (follow g pos) directions
@@ -123,3 +122,31 @@ score p = length . filter (== p) . concat
 
 diff :: Player -> Grid -> Int
 diff p g = score p g - score (opponent p) g
+
+display :: Grid -> String
+display g = concat (title : rowsCaptioned)
+  where
+    title = "  " ++ (foldl1 (++) $ (map show [1 .. 8])) ++ "\n"
+    rows = zip ['a' ..] (map concat $ map (map show) g)
+    rowsCaptioned = map (\(c, r) -> [c, ' '] ++ r ++ ['\n']) rows
+
+parseMove :: String -> Maybe Pos
+parseMove [r, c] =
+  if r' `elem` [0 .. 7] && c' `elem` [0 .. 7]
+    then Just (r', c')
+    else Nothing
+  where
+    r' = ord r - ord 'a'
+    c' = (digitToInt c) - 1
+parseMove _ = Nothing
+
+promptMove :: Grid -> Player -> IO Pos
+promptMove g p = do
+  putStr $ "Player " ++ show p ++ ": "
+  input <- getLine
+  case (parseMove input) of
+    Just (r, c) ->
+      if validMove g (r, c) p
+        then return (r, c)
+        else promptMove g p
+    Nothing -> promptMove g p

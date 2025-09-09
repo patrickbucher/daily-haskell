@@ -1,3 +1,11 @@
+# Day 33 (Tu, 2025-09-09)
+
+I continued with Reversi. First, I wrote a function `display` (replacing the old one) that shows the grid with row and column indicators from a to h and from 1 to 8, respectively. Then I wrote a function `parseMove` that takes an input string and returns its coordinates, e.g. `"a5"` is parsed to `(0, 4)`. Parsing can fail, therefore it's wrapped in a `Maybe`. Finally, I wrote the `promptMove` function that prompts a player for a given grid for a move. The function is called recursively until the player entered a valid move, which is then returned as a `IO Pos`.
+
+I still have some issues writing pure code within impure code `do` blocks, but I managed to write useful code again. Unfortunately, I can't spend more than an hour per day on Haskell, but it's still better then nothing.
+
+Tomorrow, I'd like to write the game logic. The human player can pick either `X` or `O`; `X` always begins. The computer player will just do a random move, which of course must be a valid one. Then comes the Minimax algorithm. And then maybe Alpha-Beta Pruning.
+
 # Day 32 (Mo, 2025-09-08)
 
 Now with a working `affectedCoordinates` under my belt, applying moves was very easy. One major lesson with Haskell so far is that you absolutely need to dissect the problem top-down and build up the solution bottom-up. I'm also glad that I worked through a good deal of SICP since my first serious encounter with Haskell five years ago. Sometimes, tail-recursive functions with accumulators are very useful, even if not necessary that often in Haskell. Unfortunately, pattern matching has no option for _pinning_, i.e. match against the values of existing bindings, at least not to my knowledge; this was my major misunderstanding when first implementing `affectedCoordinates`. But it's possible to work around that.
