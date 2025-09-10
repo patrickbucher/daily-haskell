@@ -1,4 +1,6 @@
+import Control.Concurrent
 import Data.Char
+import System.Random (randomRIO)
 
 data Player
   = X
@@ -70,7 +72,11 @@ projectsStraight p path = startsEmpty && gapsOpposite && reachesOwn
     op = opponent p
     startsEmpty = (head path) == E
     gapsOpposite = length (takeWhile (== op) (tail path)) > 0
-    reachesOwn = head (dropWhile (== op) (tail path)) == p
+    remainder = dropWhile (== op) (tail path)
+    reachesOwn =
+      if not (null remainder)
+        then (head remainder) == p
+        else False
 
 applyMove :: Grid -> Pos -> Player -> Grid
 applyMove g (r, c) p = applyChanges g coords p
@@ -124,8 +130,17 @@ diff :: Player -> Grid -> Int
 diff p g = score p g - score (opponent p) g
 
 display :: Grid -> String
-display g = concat (title : rowsCaptioned)
+display g = concat (standings : title : rowsCaptioned)
   where
+    standings =
+      show X
+        ++ " "
+        ++ (show (score X g))
+        ++ ":"
+        ++ (show (score O g))
+        ++ " "
+        ++ show O
+        ++ "\n"
     title = "  " ++ (foldl1 (++) $ (map show [1 .. 8])) ++ "\n"
     rows = zip ['a' ..] (map concat $ map (map show) g)
     rowsCaptioned = map (\(c, r) -> [c, ' '] ++ r ++ ['\n']) rows
@@ -140,6 +155,9 @@ parseMove [r, c] =
     c' = (digitToInt c) - 1
 parseMove _ = Nothing
 
+displayMove :: Pos -> String
+displayMove (r, c) = [chr (r + ord 'a'), chr (c + ord '1')]
+
 promptMove :: Grid -> Player -> IO Pos
 promptMove g p = do
   putStr $ "Player " ++ show p ++ ": "
@@ -148,5 +166,63 @@ promptMove g p = do
     Just (r, c) ->
       if validMove g (r, c) p
         then return (r, c)
-        else promptMove g p
-    Nothing -> promptMove g p
+        else do
+          putStrLn ""
+          promptMove g p
+    Nothing -> promptMove g p -- FIXME: if there are no possible move, return Nothing (change type)
+
+randomMove :: Grid -> Player -> IO (Maybe Pos)
+randomMove g p = do
+  i <- randomRIO (0, length moves - 1)
+  return
+    (if (i < 0)
+       then Nothing
+       else Just (moves !! i))
+  where
+    candidates = [(r, c) | r <- [0 .. 7], c <- [0 .. 7], g !! r !! c == E]
+    moves = filter (\pos -> validMove g pos p) candidates
+
+promptColor :: IO Player
+promptColor = do
+  putStr
+    $ "Do you want to play as "
+        ++ show X
+        ++ " (first) or as "
+        ++ show O
+        ++ " (second)? "
+  input <- getLine
+  case (input) of
+    "X" -> return X
+    "O" -> return O
+    _ -> promptColor
+
+-- TODO: handle win/draw condition, skip player if there are no valid moves for him
+-- TODO: consider displaying valid moves
+play :: Grid -> (Player, Player) -> Player -> IO Grid
+play g (h, c) p
+  | p == h = do
+    putStr $ display g
+    move <- promptMove g p
+    play (applyMove g move p) (h, c) (opponent p)
+  | p == c = do
+    putStr $ display g
+    move <- randomMove g p
+    case move of
+      Just m -> do
+        threadDelay 500_000
+        putStrLn $ "Player O: " ++ displayMove m
+        threadDelay 500_000
+        play (applyMove g m p) (h, c) (opponent p)
+      Nothing -> return g
+
+main :: IO ()
+main = do
+  human <- promptColor
+  _ <-
+    play
+      initial
+      (human, opponent human)
+      (if human == X
+         then human
+         else opponent human)
+  return ()
