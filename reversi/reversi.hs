@@ -1,5 +1,6 @@
 import Control.Concurrent
 import Data.Char
+import System.IO
 import System.Random (randomRIO)
 
 data Player
@@ -246,6 +247,7 @@ play g (h, c) p = do
 
 main :: IO ()
 main = do
+  hSetBuffering stdout NoBuffering
   human <- promptColor
   let computer = opponent human
   let begins =
