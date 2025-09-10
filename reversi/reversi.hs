@@ -238,10 +238,15 @@ play g (h, c) p = do
       putStrLn ("Player " ++ show p ++ " wins " ++ scoreStr g p)
       return g
     Nothing -> do
-      move <-
-        if (p == h) -- TODO: also make sure p has validMoves left!
-          then promptMove g p
-          else randomMove g p
+      let fs =
+            if (p == h)
+              then (promptMove, randomMove)
+              else (randomMove, promptMove)
+      let f =
+            if (null (possibleMoves g p))
+              then (snd fs)
+              else (fst fs)
+      move <- f g p
       let g' = applyMove g move p
       play g' (h, c) (opponent p)
 
