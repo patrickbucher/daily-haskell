@@ -1,3 +1,7 @@
+# Day 34 (Tu, 2025-09-10)
+
+Today, I started implementing the game logic. I am able to play against a random computer, but wins, draws, and situations where a player is unable to move are neither detected nor handled. I leave that for tomorrow; this was quite a productive morning hour.
+
 # Day 33 (Tu, 2025-09-09)
 
 I continued with Reversi. First, I wrote a function `display` (replacing the old one) that shows the grid with row and column indicators from a to h and from 1 to 8, respectively. Then I wrote a function `parseMove` that takes an input string and returns its coordinates, e.g. `"a5"` is parsed to `(0, 4)`. Parsing can fail, therefore it's wrapped in a `Maybe`. Finally, I wrote the `promptMove` function that prompts a player for a given grid for a move. The function is called recursively until the player entered a valid move, which is then returned as a `IO Pos`.
