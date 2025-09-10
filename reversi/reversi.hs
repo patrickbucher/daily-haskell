@@ -126,9 +126,6 @@ chop xs n = take n xs : chop (drop n xs) n
 score :: Player -> Grid -> Int
 score p = length . filter (== p) . concat
 
-diff :: Player -> Grid -> Int
-diff p g = score p g - score (opponent p) g
-
 display :: Grid -> String
 display g = concat ((title : rowsCaptioned) ++ ["", standings])
   where
@@ -158,6 +155,25 @@ parseMove _ = Nothing
 displayMove :: Pos -> String
 displayMove (r, c) = [chr (r + ord 'a'), chr (c + ord '1')]
 
+finished :: Grid -> Maybe Player
+finished g =
+  if full || blocked
+    then if diffXO == 0
+           then Just E
+           else if diffXO > 0
+                  then Just X
+                  else Just O
+    else Nothing
+  where
+    stones = concat g
+    full = all (/= E) stones
+    scoreX = score X g
+    scoreO = score O g
+    diffXO = scoreX - scoreO
+    movesX = possibleMoves g X
+    movesO = possibleMoves g O
+    blocked = (null movesX) && (null movesO)
+
 promptMove :: Grid -> Player -> IO Pos
 promptMove g p = do
   putStr $ "Player " ++ show p ++ ": "
@@ -169,18 +185,24 @@ promptMove g p = do
         else do
           putStrLn ""
           promptMove g p
-    Nothing -> promptMove g p -- FIXME: if there are no possible move, return Nothing (change type)
+    Nothing -> promptMove g p
 
-randomMove :: Grid -> Player -> IO (Maybe Pos)
+randomMove :: Grid -> Player -> IO Pos
 randomMove g p = do
   i <- randomRIO (0, length moves - 1)
-  return
-    (if (i < 0)
-       then Nothing
-       else Just (moves !! i))
+  let move = moves !! i
+  putStr $ "Player " ++ show p ++ ": "
+  threadDelay 2_000_000
+  putStr $ displayMove move
+  threadDelay 1_000_000
+  return move
+  where
+    moves = possibleMoves g p
+
+possibleMoves :: Grid -> Player -> [Pos]
+possibleMoves g p = filter (\pos -> validMove g pos p) candidates
   where
     candidates = [(r, c) | r <- [0 .. 7], c <- [0 .. 7], g !! r !! c == E]
-    moves = filter (\pos -> validMove g pos p) candidates
 
 promptColor :: IO Player
 promptColor = do
@@ -200,27 +222,27 @@ promptColor = do
 cls :: IO ()
 cls = putStr "\ESC[2J\ESC[0;0H"
 
--- TODO: handle win/draw condition, skip player if there are no valid moves for him
--- TODO: consider displaying valid moves
+scoreStr :: Grid -> Player -> String
+scoreStr g p = show (score p g) ++ ":" ++ show (score (opponent p) g)
+
 play :: Grid -> (Player, Player) -> Player -> IO Grid
-play g (h, c) p
-  | p == h = do
-    cls
-    putStrLn $ display g
-    move <- promptMove g p
-    play (applyMove g move p) (h, c) (opponent p)
-  | p == c = do
-    cls
-    putStrLn $ display g
-    move <- randomMove g p
-    case move of
-      Just m -> do
-        putStr $ "Player O: "
-        threadDelay 2_000_000
-        putStr $ displayMove m
-        threadDelay 1_000_000
-        play (applyMove g m p) (h, c) (opponent p)
-      Nothing -> return g
+play g (h, c) p = do
+  cls
+  putStrLn $ display g
+  case (finished g) of
+    Just E -> do
+      putStrLn ("Draw " ++ scoreStr g p)
+      return g
+    Just p -> do
+      putStrLn ("Player " ++ show p ++ " wins " ++ scoreStr g p)
+      return g
+    Nothing -> do
+      move <-
+        if (p == h) -- TODO: also make sure p has validMoves left!
+          then promptMove g p
+          else randomMove g p
+      let g' = applyMove g move p
+      play g' (h, c) (opponent p)
 
 main :: IO ()
 main = do
