@@ -130,7 +130,7 @@ diff :: Player -> Grid -> Int
 diff p g = score p g - score (opponent p) g
 
 display :: Grid -> String
-display g = concat (standings : title : rowsCaptioned)
+display g = concat ((title : rowsCaptioned) ++ ["", standings])
   where
     standings =
       show X
@@ -184,6 +184,7 @@ randomMove g p = do
 
 promptColor :: IO Player
 promptColor = do
+  cls
   putStr
     $ "Do you want to play as "
         ++ show X
@@ -196,33 +197,38 @@ promptColor = do
     "O" -> return O
     _ -> promptColor
 
+cls :: IO ()
+cls = putStr "\ESC[2J\ESC[0;0H"
+
 -- TODO: handle win/draw condition, skip player if there are no valid moves for him
 -- TODO: consider displaying valid moves
 play :: Grid -> (Player, Player) -> Player -> IO Grid
 play g (h, c) p
   | p == h = do
-    putStr $ display g
+    cls
+    putStrLn $ display g
     move <- promptMove g p
     play (applyMove g move p) (h, c) (opponent p)
   | p == c = do
-    putStr $ display g
+    cls
+    putStrLn $ display g
     move <- randomMove g p
     case move of
       Just m -> do
-        threadDelay 500_000
-        putStrLn $ "Player O: " ++ displayMove m
-        threadDelay 500_000
+        putStr $ "Player O: "
+        threadDelay 2_000_000
+        putStr $ displayMove m
+        threadDelay 1_000_000
         play (applyMove g m p) (h, c) (opponent p)
       Nothing -> return g
 
 main :: IO ()
 main = do
   human <- promptColor
-  _ <-
-    play
-      initial
-      (human, opponent human)
-      (if human == X
-         then human
-         else opponent human)
+  let computer = opponent human
+  let begins =
+        if human == X
+          then human
+          else computer
+  _ <- play initial (human, computer) begins
   return ()
