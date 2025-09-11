@@ -2,6 +2,8 @@
 
 Yesterday late in the evening, I played another round, and figured out a flaw in the logic to skip the turn for a player that is unable to move: I only use the respective other input function (random move, prompt move), but don't switch the player. So I have to re-consider this logic. Fortunately, I saved yesterday's board as a text file, now I can re-produce the test data. (It would be a good exercise to read such a board in from a file for better debugging.) Before falling asleep, I also thought about the data structure for the game tree, which I just wrote down today.
 
+I managed to fix the skipping logic in the waiting room. It's still verbose, but now it's moved down to a `where` block, so that it no longer obscures the actual logic. On towards Minimax, finally.
+
 # Day 34 (We, 2025-09-10)
 
 Today, I started implementing the game logic. I am able to play against a random computer, but wins, draws, and situations where a player is unable to move are neither detected nor handled. I leave that for tomorrow; this was quite a productive morning hour.
