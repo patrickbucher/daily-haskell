@@ -20,6 +20,8 @@ type Pos = (Int, Int)
 
 type Shift = Int -> Int
 
+data Tree = Node Grid [(Player, Pos, Tree)]
+
 directions :: [(Shift, Shift)]
 directions =
   [ (subtract 1, id) -- north
