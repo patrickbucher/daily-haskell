@@ -44,18 +44,6 @@ initial =
   , [E, E, E, E, E, E, E, E]
   ]
 
-blocked :: Grid
-blocked =
-  [ [O, O, X, X, X, E, E, E]
-  , [O, O, O, X, X, E, E, E]
-  , [O, O, X, O, X, X, X, X]
-  , [O, O, X, O, O, X, X, X]
-  , [O, O, O, X, O, O, X, X]
-  , [O, O, O, O, X, X, O, X]
-  , [O, O, O, O, O, O, O, O]
-  , [O, O, O, O, O, O, O, O]
-  ]
-
 opponent :: Player -> Player
 opponent X = O
 opponent O = X
@@ -275,5 +263,5 @@ main = do
         if human == X
           then human
           else computer
-  _ <- play blocked (human, computer) begins
+  _ <- play initial (human, computer) begins
   return ()
