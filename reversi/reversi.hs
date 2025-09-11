@@ -44,6 +44,18 @@ initial =
   , [E, E, E, E, E, E, E, E]
   ]
 
+blocked :: Grid
+blocked =
+  [ [O, O, X, X, X, E, E, E]
+  , [O, O, O, X, X, E, E, E]
+  , [O, O, X, O, X, X, X, X]
+  , [O, O, X, O, O, X, X, X]
+  , [O, O, O, X, O, O, X, X]
+  , [O, O, O, O, X, X, O, X]
+  , [O, O, O, O, O, O, O, O]
+  , [O, O, O, O, O, O, O, O]
+  ]
+
 opponent :: Player -> Player
 opponent X = O
 opponent O = X
@@ -128,7 +140,7 @@ score :: Player -> Grid -> Int
 score p = length . filter (== p) . concat
 
 display :: Grid -> String
-display g = concat ((title : rowsCaptioned) ++ ["", standings])
+display g = concat ((title : rowsCaptioned) ++ ["\n", standings])
   where
     standings =
       show X
@@ -138,7 +150,6 @@ display g = concat ((title : rowsCaptioned) ++ ["", standings])
         ++ (show (score O g))
         ++ " "
         ++ show O
-        ++ "\n"
     title = "  " ++ (foldl1 (++) $ (map show [1 .. 8])) ++ "\n"
     rows = zip ['a' ..] (map concat $ map (map show) g)
     rowsCaptioned = map (\(c, r) -> [c, ' '] ++ r ++ ['\n']) rows
@@ -238,17 +249,22 @@ play g (h, c) p = do
       putStrLn ("Player " ++ show p ++ " wins " ++ scoreStr g p)
       return g
     Nothing -> do
-      let fs =
-            if (p == h)
-              then (promptMove, randomMove)
-              else (randomMove, promptMove)
-      let f =
-            if (null (possibleMoves g p))
-              then (snd fs)
-              else (fst fs)
-      move <- f g p
-      let g' = applyMove g move p
-      play g' (h, c) (opponent p)
+      putStrLn
+        (if p /= p'
+           then show p ++ " can't move, skipping… "
+           else "")
+      move <- f g p'
+      let g' = applyMove g move p'
+      play g' (h, c) (opponent p')
+  where
+    (f, p') =
+      case (null (possibleMoves g p), p) of
+        (False, p)
+          | p == h -> (promptMove, h)
+          | p == c -> (randomMove, c)
+        (True, p)
+          | p == h -> (randomMove, c)
+          | p == c -> (promptMove, h)
 
 main :: IO ()
 main = do
@@ -259,5 +275,5 @@ main = do
         if human == X
           then human
           else computer
-  _ <- play initial (human, computer) begins
+  _ <- play blocked (human, computer) begins
   return ()
