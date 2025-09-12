@@ -2,6 +2,7 @@ import Control.Concurrent
 import Data.Char
 import Data.List
 import System.IO
+import System.Random (randomRIO)
 
 data Player
   = X
@@ -132,7 +133,7 @@ score :: Player -> Grid -> Int
 score p = length . filter (== p) . concat
 
 display :: Grid -> String
-display g = concat ((title : rowsCaptioned) ++ ["\n", standings])
+display g = concat ((title : rowsCaptioned) ++ [title] ++ ["\n", standings])
   where
     standings =
       show X
@@ -144,7 +145,7 @@ display g = concat ((title : rowsCaptioned) ++ ["\n", standings])
         ++ show O
     title = "  " ++ (foldl1 (++) $ (map show [1 .. 8])) ++ "\n"
     rows = zip ['a' ..] (map concat $ map (map show) g)
-    rowsCaptioned = map (\(c, r) -> [c, ' '] ++ r ++ ['\n']) rows
+    rowsCaptioned = map (\(c, r) -> [c, ' '] ++ r ++ [' ', c, '\n']) rows
 
 parseMove :: String -> Maybe Pos
 parseMove [r, c] =
@@ -196,14 +197,16 @@ aiMoveFunc n = (\g p -> aiMove n g p)
 
 aiMove :: Int -> Grid -> Player -> IO Pos
 aiMove d g p = do
+  i <- randomRIO (0, (length moves) - 1)
+  let move = moves !! i
   putStr $ "Player " ++ show p ++ ": "
-  threadDelay 2_000_000 -- TODO: reduce with ai calc cost
+  threadDelay 2_000_000
   putStr $ displayMove move
   threadDelay 1_000_000
   return move
   where
     tree = buildTree g p d
-    move = bestMove tree
+    moves = bestMoves tree
 
 buildTree :: Grid -> Player -> Int -> Tree
 buildTree g p 0 = Node g p []
@@ -218,6 +221,10 @@ buildTree g p n =
         _ -> False
     ]
 
+size :: Tree -> Int
+size (Node _ _ []) = 1
+size (Node _ _ xs) = 1 + sum (map size (map snd xs))
+
 eval :: Tree -> Int
 eval (Node g _ []) = score X g - score O g
 eval (Node g p ns) = minmaxf (map eval (map snd ns))
@@ -229,16 +236,18 @@ eval (Node g p ns) = minmaxf (map eval (map snd ns))
         then maximum
         else minimum
 
-bestMove :: Tree -> Pos
-bestMove (Node g p ns) = fst $ head (minmaxf outcomes)
+bestMoves :: Tree -> [Pos]
+bestMoves (Node g p ns) = map fst moves
   where
     outcomes = map (\(pos, Node g _ _) -> (pos, outcome g p pos)) ns
-    sortedAsc = sortBy (\(_, l) (_, r) -> (compare l r))
-    sortedDesc = reverse . sortedAsc
-    minmaxf =
+    results = map snd outcomes
+    highest = foldl1 max results
+    lowest = foldl1 min results
+    filterBy =
       if p == X
-        then sortedDesc
-        else sortedAsc
+        then highest
+        else lowest
+    moves = filter (\(pos, outcome) -> outcome == filterBy) outcomes
 
 outcome :: Grid -> Player -> Pos -> Int
 outcome g p pos = score X g' - score O g'
