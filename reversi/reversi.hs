@@ -192,17 +192,20 @@ promptMove g p = do
           promptMove g p
     Nothing -> promptMove g p
 
-randomMove :: Grid -> Player -> IO Pos
-randomMove g p = do
-  i <- randomRIO (0, length moves - 1)
-  let move = moves !! i
+treeDepth :: Int
+treeDepth = 7
+
+-- TODO: prompt for treeDepth, return function using that depth
+aiMove :: Grid -> Player -> IO Pos
+aiMove g p = do
   putStr $ "Player " ++ show p ++ ": "
-  threadDelay 2_000_000
+  threadDelay 2_000_000 -- TODO: reduce with ai calc cost
   putStr $ displayMove move
   threadDelay 1_000_000
   return move
   where
-    moves = possibleMoves g p
+    tree = buildTree g p 6
+    move = bestMove tree
 
 buildTree :: Grid -> Player -> Int -> Tree
 buildTree g p 0 = Node g p []
@@ -291,9 +294,9 @@ play g (h, c) p = do
       case (null (possibleMoves g p), p) of
         (False, p)
           | p == h -> (promptMove, h)
-          | p == c -> (randomMove, c)
+          | p == c -> (aiMove, c)
         (True, p)
-          | p == h -> (randomMove, c)
+          | p == h -> (aiMove, c)
           | p == c -> (promptMove, h)
 
 main :: IO ()
