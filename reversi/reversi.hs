@@ -212,7 +212,10 @@ buildTree g p n =
     g
     p
     [ (m, buildTree (applyMove g m p) (opponent p) (n - 1))
-    | m <- possibleMoves g p -- TODO: filter only non-full grids
+    | m <- possibleMoves g p
+    , case (finished g) of
+        Nothing -> True
+        _ -> False
     ]
 
 eval :: Tree -> Int
