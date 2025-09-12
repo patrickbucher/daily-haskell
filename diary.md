@@ -4,6 +4,10 @@ Only little time this morning: I started reading about the Minimax algorithm in 
 
 During the day, I had the odd 5 minutes now and then to implement the Minimax algorithm, and it now seems to work fine. The human player can also pick the opponent's level from 1 to 9, corresponding to the levels the AI player computes for the tree.
 
+In the evening, I optimized the output by displaying the coordinates on both sides of the grid, i.e. left and right; top and bottom. I also changed the `bestMove` function to a `bestMoves` (plural) function, which returns equally strong moves as a list, from which the AI player then picks a random move. This makes the initial phase a bit more interesting.
+
+So I'm quite happy with the game now. Tomorrow, I first read about alpha-beta pruning, then try to optimize the game.
+
 # Day 35 (Th, 2025-09-11)
 
 Yesterday late in the evening, I played another round, and figured out a flaw in the logic to skip the turn for a player that is unable to move: I only use the respective other input function (random move, prompt move), but don't switch the player. So I have to re-consider this logic. Fortunately, I saved yesterday's board as a text file, now I can re-produce the test data. (It would be a good exercise to read such a board in from a file for better debugging.) Before falling asleep, I also thought about the data structure for the game tree, which I just wrote down today.
