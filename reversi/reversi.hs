@@ -1,5 +1,6 @@
 import Control.Concurrent
 import Data.Char
+import Data.List
 import System.IO
 import System.Random (randomRIO)
 
@@ -213,7 +214,32 @@ buildTree g p n =
     | m <- possibleMoves g p
     ]
 
--- TODO: find best move for a player on a given tree
+eval :: Tree -> Int
+eval (Node g _ []) = score X g - score O g
+eval (Node g p ns) = minmaxf (map eval (map snd ns))
+  where
+    minimum = head . sort
+    maximum = head . reverse . sort
+    minmaxf =
+      if p == X
+        then maximum
+        else minimum
+
+bestMove :: Tree -> Pos
+bestMove (Node g p ns) = fst $ head (minmaxf outcomes)
+  where
+    outcomes = map (\(pos, Node g _ _) -> (pos, outcome g p pos)) ns
+    sortedAsc = sortBy (\(_, l) (_, r) -> (compare l r))
+    sortedDesc = reverse . sortedAsc
+    minmaxf =
+      if p == X
+        then sortedDesc
+        else sortedAsc
+
+outcome :: Grid -> Player -> Pos -> Int
+outcome g p pos = score X g' - score O g'
+  where
+    g' = applyMove g pos p
 
 possibleMoves :: Grid -> Player -> [Pos]
 possibleMoves g p = filter (\pos -> validMove g pos p) candidates
