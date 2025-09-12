@@ -2,7 +2,6 @@ import Control.Concurrent
 import Data.Char
 import Data.List
 import System.IO
-import System.Random (randomRIO)
 
 data Player
   = X
@@ -192,19 +191,18 @@ promptMove g p = do
           promptMove g p
     Nothing -> promptMove g p
 
-treeDepth :: Int
-treeDepth = 7
+aiMoveFunc :: Int -> Grid -> Player -> IO Pos
+aiMoveFunc n = (\g p -> aiMove n g p)
 
--- TODO: prompt for treeDepth, return function using that depth
-aiMove :: Grid -> Player -> IO Pos
-aiMove g p = do
+aiMove :: Int -> Grid -> Player -> IO Pos
+aiMove d g p = do
   putStr $ "Player " ++ show p ++ ": "
   threadDelay 2_000_000 -- TODO: reduce with ai calc cost
   putStr $ displayMove move
   threadDelay 1_000_000
   return move
   where
-    tree = buildTree g p 6
+    tree = buildTree g p d
     move = bestMove tree
 
 buildTree :: Grid -> Player -> Int -> Tree
@@ -214,7 +212,7 @@ buildTree g p n =
     g
     p
     [ (m, buildTree (applyMove g m p) (opponent p) (n - 1))
-    | m <- possibleMoves g p
+    | m <- possibleMoves g p -- TODO: filter only non-full grids
     ]
 
 eval :: Tree -> Int
@@ -264,14 +262,23 @@ promptColor = do
     "O" -> return O
     _ -> promptColor
 
+promptAiLevel :: IO Int
+promptAiLevel = do
+  cls
+  putStr $ "How smart shall the opponent be (1-9)? "
+  input <- getLine
+  if input `elem` map show [1 .. 9]
+    then return (read input)
+    else promptAiLevel
+
 cls :: IO ()
 cls = putStr "\ESC[2J\ESC[0;0H"
 
 scoreStr :: Grid -> Player -> String
 scoreStr g p = show (score p g) ++ ":" ++ show (score (opponent p) g)
 
-play :: Grid -> (Player, Player) -> Player -> IO Grid
-play g (h, c) p = do
+play :: Int -> Grid -> (Player, Player) -> Player -> IO Grid
+play l g (h, c) p = do
   cls
   putStrLn $ display g
   case (finished g) of
@@ -288,25 +295,26 @@ play g (h, c) p = do
            else "")
       move <- f g p'
       let g' = applyMove g move p'
-      play g' (h, c) (opponent p')
+      play l g' (h, c) (opponent p')
   where
     (f, p') =
       case (null (possibleMoves g p), p) of
         (False, p)
           | p == h -> (promptMove, h)
-          | p == c -> (aiMove, c)
+          | p == c -> (aiMoveFunc l, c)
         (True, p)
-          | p == h -> (aiMove, c)
+          | p == h -> (aiMoveFunc l, c)
           | p == c -> (promptMove, h)
 
 main :: IO ()
 main = do
   hSetBuffering stdout NoBuffering
   human <- promptColor
+  level <- promptAiLevel
   let computer = opponent human
   let begins =
         if human == X
           then human
           else computer
-  _ <- play initial (human, computer) begins
+  _ <- play level initial (human, computer) begins
   return ()
