@@ -20,7 +20,9 @@ type Pos = (Int, Int)
 
 type Shift = Int -> Int
 
-data Tree = Node Grid [(Player, Pos, Tree)]
+data Tree =
+  Node Grid Player [(Pos, Tree)]
+  deriving (Show)
 
 directions :: [(Shift, Shift)]
 directions =
@@ -200,6 +202,18 @@ randomMove g p = do
   return move
   where
     moves = possibleMoves g p
+
+buildTree :: Grid -> Player -> Int -> Tree
+buildTree g p 0 = Node g p []
+buildTree g p n =
+  Node
+    g
+    p
+    [ (m, buildTree (applyMove g m p) (opponent p) (n - 1))
+    | m <- possibleMoves g p
+    ]
+
+-- TODO: find best move for a player on a given tree
 
 possibleMoves :: Grid -> Player -> [Pos]
 possibleMoves g p = filter (\pos -> validMove g pos p) candidates
