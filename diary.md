@@ -2,6 +2,8 @@
 
 Only little time this morning: I started reading about the Minimax algorithm in the Russell/Norvig book and then implemented the function to build up the tree. However, upon evaluating the tree, I noticed a flaw in my data structure, which I was able to fix. Building the complete tree up to five steps is certainly feasible for interactive game play, even for the initial move. I also wrote a score function to maximize for player X and minimize for player O by subtracting O's points from X's points. Like that, X can pick the maximum and O the minimum successor nodes.
 
+During the day, I had the odd 5 minutes now and then to implement the Minimax algorithm, and it now seems to work fine. The human player can also pick the opponent's level from 1 to 9, corresponding to the levels the AI player computes for the tree.
+
 # Day 35 (Th, 2025-09-11)
 
 Yesterday late in the evening, I played another round, and figured out a flaw in the logic to skip the turn for a player that is unable to move: I only use the respective other input function (random move, prompt move), but don't switch the player. So I have to re-consider this logic. Fortunately, I saved yesterday's board as a text file, now I can re-produce the test data. (It would be a good exercise to read such a board in from a file for better debugging.) Before falling asleep, I also thought about the data structure for the game tree, which I just wrote down today.
