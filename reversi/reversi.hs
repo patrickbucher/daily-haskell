@@ -216,9 +216,7 @@ buildTree g p n =
     p
     [ (m, buildTree (applyMove g m p) (opponent p) (n - 1))
     | m <- possibleMoves g p
-    , case (finished g) of
-        Nothing -> True
-        _ -> False
+    , (finished g) == Nothing
     ]
 
 size :: Tree -> Int
@@ -235,6 +233,13 @@ eval (Node g p ns) = minmaxf (map eval (map snd ns))
       if p == X
         then maximum
         else minimum
+
+-- Alpha-Beta-Pruning: Cancel the recursion if a player has a better option on the same or above level.
+-- alpha: "at most"; max player X: update alpha with higher results
+-- beta: "at least"; min player O: update beta with lower results
+evalAB :: Tree -> Maybe Int -> Maybe Int -> (Int, Maybe Int, Maybe Int)
+evalAB (Node g _ []) a b = (score X g - score O g, a, b)
+evalAB (Node g p ns) a b = (0, a, b) -- FIXME
 
 bestMoves :: Tree -> [Pos]
 bestMoves (Node g p ns) = map fst moves
