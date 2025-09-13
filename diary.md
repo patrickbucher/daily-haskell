@@ -1,6 +1,6 @@
 # Day 37 (Sa, 2025-09-13)
 
-Little time today; I read about alpha-beta pruning and designed the API, but I wasn't able to implement it completely yet.
+Little time today; I read about alpha-beta pruning and designed the API, but I wasn't able to implement it completely yet. I wonder if I need to merge the logic to build up and to validate the tree. This requires an addition to the tree data type: a `Maybe Int` field for the sub-tree's value. It's a good exercise, so I have to try that tomorrow.
 
 # Day 36 (Fr, 2025-09-12)
 
