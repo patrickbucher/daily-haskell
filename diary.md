@@ -1,3 +1,7 @@
+# Day 37 (Sa, 2025-09-13)
+
+Little time today; I read about alpha-beta pruning and designed the API, but I wasn't able to implement it completely yet.
+
 # Day 36 (Fr, 2025-09-12)
 
 Only little time this morning: I started reading about the Minimax algorithm in the Russell/Norvig book and then implemented the function to build up the tree. However, upon evaluating the tree, I noticed a flaw in my data structure, which I was able to fix. Building the complete tree up to five steps is certainly feasible for interactive game play, even for the initial move. I also wrote a score function to maximize for player X and minimize for player O by subtracting O's points from X's points. Like that, X can pick the maximum and O the minimum successor nodes.
