@@ -1,3 +1,11 @@
+# Day 38 (Su, 2025-09-14)
+
+I managed to implement tree building with evaluation in the same process. I extended the `Tree` definition, which now distinguishes between `Node` and `Leaf`, which leads to slightly more verbose code, but also brings additional clarity to it. This is a good trade-off for me as a beginner. I also optimized the delay time for the computer opponent. However, I should replace the linear factor by an exponential one.
+
+I think something with the Minimax algorithm wasn't working properly, because the computer player was way too fast evenon the highest level, where a tree of up to nine levels is built up. Now I have to wait considerably longer, and the AI is also stronger.
+
+So, I'll come back to Alpha-Beta pruning next week, hopefully tomorrow.
+
 # Day 37 (Sa, 2025-09-13)
 
 Little time today; I read about alpha-beta pruning and designed the API, but I wasn't able to implement it completely yet. I wonder if I need to merge the logic to build up and to validate the tree. This requires an addition to the tree data type: a `Maybe Int` field for the sub-tree's value. It's a good exercise, so I have to try that tomorrow.
