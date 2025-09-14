@@ -21,8 +21,9 @@ type Pos = (Int, Int)
 
 type Shift = Int -> Int
 
-data Tree =
-  Node Grid Player [(Pos, Tree)]
+data Tree
+  = Node Grid (Maybe Int) Player [(Pos, Tree)]
+  | Leaf Grid (Maybe Int)
   deriving (Show)
 
 directions :: [(Shift, Shift)]
@@ -172,12 +173,8 @@ finished g =
   where
     stones = concat g
     full = all (/= E) stones
-    scoreX = score X g
-    scoreO = score O g
-    diffXO = scoreX - scoreO
-    movesX = possibleMoves g X
-    movesO = possibleMoves g O
-    blocked = (null movesX) && (null movesO)
+    diffXO = score X g - score O g
+    blocked = (null $ possibleMoves g X) && (null $ possibleMoves g O)
 
 promptMove :: Grid -> Player -> IO Pos
 promptMove g p = do
@@ -200,64 +197,52 @@ aiMove d g p = do
   i <- randomRIO (0, (length moves) - 1)
   let move = moves !! i
   putStr $ "Player " ++ show p ++ ": "
-  threadDelay 2_000_000
+  threadDelay $ floor (2_000_000 * delayFactor)
   putStr $ displayMove move
   threadDelay 1_000_000
   return move
   where
     tree = buildTree g p d
     moves = bestMoves tree
-
-buildTree :: Grid -> Player -> Int -> Tree
-buildTree g p 0 = Node g p []
-buildTree g p n =
-  Node
-    g
-    p
-    [ (m, buildTree (applyMove g m p) (opponent p) (n - 1))
-    | m <- possibleMoves g p
-    , (finished g) == Nothing
-    ]
+    delayFactor = (1.0 - fromIntegral d / 9.0)
 
 size :: Tree -> Int
-size (Node _ _ []) = 1
-size (Node _ _ xs) = 1 + sum (map size (map snd xs))
+size (Leaf _ _) = 1
+size (Node _ _ _ []) = 1
+size (Node _ _ _ xs) = 1 + sum (map size (map snd xs))
 
-eval :: Tree -> Int
-eval (Node g _ []) = score X g - score O g
-eval (Node g p ns) = minmaxf (map eval (map snd ns))
+buildTree :: Grid -> Player -> Int -> Tree
+buildTree g p 0 = Leaf g (Just value)
   where
-    minimum = head . sort
-    maximum = head . reverse . sort
-    minmaxf =
-      if p == X
-        then maximum
-        else minimum
-
--- Alpha-Beta-Pruning: Cancel the recursion if a player has a better option on the same or above level.
--- alpha: "at most"; max player X: update alpha with higher results
--- beta: "at least"; min player O: update beta with lower results
-evalAB :: Tree -> Maybe Int -> Maybe Int -> (Int, Maybe Int, Maybe Int)
-evalAB (Node g _ []) a b = (score X g - score O g, a, b)
-evalAB (Node g p ns) a b = (0, a, b) -- FIXME
+    value = score X g - score O g
+buildTree g p n = Node g (Just $ value (Node g Nothing p children)) p children
+  where
+    children =
+      [ (m, buildTree (applyMove g m p) (opponent p) (n - 1))
+      | m <- possibleMoves g p
+      , (finished g) == Nothing
+      ]
+    optimize
+      | p == X = max
+      | p == O = min
+    value (Leaf g (Just v)) = v
+    value (Node g (Just v) p cs) = v
+    value (Node g Nothing _ []) = score X g - score O g
+    value (Node g Nothing p cs) = foldl1 optimize (map value (map snd cs))
 
 bestMoves :: Tree -> [Pos]
-bestMoves (Node g p ns) = map fst moves
+bestMoves (Node g v p []) = []
+bestMoves (Node g v p ns) = map fst moves
   where
-    outcomes = map (\(pos, Node g _ _) -> (pos, outcome g p pos)) ns
+    eval (pos, Leaf _ (Just v)) = (pos, v)
+    eval (pos, Node _ (Just v) _ _) = (pos, v)
+    outcomes = map eval ns
     results = map snd outcomes
-    highest = foldl1 max results
-    lowest = foldl1 min results
-    filterBy =
-      if p == X
-        then highest
-        else lowest
-    moves = filter (\(pos, outcome) -> outcome == filterBy) outcomes
-
-outcome :: Grid -> Player -> Pos -> Int
-outcome g p pos = score X g' - score O g'
-  where
-    g' = applyMove g pos p
+    optimize
+      | p == X = max
+      | p == O = min
+    optimal = foldl1 optimize results
+    moves = filter (\(pos, outcome) -> outcome == optimal) outcomes
 
 possibleMoves :: Grid -> Player -> [Pos]
 possibleMoves g p = filter (\pos -> validMove g pos p) candidates
