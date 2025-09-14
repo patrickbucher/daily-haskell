@@ -6,4 +6,4 @@ reversi: reversi.hs
 	ghc -dynamic -O2 $<
 
 clean:
-	rm reversi *.hi *.o
+	rm -f reversi *.hi *.o
