@@ -1,3 +1,36 @@
+# Day 39 (Mo, 2025-09-15)
+
+No code today, just some notes on Alpha-Beta pruning:
+
+Consider a game situation in which the maximizing player X has three valid moves, to which the minimizing player O can react with three different moves each, leading to the following outcomes:
+
+1. 3, 4, 3
+2. 1, x, y
+3. 5, 2, 8
+
+The outcomes x and y are not known yet. If both players pick the optimal move, the tree evaluates as follows:
+
+```
+max(min(3,4,3),min(1,x,y),min(5,2,8))
+= max(3,min(1,x,y),2)
+```
+
+The values of x and y are _irrelevant_. No matter how good a move O will pick, X won't send the game down that branch. Therefore, the current _at least_ and _at most_ values shall be tracked:
+
+- alpha: _at least_ outcome
+- beta: _at most_ outcome
+
+The search can be stopped once an outcome exceeds those bounds, which are to be updated as better outcomes are encountered by the respective player:
+
+- minimizing(alpha, beta)
+    - update beta as a _lower_ outcome is detected
+    - stop if outcome < alpha is found: maximizing won't move down that branch
+- maximizing(alpha, beta)
+    - update alpha as a _higher_ outcome is detected
+    - stop if outcome > beta is found: minimizing won't move down that branch
+
+With this understanding, I hopefully can implement Alpha-Beta-Pruning… tomorrow, when I have more time.
+
 # Day 38 (Su, 2025-09-14)
 
 I managed to implement tree building with evaluation in the same process. I extended the `Tree` definition, which now distinguishes between `Node` and `Leaf`, which leads to slightly more verbose code, but also brings additional clarity to it. This is a good trade-off for me as a beginner. I also optimized the delay time for the computer opponent. However, I should replace the linear factor by an exponential one.
