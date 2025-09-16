@@ -227,6 +227,50 @@ buildTree g p n = Node g (Just $ value (Node g Nothing p children)) p children
     value (Node g Nothing _ []) = score X g - score O g
     value (Node g Nothing p cs) = foldl1 optimize (map value (map snd cs))
 
+buildTreeAB :: Grid -> Player -> Int -> (Int, Int) -> (Tree, (Int, Int))
+buildTreeAB g p 0 ab = (Node g (Just value) p [], ab)
+  where
+    value = score X g - score O g
+buildTreeAB g p n (a, b) = (Node g (Just value) p children, (alpha, beta))
+  where
+    children =
+      [ ( m
+        , fst (buildTreeAB (applyMove g m p) (opponent p) (n - 1) (alpha, beta)))
+      | m <- possibleMoves g p
+      , (finished g) == Nothing
+      ]
+    value = evaluate (Node g Nothing p children)
+    optimize
+      | p == X = max
+      | p == O = min
+    evaluate (Node _ (Just v) _ _) = v
+    evaluate (Node g Nothing _ []) = score X g - score O g
+    evaluate (Node _ Nothing p cs) =
+      bestOfChildren
+        optimize (if p == X then alpha else beta) (map snd cs)
+    alpha =
+      if p == X
+        then max a value
+        else a
+    beta =
+      if p == O
+        then min b value
+        else b
+    bestOfChildren f acc [] = acc
+    bestOfChildren f acc (c:cs) =
+      if p == X && v > beta || p == O && v < alpha
+        then acc
+        else bestOfChildren f acc cs
+      where
+        v = evaluate c
+        acc = f acc v
+
+-- buildTreeAB initial X 2 (-64, 64)
+-- (Node initial (Just value) p children, (alpha, beta))
+--   where
+--     children = [(m, fst (buildTreeAB initial' O 1 (alpha, beta)))]
+--     value = evaluate (Node initial Nothing X children)
+
 bestMoves :: Tree -> [Pos]
 bestMoves (Node g v p []) = []
 bestMoves (Node g v p ns) = map fst moves

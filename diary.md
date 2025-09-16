@@ -2,7 +2,7 @@
 
 First, I got rid of the `Leaf` variant of my `Tree`. I had to remove it at three or four places, and the game still works.
 
-
+Then I started implementing the `buildTreeAB` function, which worked rather well, until it stopped evaluating and got stuck. I had to write my bespoke `foldl1` function that stops recursion upon alpha-beta-range violation. But this function just never finishes, as far as I understand the situation. I have to think about that.
 
 # Day 39 (Mo, 2025-09-15)
 
