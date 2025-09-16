@@ -21,9 +21,8 @@ type Pos = (Int, Int)
 
 type Shift = Int -> Int
 
-data Tree
-  = Node Grid (Maybe Int) Player [(Pos, Tree)]
-  | Leaf Grid (Maybe Int)
+data Tree =
+  Node Grid (Maybe Int) Player [(Pos, Tree)]
   deriving (Show)
 
 directions :: [(Shift, Shift)]
@@ -207,12 +206,11 @@ aiMove d g p = do
     delayFactor = (1.0 - fromIntegral d / 9.0)
 
 size :: Tree -> Int
-size (Leaf _ _) = 1
 size (Node _ _ _ []) = 1
 size (Node _ _ _ xs) = 1 + sum (map size (map snd xs))
 
 buildTree :: Grid -> Player -> Int -> Tree
-buildTree g p 0 = Leaf g (Just value)
+buildTree g p 0 = Node g (Just value) p []
   where
     value = score X g - score O g
 buildTree g p n = Node g (Just $ value (Node g Nothing p children)) p children
@@ -225,7 +223,6 @@ buildTree g p n = Node g (Just $ value (Node g Nothing p children)) p children
     optimize
       | p == X = max
       | p == O = min
-    value (Leaf g (Just v)) = v
     value (Node g (Just v) p cs) = v
     value (Node g Nothing _ []) = score X g - score O g
     value (Node g Nothing p cs) = foldl1 optimize (map value (map snd cs))
@@ -234,7 +231,6 @@ bestMoves :: Tree -> [Pos]
 bestMoves (Node g v p []) = []
 bestMoves (Node g v p ns) = map fst moves
   where
-    eval (pos, Leaf _ (Just v)) = (pos, v)
     eval (pos, Node _ (Just v) _ _) = (pos, v)
     outcomes = map eval ns
     results = map snd outcomes

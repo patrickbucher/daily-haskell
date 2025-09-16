@@ -1,3 +1,9 @@
+# Day 40 (Tu, 2025-09-16)
+
+First, I got rid of the `Leaf` variant of my `Tree`. I had to remove it at three or four places, and the game still works.
+
+
+
 # Day 39 (Mo, 2025-09-15)
 
 No code today, just some notes on Alpha-Beta pruning:
