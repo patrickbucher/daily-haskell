@@ -195,7 +195,7 @@ promptMove g p = do
         else promptMove g p
 
 showHints :: Grid -> Player -> String
-showHints g p = foldl1 (++) $ intersperse ", " $ map displayMove moves
+showHints g p = foldl (++) "" $ intersperse ", " $ map displayMove moves
   where
     moves = possibleMoves g p
 
