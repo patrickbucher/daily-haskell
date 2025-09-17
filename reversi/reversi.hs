@@ -186,7 +186,13 @@ promptMove g p = do
         else do
           putStrLn ""
           promptMove g p
-    Nothing -> promptMove g p
+    Nothing ->
+      if input == "h"
+        then do
+          putStrLn $ show $ map displayMove $ possibleMoves g p
+          -- TODO: hX runs minimax X and orders move (best to worse)
+          promptMove g p
+        else promptMove g p
 
 aiMoveFunc :: Int -> Grid -> Player -> IO Pos
 aiMoveFunc n = (\g p -> aiMove n g p)
