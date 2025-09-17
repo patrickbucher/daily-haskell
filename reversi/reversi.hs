@@ -201,7 +201,7 @@ aiMove d g p = do
   threadDelay 1_000_000
   return move
   where
-    tree = buildTree g p d
+    (tree, _) = buildTreeAB g p d (-64, 64)
     moves = bestMoves tree
     delayFactor = (1.0 - fromIntegral d / 9.0)
 
@@ -231,26 +231,44 @@ buildTreeAB :: Grid -> Player -> Int -> (Int, Int) -> (Tree, (Int, Int))
 buildTreeAB g p 0 ab = (Node g value (opponent p) [], ab)
   where
     value = Just (score X g - score O g)
-buildTreeAB g p n (a, b) = (Node g value (opponent p) children, (alpha, beta))
+buildTreeAB g p n ab = (Node g (Just value) p children, ab)
   where
     moves = possibleMoves g p
-    value = Nothing
-    children = []
-    alpha = a
-    beta = b
+    dingens = buildChildren g p n ab moves
+    children = map (\(m, t, _) -> (m, t)) dingens
+    eval (Node g Nothing _ _) = []
+    eval (Node g (Just v) _ _) = [v]
+    values = concat $ map (eval . snd) children
+    (fallback, optFunc) =
+      if p == X
+        then ((-64), max)
+        else (64, min)
+    value = foldl optFunc fallback values
 
-buildChildren :: Grid -> Player -> Int -> (Int, Int) -> [Pos] -> (Tree, (Int, Int))
-buildChildren g p _ ab [] = (Node g Nothing p [], ab)
-buildChildren g p n (a, b) (m:ms) = (Node g Nothing p [], (a, b))
---  case result of
---    Just v -> (Node g Just v p (m:buildChildren g' p n (a, b) ms)
---    Nothing -> (Node g Nothing p [], (a, b))
+buildChildren ::
+     Grid -> Player -> Int -> (Int, Int) -> [Pos] -> [(Pos, Tree, (Int, Int))]
+buildChildren g p _ ab [] = []
+buildChildren g p n (a, b) (m:ms) =
+  case (quit result p) of
+    True -> []
+    False -> head : buildChildren g p n (a, b) ms
   where
     g' = applyMove g m p
     op = (opponent p)
-    optFunc :: Int -> Int -> Int = if p == X then max else min
-    (Node g'' result p'' cs, (a', b')) = buildTreeAB g' op (n-1) (a, b)
-
+    optFunc :: Int -> Int -> Int =
+      if p == X
+        then max
+        else min
+    (Node g'' result p'' cs, (a', b')) = buildTreeAB g' op (n - 1) (a, b)
+    head = (m, Node g' result p [], (alpha result p, beta result p))
+    quit (Just v) p = p == X && v > b || p == O && v < a
+    quit Nothing _ = False
+    alpha Nothing _ = a
+    alpha (Just v) X = optFunc a v
+    alpha _ _ = a
+    beta Nothing _ = b
+    beta (Just v) O = optFunc b v
+    beta _ _ = b
 
 bestMoves :: Tree -> [Pos]
 bestMoves (Node g v p []) = []

@@ -6,6 +6,8 @@ So I give it a naive try: show the type information in GHCi (`:t buildTreeAB`) a
 
 Having started implementing this, I noticed that I have absolutely zero clarity of mind right now. I need to do something else now and will revisit the issue later on.
 
+Later on in the train, I managed to get a structurally working implementation. The trees turn out way too small in my opinition, but I have to further analyze this. But at least now I know how to implement the mechanism, and the evaluation terminates. (The runtime behaviour from yesterday looked quite similar to the one a witnessed today; but today it eventually evaluated.) I need to review my code, probably tomorrow.
+
 # Day 40 (Tu, 2025-09-16)
 
 First, I got rid of the `Leaf` variant of my `Tree`. I had to remove it at three or four places, and the game still works.
