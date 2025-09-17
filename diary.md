@@ -8,6 +8,10 @@ Having started implementing this, I noticed that I have absolutely zero clarity 
 
 Later on in the train, I managed to get a structurally working implementation. The trees turn out way too small in my opinition, but I have to further analyze this. But at least now I know how to implement the mechanism, and the evaluation terminates. (The runtime behaviour from yesterday looked quite similar to the one a witnessed today; but today it eventually evaluated.) I need to review my code, probably tomorrow.
 
+Having been stuck in a quite interesting game, I decided to create a help function to be used with the `h` key, which shows the player all the possible moves in descending order of their efficiency (minimax with depth 1, that is).
+
+In order to debug Alpha-Beta pruning tomorrow, I first need to make the grid more dynamic, so that I can play with a 4x4 or a 5x5 grid. That's an easy task for tomorrow in order to tackle the hard stuff later on.
+
 # Day 40 (Tu, 2025-09-16)
 
 First, I got rid of the `Leaf` variant of my `Tree`. I had to remove it at three or four places, and the game still works.
