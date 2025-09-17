@@ -190,10 +190,10 @@ promptMove g p = do
       if input == "h"
         then do
           putStrLn $ showHints g p
-          -- TODO: hX runs minimax X and orders move (best to worse)
           promptMove g p
         else promptMove g p
 
+-- TODO: run proper minimax (hX)
 showHints :: Grid -> Player -> String
 showHints g p =
   foldl (++) "" $ intersperse ", " $ map displayMove $ map fst movesOrdered
