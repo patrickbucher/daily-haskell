@@ -195,9 +195,14 @@ promptMove g p = do
         else promptMove g p
 
 showHints :: Grid -> Player -> String
-showHints g p = foldl (++) "" $ intersperse ", " $ map displayMove moves
+showHints g p =
+  foldl (++) "" $ intersperse ", " $ map displayMove $ map fst movesOrdered
   where
     moves = possibleMoves g p
+    moveResults = map (\m -> (m, applyMove g m p)) moves
+    moveScores =
+      map (\(m, g) -> (m, (score p g) - (score (opponent p) g))) moveResults
+    movesOrdered = reverse $ sortBy (\l r -> compare (snd l) (snd r)) moveScores
 
 aiMoveFunc :: Int -> Grid -> Player -> IO Pos
 aiMoveFunc n = (\g p -> aiMove n g p)
