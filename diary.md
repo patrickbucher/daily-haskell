@@ -1,3 +1,11 @@
+# Day 41 (We, 2025-09-17)
+
+I'd like to tackle yesterday's issue by re-implementing `buildTreeAB`, for which I have to replace the list comprehension by a recursive definition. The problem with list comprehensions is that they cannot be stopped prematurely. But this is exactly what I need for Alpha-Beta pruning: stop building the tree.
+
+So I give it a naive try: show the type information in GHCi (`:t buildTreeAB`) and re-implement the entire thing based on my current understanding.
+
+Having started implementing this, I noticed that I have absolutely zero clarity of mind right now. I need to do something else now and will revisit the issue later on.
+
 # Day 40 (Tu, 2025-09-16)
 
 First, I got rid of the `Leaf` variant of my `Tree`. I had to remove it at three or four places, and the game still works.
