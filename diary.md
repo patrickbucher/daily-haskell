@@ -2,6 +2,8 @@
 
 I made the side length of the field dynamic, so that I can test Minimax and Alpha-Beta-Pruning with less data to consider.
 
+I also made some considerable changes to the code, which all had effects on the way the tree is built, which, of course, didn't increase my confidence in my own work. I'll re-consider it tomorrow.
+
 # Day 41 (We, 2025-09-17)
 
 I'd like to tackle yesterday's issue by re-implementing `buildTreeAB`, for which I have to replace the list comprehension by a recursive definition. The problem with list comprehensions is that they cannot be stopped prematurely. But this is exactly what I need for Alpha-Beta pruning: stop building the tree.
