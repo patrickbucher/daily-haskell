@@ -298,9 +298,9 @@ bestMoves :: Tree -> [Pos]
 bestMoves (Node g v p []) = []
 bestMoves (Node g v p ns) = map fst moves
   where
-  -- TODO: how to deal with Nothing?
-    eval (pos, Node _ (Just v) _ _) = (pos, v)
-    outcomes = map eval ns
+    eval (pos, Node _ Nothing _ _) = []
+    eval (pos, Node _ (Just v) _ _) = [(pos, v)]
+    outcomes = concat $ map eval ns
     results = map snd outcomes
     optimize
       | p == X = max
