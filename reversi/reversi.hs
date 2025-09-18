@@ -295,7 +295,6 @@ buildChildren g p n (a, b) (m:ms) =
     b'' = beta result p
 
 bestMoves :: Tree -> [Pos]
-bestMoves (Node g v p []) = []
 bestMoves (Node g v p ns) = map fst moves
   where
     eval (pos, Node _ Nothing _ _) = []
