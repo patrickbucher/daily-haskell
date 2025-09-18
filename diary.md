@@ -1,3 +1,7 @@
+# Day 42 (Th, 2025-09-18)
+
+I made the side length of the field dynamic, so that I can test Minimax and Alpha-Beta-Pruning with less data to consider.
+
 # Day 41 (We, 2025-09-17)
 
 I'd like to tackle yesterday's issue by re-implementing `buildTreeAB`, for which I have to replace the list comprehension by a recursive definition. The problem with list comprehensions is that they cannot be stopped prematurely. But this is exactly what I need for Alpha-Beta pruning: stop building the tree.
@@ -8,7 +12,7 @@ Having started implementing this, I noticed that I have absolutely zero clarity 
 
 Later on in the train, I managed to get a structurally working implementation. The trees turn out way too small in my opinition, but I have to further analyze this. But at least now I know how to implement the mechanism, and the evaluation terminates. (The runtime behaviour from yesterday looked quite similar to the one a witnessed today; but today it eventually evaluated.) I need to review my code, probably tomorrow.
 
-Having been stuck in a quite interesting game, I decided to create a help function to be used with the `h` key, which shows the player all the possible moves in descending order of their efficiency (minimax with depth 1, that is).
+Having been stuck in a quite interesting game, I decided to create a help function to be used with the `h` key, which shows the player all the possible moves in descending order of their efficiency (Minimax with depth 1, that is).
 
 In order to debug Alpha-Beta pruning tomorrow, I first need to make the grid more dynamic, so that I can play with a 4x4 or a 5x5 grid. That's an easy task for tomorrow in order to tackle the hard stuff later on.
 
@@ -139,23 +143,23 @@ I also gave chapter 12 a quick read in the afternoon. I'll have to work through 
 
 # Day 27 (We, 2025-09-03)
 
-I worked through exercises 3 and 4a. Then I decided to skip 4b, 4c, 4d for the moment. I'd like to come back to those, but first I'd like to learn more about the language. I'd also like to implement Reversi in Haskell, for which I'd also like to write the minimax algorithm again from scratch for better understanding it. After that, I'll tackle those exercises.
+I worked through exercises 3 and 4a. Then I decided to skip 4b, 4c, 4d for the moment. I'd like to come back to those, but first I'd like to learn more about the language. I'd also like to implement Reversi in Haskell, for which I'd also like to write the Minimax algorithm again from scratch for better understanding it. After that, I'll tackle those exercises.
 
 On towards the core of the second part: Chapter 12, titled _Monads and more_!
 
-Having written this, I decided to adjust my plans slightly: In order to digest everything I've learned in chapter 11, I'll take a break with _Programming in Haskell_. Instead of continuing with chapter 12, I'll implement the game of Reversi in Haskell. This is the ideal candidate for minimax and alpha-beta pruning, since every board yields an objective score among the two players. So this will take up a week at least, for I'd rather struggle through it than looking stuff up.
+Having written this, I decided to adjust my plans slightly: In order to digest everything I've learned in chapter 11, I'll take a break with _Programming in Haskell_. Instead of continuing with chapter 12, I'll implement the game of Reversi in Haskell. This is the ideal candidate for Minimax and alpha-beta pruning, since every board yields an objective score among the two players. So this will take up a week at least, for I'd rather struggle through it than looking stuff up.
 
 # Day 26 (Tu, 2025-09-02)
 
 Little time today, since I had to prepare today's lessons in the morning after a heavy headache today after teaching.
 
-However, I managed to finished the instruction part of the chapter. There must be something wrong with the minimax implementation, because the bot is absolutely beatable. I need to figure that out. (Probably it's just a typo in the code I copied from the book.)
+However, I managed to finished the instruction part of the chapter. There must be something wrong with the Minimax implementation, because the bot is absolutely beatable. I need to figure that out. (Probably it's just a typo in the code I copied from the book.)
 
 In the evening, I managed to get exercises 1 and 2 done. I also figured out the issue I had with the bot: I used the `wins` function instead of `won`, which I need to fix in my notes. After the fix, the bot is really unbeatable.
 
 # Day 25 (Mo, 2025-09-01)
 
-I continued working through chapter 11 and managed to finish the part about the minimax algorithm. My decision to use `Maybe` instead of empty or singleton lists fired a bit back, but I managed to find a workaround for it.
+I continued working through chapter 11 and managed to finish the part about the Minimax algorithm. My decision to use `Maybe` instead of empty or singleton lists fired a bit back, but I managed to find a workaround for it.
 
 I'll need another day for the rest of the chapter, and probably quite some time more for the exercises, among which alpha-beta pruning has to be implemented. But this is all very good stuff, so I'll take my time. Chapter 12 on Functors, Applicatives, and Monads will be the most important one for me, to which I'm looking forward.
 

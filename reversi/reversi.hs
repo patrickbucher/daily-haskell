@@ -37,17 +37,19 @@ directions =
   , (subtract 1, subtract 1) -- north-west
   ]
 
+sides :: Int
+sides = 8
+
 initial :: Grid
-initial =
-  [ [E, E, E, E, E, E, E, E]
-  , [E, E, E, E, E, E, E, E]
-  , [E, E, E, E, E, E, E, E]
-  , [E, E, E, O, X, E, E, E]
-  , [E, E, E, X, O, E, E, E]
-  , [E, E, E, E, E, E, E, E]
-  , [E, E, E, E, E, E, E, E]
-  , [E, E, E, E, E, E, E, E]
-  ]
+initial = applyChanges (applyChanges empty startO O) startX X
+  where
+    empty = [[E | _ <- [1 .. sides]] | _ <- [1 .. sides]]
+    tl = (sides `div` 2 - 1, sides `div` 2 - 1)
+    tr = (sides `div` 2 - 1, sides `div` 2)
+    br = (sides `div` 2, sides `div` 2)
+    bl = (sides `div` 2, sides `div` 2 - 1)
+    startO = [tl, br]
+    startX = [tr, bl]
 
 opponent :: Player -> Player
 opponent X = O
@@ -62,8 +64,8 @@ follow g (r, c) (dr, dc) =
   [ g !! r' !! c'
   | (r', c') <-
       zip
-        (takeWhile (\i -> i `elem` [0 .. 7]) (iterate dr r))
-        (takeWhile (\i -> i `elem` [0 .. 7]) (iterate dc c))
+        (takeWhile (\i -> i `elem` [0 .. sides - 1]) (iterate dr r))
+        (takeWhile (\i -> i `elem` [0 .. sides - 1]) (iterate dc c))
   ]
 
 validMove :: Grid -> Pos -> Player -> Bool
@@ -104,7 +106,7 @@ affectedCoordinates g (r, c) p (dr, dc) acc =
       | otherwise -> reverse acc
   where
     f =
-      if r `elem` [0 .. 7] && c `elem` [0 .. 7]
+      if r `elem` [0 .. sides - 1] && c `elem` [0 .. sides - 1]
         then Just (g !! r !! c)
         else Nothing
     r' = dr r
@@ -143,13 +145,13 @@ display g = concat ((title : rowsCaptioned) ++ [title] ++ ["\n", standings])
         ++ (show (score O g))
         ++ " "
         ++ show O
-    title = "  " ++ (foldl1 (++) $ (map show [1 .. 8])) ++ "\n"
+    title = "  " ++ (foldl1 (++) $ (map show [1 .. sides])) ++ "\n"
     rows = zip ['a' ..] (map concat $ map (map show) g)
     rowsCaptioned = map (\(c, r) -> [c, ' '] ++ r ++ [' ', c, '\n']) rows
 
 parseMove :: String -> Maybe Pos
 parseMove [r, c] =
-  if r' `elem` [0 .. 7] && c' `elem` [0 .. 7]
+  if r' `elem` [0 .. sides - 1] && c' `elem` [0 .. sides - 1]
     then Just (r', c')
     else Nothing
   where
@@ -212,12 +214,13 @@ aiMove d g p = do
   i <- randomRIO (0, (length moves) - 1)
   let move = moves !! i
   putStr $ "Player " ++ show p ++ ": "
-  threadDelay $ floor (2_000_000 * delayFactor)
+  threadDelay $ floor (1_000_000 * delayFactor)
   putStr $ displayMove move
   threadDelay 1_000_000
   return move
   where
-    (tree, _) = buildTreeAB g p d (-64, 64)
+    nFields = sides * sides
+    (tree, _) = buildTreeAB g p d (-nFields, nFields)
     moves = bestMoves tree
     delayFactor = (1.0 - fromIntegral d / 9.0)
 
@@ -249,6 +252,7 @@ buildTreeAB g p 0 ab = (Node g value (opponent p) [], ab)
     value = Just (score X g - score O g)
 buildTreeAB g p n ab = (Node g (Just value) p children, ab)
   where
+    nFields = sides * sides
     moves = possibleMoves g p
     dingens = buildChildren g p n ab moves
     children = map (\(m, t, _) -> (m, t)) dingens
@@ -257,8 +261,8 @@ buildTreeAB g p n ab = (Node g (Just value) p children, ab)
     values = concat $ map (eval . snd) children
     (fallback, optFunc) =
       if p == X
-        then ((-64), max)
-        else (64, min)
+        then ((-nFields), max)
+        else (nFields, min)
     value = foldl optFunc fallback values
 
 buildChildren ::
@@ -302,7 +306,8 @@ bestMoves (Node g v p ns) = map fst moves
 possibleMoves :: Grid -> Player -> [Pos]
 possibleMoves g p = filter (\pos -> validMove g pos p) candidates
   where
-    candidates = [(r, c) | r <- [0 .. 7], c <- [0 .. 7], g !! r !! c == E]
+    candidates =
+      [(r, c) | r <- [0 .. sides - 1], c <- [0 .. sides - 1], g !! r !! c == E]
 
 promptColor :: IO Player
 promptColor = do
