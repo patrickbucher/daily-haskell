@@ -195,7 +195,7 @@ promptMove g p = do
           promptMove g p
         else promptMove g p
 
--- TODO: run proper minimax (hX)
+-- TODO: run proper minimax (hX for depth level X)
 showHints :: Grid -> Player -> String
 showHints g p =
   foldl (++) "" $ intersperse ", " $ map displayMove $ map fst movesOrdered
@@ -247,22 +247,24 @@ buildTree g p n = Node g (Just $ value (Node g Nothing p children)) p children
     value (Node g Nothing p cs) = foldl1 optimize (map value (map snd cs))
 
 buildTreeAB :: Grid -> Player -> Int -> (Int, Int) -> (Tree, (Int, Int))
-buildTreeAB g p 0 ab = (Node g value (opponent p) [], ab)
+buildTreeAB g p 0 ab = (Node g value p [], ab)
   where
     value = Just (score X g - score O g)
-buildTreeAB g p n ab = (Node g (Just value) p children, ab)
+buildTreeAB g p n ab = (Node g (Just value) p children, abNarrowed)
   where
     nFields = sides * sides
     moves = possibleMoves g p
-    dingens = buildChildren g p n ab moves
-    children = map (\(m, t, _) -> (m, t)) dingens
+    subtree = buildChildren g p n ab moves
+    children = map (\(m, t, _) -> (m, t)) subtree
+    abs = map (\(_, _, ab) -> ab) subtree
+    abNarrowed =
+      (foldl max (-nFields) $ map fst abs, foldl min nFields $ map snd abs)
     eval (Node g Nothing _ _) = []
     eval (Node g (Just v) _ _) = [v]
     values = concat $ map (eval . snd) children
-    (fallback, optFunc) =
-      if p == X
-        then ((-nFields), max)
-        else (nFields, min)
+    (fallback, optFunc)
+      | p == X = (-nFields, max)
+      | p == O = (nFields, min)
     value = foldl optFunc fallback values
 
 buildChildren ::
@@ -275,18 +277,15 @@ buildChildren g p n (a, b) (m:ms) =
   where
     g' = applyMove g m p
     op = (opponent p)
-    optFunc :: Int -> Int -> Int =
-      if p == X
-        then max
-        else min
+    optFunc
+      | p == X = max
+      | p == O = min
     (Node g'' result p'' cs, (a', b')) = buildTreeAB g' op (n - 1) (a, b)
     head = (m, Node g' result p [], (alpha result p, beta result p))
-    quit (Just v) p = p == X && v > b || p == O && v < a
     quit Nothing _ = False
-    alpha Nothing _ = a
+    quit (Just v) p = p == X && v > b || p == O && v < a
     alpha (Just v) X = optFunc a v
     alpha _ _ = a
-    beta Nothing _ = b
     beta (Just v) O = optFunc b v
     beta _ _ = b
 
