@@ -234,10 +234,11 @@ buildTree g p n = Node g value p children
       | m <- possibleMoves g p
       , (finished g) == Nothing
       ]
-    (fallback, optimize)
-      | p == X = (-64 :: Int, max)
-      | p == O = (64 :: Int, min)
-    value = foldl optimize fallback $ map (\(_, Node _ v _ _) -> v) children
+    fields = sides ^ 2
+    (worst, optimize)
+      | p == X = (-fields, max)
+      | p == O = (fields, min)
+    value = foldl optimize worst $ map (\(_, Node _ v _ _) -> v) children
 
 bestMoves :: Tree -> [Pos]
 bestMoves (Node g v p ns) = map fst moves
@@ -245,10 +246,11 @@ bestMoves (Node g v p ns) = map fst moves
     eval (pos, Node _ v _ _) = [(pos, v)]
     outcomes = concat $ map eval ns
     results = map snd outcomes
-    optimize
-      | p == X = max
-      | p == O = min
-    optimal = foldl1 optimize results
+    fields = sides ^ 2
+    (worst, optimize)
+      | p == X = (-fields, max)
+      | p == O = (fields, min)
+    optimal = foldl optimize worst results
     moves = filter (\(pos, outcome) -> outcome == optimal) outcomes
 
 possibleMoves :: Grid -> Player -> [Pos]
