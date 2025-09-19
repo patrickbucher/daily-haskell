@@ -219,8 +219,7 @@ aiMove d g p = do
   threadDelay 1_000_000
   return move
   where
-    nFields = sides * sides
-    (tree, _) = buildTreeAB g p d (-nFields, nFields)
+    tree = buildTree g p d
     moves = bestMoves tree
     delayFactor = (1.0 - fromIntegral d / 9.0)
 
@@ -246,53 +245,6 @@ buildTree g p n = Node g (Just $ value (Node g Nothing p children)) p children
     value (Node g Nothing _ []) = score X g - score O g
     value (Node g Nothing p cs) = foldl1 optimize (map value (map snd cs))
 
-buildTreeAB :: Grid -> Player -> Int -> (Int, Int) -> (Tree, (Int, Int))
-buildTreeAB g p 0 ab = (Node g value p [], ab)
-  where
-    value = Just (score X g - score O g)
-buildTreeAB g p n ab = (Node g value p children, abNarrowed)
-  where
-    nFields = sides * sides
-    moves = possibleMoves g p
-    subtree = buildChildren g p n ab moves
-    children = map (\(m, t, _) -> (m, t)) subtree
-    abs = map (\(_, _, ab) -> ab) subtree
-    abNarrowed =
-      (foldl max (-nFields) $ map fst abs, foldl min nFields $ map snd abs)
-    eval (Node _ Nothing _ _) = []
-    eval (Node _ (Just v) _ _) = [v]
-    values = concat $ map (eval . snd) children
-    optFunc
-      | p == X = max
-      | p == O = min
-    value =
-      if null values
-        then Nothing
-        else Just (foldl1 optFunc values)
-
-buildChildren ::
-     Grid -> Player -> Int -> (Int, Int) -> [Pos] -> [(Pos, Tree, (Int, Int))]
-buildChildren g p _ ab [] = []
-buildChildren g p n (a, b) (m:ms) =
-  case (quit result p) of
-    True -> []
-    False -> head : buildChildren g p n (a'', b'') ms
-  where
-    g' = applyMove g m p
-    op = (opponent p)
-    optFunc
-      | p == X = max
-      | p == O = min
-    (Node _ result _ _, (a', b')) = buildTreeAB g' op (n - 1) (a, b)
-    head = (m, Node g' result p [], (a'', b''))
-    quit Nothing _ = False
-    quit (Just v) p = p == X && v > b' || p == O && v < a'
-    alpha (Just v) X = optFunc a' v
-    alpha _ _ = a
-    beta (Just v) O = optFunc b' v
-    beta _ _ = b
-    a'' = alpha result p
-    b'' = beta result p
 
 bestMoves :: Tree -> [Pos]
 bestMoves (Node g v p ns) = map fst moves
