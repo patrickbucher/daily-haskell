@@ -22,7 +22,7 @@ type Pos = (Int, Int)
 type Shift = Int -> Int
 
 data Tree =
-  Node Grid (Maybe Int) Player [(Pos, Tree)]
+  Node Grid Int Player [(Pos, Tree)]
   deriving (Show)
 
 directions :: [(Shift, Shift)]
@@ -223,34 +223,26 @@ aiMove d g p = do
     moves = bestMoves tree
     delayFactor = (1.0 - fromIntegral d / 9.0)
 
-size :: Tree -> Int
-size (Node _ _ _ []) = 1
-size (Node _ _ _ xs) = 1 + sum (map size (map snd xs))
-
 buildTree :: Grid -> Player -> Int -> Tree
-buildTree g p 0 = Node g (Just value) p []
+buildTree g p 0 = Node g value p []
   where
     value = score X g - score O g
-buildTree g p n = Node g (Just $ value (Node g Nothing p children)) p children
+buildTree g p n = Node g value p children
   where
     children =
       [ (m, buildTree (applyMove g m p) (opponent p) (n - 1))
       | m <- possibleMoves g p
       , (finished g) == Nothing
       ]
-    optimize
-      | p == X = max
-      | p == O = min
-    value (Node g (Just v) p cs) = v
-    value (Node g Nothing _ []) = score X g - score O g
-    value (Node g Nothing p cs) = foldl1 optimize (map value (map snd cs))
-
+    (fallback, optimize)
+      | p == X = (-64 :: Int, max)
+      | p == O = (64 :: Int, min)
+    value = foldl optimize fallback $ map (\(_, Node _ v _ _) -> v) children
 
 bestMoves :: Tree -> [Pos]
 bestMoves (Node g v p ns) = map fst moves
   where
-    eval (pos, Node _ Nothing _ _) = []
-    eval (pos, Node _ (Just v) _ _) = [(pos, v)]
+    eval (pos, Node _ v _ _) = [(pos, v)]
     outcomes = concat $ map eval ns
     results = map snd outcomes
     optimize
