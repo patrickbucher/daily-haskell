@@ -1,3 +1,7 @@
+# Day 43 (Fr, 2025-09-19)
+
+Little time this morning: I decided to ditch my `buildTreeAB` implementation. First, I want to get rid of the `Maybe Int` for the node value in favour of a `Int`, because in Reversi, every node in the game tree always has a value; it just might not be the one propagated from below. In fact, I might need the latter value as a return value of an evaluation function, but I have to consider this when I have more time on the weekend.
+
 # Day 42 (Th, 2025-09-18)
 
 I made the side length of the field dynamic, so that I can test Minimax and Alpha-Beta-Pruning with less data to consider.
