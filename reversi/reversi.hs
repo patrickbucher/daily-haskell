@@ -232,7 +232,6 @@ buildTree g p n = Node g value p children
     children =
       [ (m, buildTree (applyMove g m p) (opponent p) (n - 1))
       | m <- possibleMoves g p
-      , (finished g) == Nothing
       ]
     fields = sides ^ 2
     (worst, optimize)
