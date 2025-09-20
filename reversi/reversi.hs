@@ -239,6 +239,46 @@ buildTree g p n = Node g value p children
       | p == O = (fields, min)
     value = foldl optimize worst $ map (\(_, Node _ v _ _) -> v) children
 
+buildTreeAB :: Grid -> Player -> Int -> (Int, Int) -> Tree
+buildTreeAB g p 0 _ = Node g value p []
+  where
+    value = score X g - score O g
+buildTreeAB g p n (a, b) = Node g value p children
+  where
+    (children, _) = buildChildren g p n (possibleMoves g p) (a, b)
+    fields = sides ^ 2
+    (worst, optimize)
+      | p == X = (-fields, max)
+      | p == O = (fields, min)
+    eval (Node _ v _ _) = v
+    value = foldl optimize worst $ map eval (map snd children)
+
+buildChildren ::
+     Grid -> Player -> Int -> [Pos] -> (Int, Int) -> ([(Pos, Tree)], (Int, Int))
+buildChildren _ _ _ [] ab = ([], ab)
+buildChildren g p n (m:ms) (a, b) =
+  if quit
+    then ([firstChild], (alpha, beta))
+    else (children, (alpha, beta))
+  where
+    g' = applyMove g m p
+    (Node _ _ _ ks) = buildTreeAB g' (opponent p) (n - 1) (alpha, beta)
+    node = Node g' value p ks
+    (siblings, _) = buildChildren g p n ms (alpha, beta)
+    firstChild = (m, node)
+    children = (m, node) : siblings
+    fields = sides ^ 2
+    value = score X g' - score O g'
+    alpha
+      | p == X = max value a
+      | otherwise = a
+    beta
+      | p == O = min value b
+      | otherwise = b
+    quit
+      | p == X = value > beta
+      | p == O = value < alpha
+
 bestMoves :: Tree -> [Pos]
 bestMoves (Node g v p ns) = map fst moves
   where
