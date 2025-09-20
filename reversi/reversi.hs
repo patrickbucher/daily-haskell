@@ -189,18 +189,22 @@ promptMove g p = do
           putStrLn ""
           promptMove g p
     Nothing ->
-      if input == "h"
-        then do
-          putStrLn $ showHints g p
-          promptMove g p
-        else promptMove g p
+      case input of
+        ('H':l) ->
+          if all isNumber l
+            then do
+              putStrLn $ showHints g p (read l :: Int)
+              promptMove g p
+            else promptMove g p
+        _ -> promptMove g p
 
--- TODO: run proper minimax (hX for depth level X)
-showHints :: Grid -> Player -> String
-showHints g p =
+showHints :: Grid -> Player -> Int -> String
+showHints g p l =
   foldl (++) "" $ intersperse ", " $ map displayMove $ map fst movesOrdered
   where
-    moves = possibleMoves g p
+    fields = sides ^ 2
+    tree = buildTree g p l
+    moves = bestMoves tree
     moveResults = map (\m -> (m, applyMove g m p)) moves
     moveScores =
       map (\(m, g) -> (m, (score p g) - (score (opponent p) g))) moveResults
@@ -214,14 +218,15 @@ aiMove d g p = do
   i <- randomRIO (0, (length moves) - 1)
   let move = moves !! i
   putStr $ "Player " ++ show p ++ ": "
-  threadDelay $ floor (1_000_000 * delayFactor)
+  threadDelay 1_000_000
   putStr $ displayMove move
   threadDelay 1_000_000
   return move
   where
-    tree = buildTree g p d
+    level = d * 2
+    fields = sides ^ 2
+    tree = buildTreeAB g p level (-fields, fields)
     moves = bestMoves tree
-    delayFactor = (1.0 - fromIntegral d / 9.0)
 
 buildTree :: Grid -> Player -> Int -> Tree
 buildTree g p 0 = Node g value p []
