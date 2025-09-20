@@ -266,7 +266,7 @@ buildChildren ::
      Grid -> Player -> Int -> [Pos] -> (Int, Int) -> ([(Pos, Tree)], (Int, Int))
 buildChildren _ _ _ [] ab = ([], ab)
 buildChildren g p n (m:ms) (a, b) =
-  children `par` siblings `seq` (result, (alpha, beta))
+  children `par` siblings `pseq` (result, (alpha, beta))
   where
     g' = applyMove g m p
     (Node _ _ _ children) = buildTreeAB g' (opponent p) (n - 1) (a, b)
