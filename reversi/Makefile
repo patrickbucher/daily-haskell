@@ -3,7 +3,7 @@
 all: reversi
 
 reversi: reversi.hs
-	ghc -dynamic -O2 $<
+	ghc -threaded -dynamic -O2 $<
 
 clean:
 	rm -f reversi *.hi *.o

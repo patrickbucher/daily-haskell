@@ -1,4 +1,5 @@
 import Control.Concurrent
+import Control.Parallel
 import Data.Char
 import Data.List
 import System.IO
@@ -264,13 +265,14 @@ buildTreeAB g p n (a, b) = Node g value p children
 buildChildren ::
      Grid -> Player -> Int -> [Pos] -> (Int, Int) -> ([(Pos, Tree)], (Int, Int))
 buildChildren _ _ _ [] ab = ([], ab)
-buildChildren g p n (m:ms) (a, b) = (children, (alpha, beta))
+buildChildren g p n (m:ms) (a, b) =
+  children `par` siblings `pseq` (result, (alpha, beta))
   where
     g' = applyMove g m p
-    (Node _ _ _ ks) = buildTreeAB g' (opponent p) (n - 1) (a, b)
-    node = Node g' value p ks
+    (Node _ _ _ children) = buildTreeAB g' (opponent p) (n - 1) (a, b)
+    node = Node g' value p children
     (siblings, _) = buildChildren g p n ms (alpha, beta)
-    children
+    result
       | quit = []
       | otherwise = (m, node) : siblings
     eval (Node _ v _ _) = v
@@ -278,7 +280,7 @@ buildChildren g p n (m:ms) (a, b) = (children, (alpha, beta))
     (worst, optimize)
       | p == X = (-fields, max)
       | p == O = (fields, min)
-    value = foldl optimize worst $ map eval (map snd ks)
+    value = foldl optimize worst $ map eval (map snd children)
     alpha
       | p == X = max value a
       | otherwise = a
