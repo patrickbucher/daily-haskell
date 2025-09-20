@@ -14,6 +14,25 @@ Pruning only has an effect starting from the ninth(!) move: I counted 3,005,288 
 
 So, this concludes my experiments with Reversi in terms of my plan. After a detour of more than two weeks, I now feel prepared to continue with the tic-tac-toe exercises. I'd like to revisit Reversi once I learned the basics about concurrent Haskell; parallelizing the Minimax search algorithm is probably the stronger optimization than Alpha-Beta pruning, at least for the first couple of moves.
 
+Update: Out of curiosity, I glanced at `Control.Parallel` again. It turns out, you can make suggestions to the compiler using `par`:
+
+```haskell
+foo :: Int -> (Int, Int)
+foo x = a `par` b `par` (a, b)
+  where
+    a = calcA x
+    b = calcB x
+```
+
+This suggests to compute `a` and `b` in parallel for the resulting expression `(a, b)`. There are actually three related functions: `par`, `seq`, and `pseq`. I don't understand their subtle differences yet, which are supposedly related to lazy and eager evaluation. However, the code works in parallel when compiled and run as follows:
+
+```bash
+ghc -threaded -dynamic -O2 reversi.hs
+./reversi +RTS -N12
+```
+
+The `-threaded` flag enables the threaded runtime for compilation. Then `+RTS` adds multi-core support, while `-Nx` defines the number of threads, 12 in my case (due to my 12 cores).
+
 # Day 43 (Fr, 2025-09-19)
 
 Little time this morning: I decided to ditch my `buildTreeAB` implementation. First, I want to get rid of the `Maybe Int` for the node value in favour of a `Int`, because in Reversi, every node in the game tree always has a value; it just might not be the one propagated from below. In fact, I might need the latter value as a return value of an evaluation function, but I have to consider this when I have more time on the weekend.
