@@ -18,13 +18,13 @@ Update: Out of curiosity, I glanced at `Control.Parallel` again. It turns out, y
 
 ```haskell
 foo :: Int -> (Int, Int)
-foo x = a `par` b `par` (a, b)
+foo x = a `par` b `pseq` (a, b)
   where
     a = calcA x
     b = calcB x
 ```
 
-This suggests to compute `a` and `b` in parallel for the resulting expression `(a, b)`. There are actually three related functions: `par`, `seq`, and `pseq`. I don't understand their subtle differences yet, which are supposedly related to lazy and eager evaluation. However, the code works in parallel when compiled and run as follows:
+This suggests to compute `a` and `b` in parallel for the resulting expression `(a, b)`, which is computed afterwards. There are actually three related functions: `par`, `seq`, and `pseq`. I don't understand their subtle differences yet, which are supposedly related to lazy and eager evaluation. However, the code works in parallel when compiled and run as follows:
 
 ```bash
 ghc -threaded -dynamic -O2 reversi.hs
