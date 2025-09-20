@@ -1,3 +1,9 @@
+# Day 44 (Sa, 2025-09-20)
+
+I once again implemented Alpha-Beta-Pruning, and this time, I think I got it right. However, it is suspiciously fast, and the opponent doesn't play very strong. Maybe this is a side-effect from the optimization's assumption that the other player always picks optimal moves. Well, I don't!
+
+I also extended my help function to use Minimax, but using the original `buildTree` function: I'd like to see all possible moves, not just the realistic one. Writing this, I now see a possibility to test my implementation: The computer opponent plays using a pruned tree, whereas I rely on the original one using hints.
+
 # Day 43 (Fr, 2025-09-19)
 
 Little time this morning: I decided to ditch my `buildTreeAB` implementation. First, I want to get rid of the `Maybe Int` for the node value in favour of a `Int`, because in Reversi, every node in the game tree always has a value; it just might not be the one propagated from below. In fact, I might need the latter value as a return value of an evaluation function, but I have to consider this when I have more time on the weekend.
