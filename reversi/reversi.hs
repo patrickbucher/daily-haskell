@@ -223,10 +223,13 @@ aiMove d g p = do
   threadDelay 1_000_000
   return move
   where
-    level = d * 2
     fields = sides ^ 2
-    tree = buildTreeAB g p level (-fields, fields)
+    tree = buildTreeAB g p d (-fields, fields)
     moves = bestMoves tree
+
+leaves :: Tree -> Int
+leaves (Node _ _ _ []) = 1
+leaves (Node _ _ _ cs) = foldl (+) 0 $ map leaves (map snd cs)
 
 buildTree :: Grid -> Player -> Int -> Tree
 buildTree g p 0 = Node g value p []
@@ -261,19 +264,21 @@ buildTreeAB g p n (a, b) = Node g value p children
 buildChildren ::
      Grid -> Player -> Int -> [Pos] -> (Int, Int) -> ([(Pos, Tree)], (Int, Int))
 buildChildren _ _ _ [] ab = ([], ab)
-buildChildren g p n (m:ms) (a, b) =
-  if quit
-    then ([firstChild], (alpha, beta))
-    else (children, (alpha, beta))
+buildChildren g p n (m:ms) (a, b) = (children, (alpha, beta))
   where
     g' = applyMove g m p
-    (Node _ _ _ ks) = buildTreeAB g' (opponent p) (n - 1) (alpha, beta)
+    (Node _ _ _ ks) = buildTreeAB g' (opponent p) (n - 1) (a, b)
     node = Node g' value p ks
     (siblings, _) = buildChildren g p n ms (alpha, beta)
-    firstChild = (m, node)
-    children = (m, node) : siblings
+    children
+      | quit = []
+      | otherwise = (m, node) : siblings
+    eval (Node _ v _ _) = v
     fields = sides ^ 2
-    value = score X g' - score O g'
+    (worst, optimize)
+      | p == X = (-fields, max)
+      | p == O = (fields, min)
+    value = foldl optimize worst $ map eval (map snd ks)
     alpha
       | p == X = max value a
       | otherwise = a
