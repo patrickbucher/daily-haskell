@@ -6,6 +6,14 @@ I also extended my help function to use Minimax, but using the original `buildTr
 
 Update: That wasn't convincing, for I won both games against the strongest opponents using hints at both levels 5 and 3. I'm probably pruning the wrong way.
 
+I figured out the issue: I confused the siblings with the children. I always need to evaluate the complete sub-tree for each node in order to establish its value. However, I must not use the alpha and beta values depending on that value for calculating the children. This is why the program got stuck.
+
+However, there was no pruning happening during my tests. But upon reducing the grid size to four, I noticed that pruning was really working! So the first couple of moves on the full-size grid don't restrict the outcome in any meaningful way, so no pruning can be applied. The game is still open.
+
+Pruning only has an effect starting from the ninth(!) move: I counted 3,005,288 leaves in the full tree versus 3,002,699 in the pruned tree, resulting in a reduction of a meager 2589 leaves, i.e. less than one percent reduction. This is quite a bummer in terms of the practicality of strong computer opponents, but on the other side corresponds with my observation: A player dominating in terms of his score can lose the game within the last couple of moves, especially if the other player occupies the corners.
+
+So, this concludes my experiments with Reversi in terms of my plan. After a detour of more than two weeks, I now feel prepared to continue with the tic-tac-toe exercises. I'd like to revisit Reversi once I learned the basics about concurrent Haskell; parallelizing the Minimax search algorithm is probably the stronger optimization than Alpha-Beta pruning, at least for the first couple of moves.
+
 # Day 43 (Fr, 2025-09-19)
 
 Little time this morning: I decided to ditch my `buildTreeAB` implementation. First, I want to get rid of the `Maybe Int` for the node value in favour of a `Int`, because in Reversi, every node in the game tree always has a value; it just might not be the one propagated from below. In fact, I might need the latter value as a return value of an evaluation function, but I have to consider this when I have more time on the weekend.
