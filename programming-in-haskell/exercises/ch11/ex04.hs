@@ -21,6 +21,10 @@ next X = O
 empty :: Grid
 empty = replicate size (replicate size B)
 
+-- TODO: remove after testing
+advanced :: Grid
+advanced = [[X, B, O], [O, B, O], [X, O, X]]
+
 full :: Grid -> Bool
 full = all (/= B) . concat
 
@@ -130,13 +134,17 @@ play' g p t
   | p == O = do
     m <- getNat (prompt p)
     if valid g m
-      then play (move g m p) (next p) t -- TODO: descend into tree
+      then play (move g m p) (next p) (descend t m)
       else do
         putStrLn "ERROR: Invalid move"
         play' g p t
   | p == X = do
-    putStr "Player X is thinking..."
-    play g (next p) t -- TODO: descend into tree
+    play (move g m p) (next p) (descend t m)
+  where
+    m = fst $ head $ bestMoves X t
+
+descend :: Tree a -> Int -> Tree a
+descend (Node _ cs) m = snd $ head $ filter (\(m', t) -> m' == m) cs
 
 buildTree :: Int -> Player -> Grid -> Tree (Grid, Maybe Player)
 buildTree 0 _ g = Node (g, winner g) []
@@ -159,3 +167,36 @@ winner g
 
 possibleMoves :: Grid -> [Int]
 possibleMoves g = [i | i <- [0 .. (size ^ 2) - 1], (concat g) !! i == B]
+
+bestMoves :: Player -> Tree (Grid, Maybe Player) -> [(Int, Int)]
+bestMoves p (Node (_, _) []) = []
+bestMoves p (Node (_, _) cs) = moves
+  where
+    outcomes = map (\(m, c) -> (m, outcome p (m, c))) cs
+    moves = sortBy (\(_, l) (_, r) -> compare l r) outcomes
+
+outcome :: Player -> (Int, Tree (Grid, Maybe Player)) -> Int
+outcome p (_, (Node (_, w) [])) = rate p w
+outcome p (_, (Node (g, _) cs)) = best
+  where
+    subs = map (\(m, t) -> (outcome p (m, t), m)) $ cs
+    sorted = sortBy (\(l, _) (r, _) -> compare l r) subs
+    best = fst $ head sorted
+
+-- order:
+-- 1. player wins
+-- 2. undecided
+-- 3. draw
+-- 4. opponent wins
+rate :: Player -> Maybe Player -> Int
+rate p w
+  | w == Just X =
+    if p == X
+      then 1
+      else 4
+  | w == Just O =
+    if p == O
+      then 1
+      else 4
+  | w == Nothing = 2
+  | w == Just B = 3
