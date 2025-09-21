@@ -21,10 +21,6 @@ next X = O
 empty :: Grid
 empty = replicate size (replicate size B)
 
--- TODO: remove after testing
-advanced :: Grid
-advanced = [[X, B, O], [O, B, O], [X, O, X]]
-
 full :: Grid -> Bool
 full = all (/= B) . concat
 
@@ -150,7 +146,10 @@ buildTree :: Int -> Player -> Grid -> Tree Grid
 buildTree 0 _ g = Node g []
 buildTree n p g = Node g children
   where
-    children = [(m, buildNode n p g m) | m <- possibleMoves g]
+    terminal = winner g /= Nothing
+    children
+      | terminal = []
+      | otherwise = [(m, buildNode n p g m) | m <- possibleMoves g]
 
 buildNode :: Int -> Player -> Grid -> Int -> Tree Grid
 buildNode n p g m = Node g' children
@@ -180,12 +179,8 @@ bestMoves p (Node _ cs) = sorted
 
 outcome :: Player -> (Int, Tree Grid) -> Int
 outcome p (_, (Node g [])) = rate (winner g)
-outcome p (_, (Node g cs)) =
-  if current == Nothing
-    then best
-    else rate current
+outcome p (_, (Node g cs)) = best
   where
-    current = winner g
     order
       | p == X = reverse
       | p == O = id
