@@ -3,7 +3,7 @@ import Data.List
 import System.IO
 
 size :: Int
-size = 4
+size = 3
 
 type Grid = [[Player]]
 
@@ -118,7 +118,7 @@ prune 0 (Node x _) = Node x []
 prune n (Node x ts) = Node x [prune (n - 1) t | t <- ts]
 
 depth :: Int
-depth = 3
+depth = size ^ 2
 
 minimax :: Tree Grid -> Tree (Grid, Player)
 minimax (Node g [])
