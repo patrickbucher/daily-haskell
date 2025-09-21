@@ -2,6 +2,8 @@
 
 I quickly worked through exercise 4b, which practically didn't require me to do anything. Exercise 4c was much harder, because the existing tree structure didn't contain the moves. So I re-implemented the whole thing. There must still be an issue with the propagation of the leaf outcomes to the top of the tree, therefore the computer player always picks the first possible move instead of the best. I'll figure that out later or tomorrow. Building the entire tree up in advance is quite practical for tic-tac-toe, and moving down that tree is not an issue once the moves are part of the data structure.
 
+In the evening, I finally managed to finish exercise 4c. It was tougher than I thought, because tic-tac-toe is such a different game than Reversi: You always need to consider if a game state is decided or not and rate it accordingly. I won't go into the details, but now there's one exercise left: Alpha-Beta pruning. This should be a rather quick one, becaues there's not much to get wrong now. But I'll leave that for tomorrow.
+
 # Day 44 (Sa, 2025-09-20)
 
 I once again implemented Alpha-Beta-Pruning, and this time, I think I got it right. However, it is suspiciously fast, and the opponent doesn't play very strong. Maybe this is a side-effect from the optimization's assumption that the other player always picks optimal moves. Well, I don't!
