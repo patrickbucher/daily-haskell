@@ -66,11 +66,8 @@ showPlayer x = show x
 valid :: Grid -> Int -> Bool
 valid g i = 0 <= i && i < size ^ 2 && concat g !! i == B
 
-move :: Grid -> Int -> Player -> Maybe Grid
-move g i p =
-  if valid g i
-    then Just (chop size (xs ++ [p] ++ ys))
-    else Nothing
+move :: Grid -> Int -> Player -> Grid
+move g i p = (chop size (xs ++ [p] ++ ys))
   where
     (xs, B:ys) = splitAt i (concat g)
 
@@ -98,7 +95,7 @@ goto :: (Int, Int) -> IO ()
 goto (x, y) = putStr ("\ESC[" ++ show y ++ ";" ++ show x ++ "H")
 
 data Tree a =
-  Node a [Tree a]
+  Node a [(Int, Tree a)]
   deriving (Show)
 
 main :: IO ()
@@ -118,28 +115,47 @@ promptFirst = do
     'X' -> return X
     otherwise -> promptFirst
 
-play :: Grid -> Player -> Tree (Int, Grid, Player) -> IO ()
+play :: Grid -> Player -> Tree (Grid, Maybe Player) -> IO ()
 play g p t = do
   cls
   goto (1, 1)
   putGrid g
   play' g p t
 
-play' :: Grid -> Player -> Tree (Int, Grid, Player) -> IO ()
+play' :: Grid -> Player -> Tree (Grid, Maybe Player) -> IO ()
 play' g p t
   | wins O g = putStrLn "Player O wins!\n"
   | wins X g = putStrLn "Player X wins!\n"
   | full g = putStrLn "It's a draw!\n"
   | p == O = do
-    i <- getNat (prompt p)
-    case move g i p of
-      Nothing -> do
+    m <- getNat (prompt p)
+    if valid g m
+      then play (move g m p) (next p) t -- TODO: descend into tree
+      else do
         putStrLn "ERROR: Invalid move"
         play' g p t
-      Just g' -> play g' (next p) t -- TODO: apply move
   | p == X = do
     putStr "Player X is thinking..."
-    play g (next p) t -- TODO: apply move
+    play g (next p) t -- TODO: descend into tree
 
-buildTree :: Int -> Player -> Grid -> Tree (Int, Grid, Player)
-buildTree n p g = Node (0, g, p) []
+buildTree :: Int -> Player -> Grid -> Tree (Grid, Maybe Player)
+buildTree 0 _ g = Node (g, winner g) []
+buildTree n p g = Node (g, winner g) children
+  where
+    children = [(m, buildNode n p g m) | m <- possibleMoves g]
+
+buildNode :: Int -> Player -> Grid -> Int -> Tree (Grid, Maybe Player)
+buildNode n p g m = Node (g', winner g) children
+  where
+    g' = move g m p
+    (Node (_, _) children) = buildTree (n - 1) (next p) g'
+
+winner :: Grid -> Maybe Player
+winner g
+  | wins X g = Just X
+  | wins O g = Just O
+  | full g = Just B
+  | otherwise = Nothing
+
+possibleMoves :: Grid -> [Int]
+possibleMoves g = [i | i <- [0 .. (size ^ 2) - 1], (concat g) !! i == B]
