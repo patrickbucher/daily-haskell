@@ -101,48 +101,13 @@ data Tree a =
   Node a [Tree a]
   deriving (Show)
 
-gametree :: Grid -> Player -> Tree Grid
-gametree g p = Node g [gametree g' (next p) | g' <- moves g p]
-
-moves :: Grid -> Player -> [Grid]
-moves g p
-  | won g = []
-  | full g = []
-  | otherwise = concat [maybeToList (move g i p) | i <- [0 .. ((size ^ 2) - 1)]]
-  where
-    maybeToList (Just x) = [x]
-    maybeToList Nothing = []
-
-prune :: Int -> Tree a -> Tree a
-prune 0 (Node x _) = Node x []
-prune n (Node x ts) = Node x [prune (n - 1) t | t <- ts]
-
-depth :: Int
-depth = size ^ 2
-
-minimax :: Tree Grid -> Tree (Grid, Player)
-minimax (Node g [])
-  | wins O g = Node (g, O) []
-  | wins X g = Node (g, X) []
-  | otherwise = Node (g, B) []
-minimax (Node g ts)
-  | turn g == O = Node (g, minimum ps) ts'
-  | turn g == X = Node (g, maximum ps) ts'
-  where
-    ts' = map minimax ts
-    ps = [p | Node (_, p) _ <- ts']
-
-bestmove :: Grid -> Player -> Grid
-bestmove g p = head [g' | Node (g', p') _ <- ts, p' == best]
-  where
-    tree = prune depth (gametree g p)
-    Node (_, best) ts = minimax tree
-
 main :: IO ()
 main = do
   startingPlayer <- promptFirst
   hSetBuffering stdout NoBuffering
-  play empty startingPlayer
+  play empty startingPlayer (buildTree depth startingPlayer empty)
+  where
+    depth = size ^ 2
 
 promptFirst :: IO Player
 promptFirst = do
@@ -153,15 +118,15 @@ promptFirst = do
     'X' -> return X
     otherwise -> promptFirst
 
-play :: Grid -> Player -> IO ()
-play g p = do
+play :: Grid -> Player -> Tree (Int, Grid, Player) -> IO ()
+play g p t = do
   cls
   goto (1, 1)
   putGrid g
-  play' g p
+  play' g p t
 
-play' :: Grid -> Player -> IO ()
-play' g p
+play' :: Grid -> Player -> Tree (Int, Grid, Player) -> IO ()
+play' g p t
   | wins O g = putStrLn "Player O wins!\n"
   | wins X g = putStrLn "Player X wins!\n"
   | full g = putStrLn "It's a draw!\n"
@@ -170,8 +135,11 @@ play' g p
     case move g i p of
       Nothing -> do
         putStrLn "ERROR: Invalid move"
-        play' g p
-      Just g' -> play g' (next p)
+        play' g p t
+      Just g' -> play g' (next p) t -- TODO: apply move
   | p == X = do
     putStr "Player X is thinking..."
-    (play $! (bestmove g p)) (next p)
+    play g (next p) t -- TODO: apply move
+
+buildTree :: Int -> Player -> Grid -> Tree (Int, Grid, Player)
+buildTree n p g = Node (0, g, p) []
