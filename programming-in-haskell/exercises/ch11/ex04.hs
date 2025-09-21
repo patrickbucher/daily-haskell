@@ -119,14 +119,14 @@ promptFirst = do
     'X' -> return X
     otherwise -> promptFirst
 
-play :: Grid -> Player -> Tree (Grid, Maybe Player) -> IO ()
+play :: Grid -> Player -> Tree Grid -> IO ()
 play g p t = do
   cls
   goto (1, 1)
   putGrid g
   play' g p t
 
-play' :: Grid -> Player -> Tree (Grid, Maybe Player) -> IO ()
+play' :: Grid -> Player -> Tree Grid -> IO ()
 play' g p t
   | wins O g = putStrLn "Player O wins!\n"
   | wins X g = putStrLn "Player X wins!\n"
@@ -146,17 +146,17 @@ play' g p t
 descend :: Tree a -> Int -> Tree a
 descend (Node _ cs) m = snd $ head $ filter (\(m', t) -> m' == m) cs
 
-buildTree :: Int -> Player -> Grid -> Tree (Grid, Maybe Player)
-buildTree 0 _ g = Node (g, winner g) []
-buildTree n p g = Node (g, winner g) children
+buildTree :: Int -> Player -> Grid -> Tree Grid
+buildTree 0 _ g = Node g []
+buildTree n p g = Node g children
   where
     children = [(m, buildNode n p g m) | m <- possibleMoves g]
 
-buildNode :: Int -> Player -> Grid -> Int -> Tree (Grid, Maybe Player)
-buildNode n p g m = Node (g', winner g) children
+buildNode :: Int -> Player -> Grid -> Int -> Tree Grid
+buildNode n p g m = Node g' children
   where
     g' = move g m p
-    (Node (_, _) children) = buildTree (n - 1) (next p) g'
+    (Node _ children) = buildTree (n - 1) (next p) g'
 
 winner :: Grid -> Maybe Player
 winner g
@@ -168,35 +168,33 @@ winner g
 possibleMoves :: Grid -> [Int]
 possibleMoves g = [i | i <- [0 .. (size ^ 2) - 1], (concat g) !! i == B]
 
-bestMoves :: Player -> Tree (Grid, Maybe Player) -> [(Int, Int)]
-bestMoves p (Node (_, _) []) = []
-bestMoves p (Node (_, _) cs) = moves
+bestMoves :: Player -> Tree Grid -> [(Int, Int)]
+bestMoves p (Node _ []) = []
+bestMoves p (Node _ cs) = sorted
   where
-    outcomes = map (\(m, c) -> (m, outcome p (m, c))) cs
-    moves = sortBy (\(_, l) (_, r) -> compare l r) outcomes
+    order
+      | p == X = reverse
+      | p == O = id
+    moves = map (\(m, c) -> (m, outcome p (m, c))) cs
+    sorted = order $ sortBy (\(_, l) (_, r) -> compare l r) moves
 
-outcome :: Player -> (Int, Tree (Grid, Maybe Player)) -> Int
-outcome p (_, (Node (_, w) [])) = rate p w
-outcome p (_, (Node (g, _) cs)) = best
+outcome :: Player -> (Int, Tree Grid) -> Int
+outcome p (_, (Node g [])) = rate (winner g)
+outcome p (_, (Node g cs)) =
+  if current == Nothing
+    then best
+    else rate current
   where
-    subs = map (\(m, t) -> (outcome p (m, t), m)) $ cs
-    sorted = sortBy (\(l, _) (r, _) -> compare l r) subs
-    best = fst $ head sorted
+    current = winner g
+    order
+      | p == X = reverse
+      | p == O = id
+    subs = map (\(m, t) -> (m, outcome (next p) (m, t))) $ cs
+    sorted = order $ sortBy (\(_, l) (_, r) -> compare l r) subs
+    best = snd $ head sorted
 
--- order:
--- 1. player wins
--- 2. undecided
--- 3. draw
--- 4. opponent wins
-rate :: Player -> Maybe Player -> Int
-rate p w
-  | w == Just X =
-    if p == X
-      then 1
-      else 4
-  | w == Just O =
-    if p == O
-      then 1
-      else 4
-  | w == Nothing = 2
-  | w == Just B = 3
+rate :: Maybe Player -> Int
+rate (Just X) = 1
+rate (Just B) = 0
+rate Nothing = 0
+rate (Just O) = -1
