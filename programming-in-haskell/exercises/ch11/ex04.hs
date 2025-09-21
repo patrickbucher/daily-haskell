@@ -115,14 +115,14 @@ promptFirst = do
     'X' -> return X
     otherwise -> promptFirst
 
-play :: Grid -> Player -> Tree Grid -> IO ()
+play :: Grid -> Player -> Tree (Grid, Maybe Player) -> IO ()
 play g p t = do
   cls
   goto (1, 1)
   putGrid g
   play' g p t
 
-play' :: Grid -> Player -> Tree Grid -> IO ()
+play' :: Grid -> Player -> Tree (Grid, Maybe Player) -> IO ()
 play' g p t
   | wins O g = putStrLn "Player O wins!\n"
   | wins X g = putStrLn "Player X wins!\n"
@@ -142,17 +142,17 @@ play' g p t
 descend :: Tree a -> Int -> Tree a
 descend (Node _ cs) m = snd $ head $ filter (\(m', t) -> m' == m) cs
 
-buildTree :: Int -> Player -> Grid -> Tree Grid
-buildTree 0 _ g = Node g []
-buildTree n p g = Node g children
+buildTree :: Int -> Player -> Grid -> Tree (Grid, Maybe Player)
+buildTree 0 _ g = Node (g, winner g) []
+buildTree n p g = Node (g, winner g) children
   where
     terminal = winner g /= Nothing
     children
       | terminal = []
       | otherwise = [(m, buildNode n p g m) | m <- possibleMoves g]
 
-buildNode :: Int -> Player -> Grid -> Int -> Tree Grid
-buildNode n p g m = Node g' children
+buildNode :: Int -> Player -> Grid -> Int -> Tree (Grid, Maybe Player)
+buildNode n p g m = Node (g', winner g') children
   where
     g' = move g m p
     (Node _ children) = buildTree (n - 1) (next p) g'
@@ -167,19 +167,22 @@ winner g
 possibleMoves :: Grid -> [Int]
 possibleMoves g = [i | i <- [0 .. (size ^ 2) - 1], (concat g) !! i == B]
 
-bestMoves :: Player -> Tree Grid -> [(Int, Int)]
+bestMoves :: Player -> Tree (Grid, Maybe Player) -> [(Int, Int)]
 bestMoves p (Node _ []) = []
 bestMoves p (Node _ cs) = sorted
   where
     order
       | p == X = reverse
       | p == O = id
-    moves = map (\(m, c) -> (m, outcome p (m, c))) cs
+    moves = map (\(m, c) -> (m, outcome (next p) (m, c))) cs
     sorted = order $ sortBy (\(_, l) (_, r) -> compare l r) moves
 
-outcome :: Player -> (Int, Tree Grid) -> Int
-outcome p (_, (Node g [])) = rate (winner g)
-outcome p (_, (Node g cs)) = best
+outcome :: Player -> (Int, Tree (Grid, Maybe Player)) -> Int
+outcome p (_, (Node (g, w) [])) = rate w
+outcome p (_, (Node (g, w) cs)) =
+  if w == Nothing
+    then best
+    else rate w
   where
     order
       | p == X = reverse
