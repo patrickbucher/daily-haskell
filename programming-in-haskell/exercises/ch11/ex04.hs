@@ -158,15 +158,33 @@ buildTreeAB n p g ab = (Node (g, winner g) children, ab)
     terminal = winner g /= Nothing
     (children, ab)
       | terminal = ([], ab)
-      | otherwise = buildChildren n p g ab
+      | otherwise = buildChildren (n - 1) (next p) g (possibleMoves g) ab
 
 buildChildren ::
      Int
   -> Player
   -> Grid
+  -> [Int]
   -> (Int, Int)
   -> ([(Int, Tree (Grid, Maybe Player))], (Int, Int))
-buildChildren d p g (a, b) = ([], (a, b))
+buildChildren d p g [] ab = ([], ab)
+buildChildren d p g (m:ms) (a, b) = ([], (a, b))
+  where
+    g' = move g m p
+    (node, (alpha, beta)) = buildNodeAB d p g' (a, b)
+    (siblings, _) = buildChildren d p g ms (alpha, beta)
+    result = (node : map snd siblings)
+    value (Node (_, w) _) = rate w
+
+buildNodeAB ::
+     Int
+  -> Player
+  -> Grid
+  -> (Int, Int)
+  -> (Tree (Grid, Maybe Player), (Int, Int))
+buildNodeAB n p g ab = (Node (g, winner g) children, (alpha, beta))
+  where
+    (Node _ children, (alpha, beta)) = buildTreeAB (n - 1) (next p) g ab
 
 buildTree :: Int -> Player -> Grid -> Tree (Grid, Maybe Player)
 buildTree 0 _ g = Node (g, winner g) []
