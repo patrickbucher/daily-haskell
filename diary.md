@@ -1,3 +1,7 @@
+# Day 46 (Mo, 2025-09-22)
+
+Before implementing Alpha-Beta pruning for exercise 4d, I counted the leaves of the original tree: 255,168 for a depth of 9, i.e. the full game tree. I made good progress working at the implementation, even though the additional layer to put together the node using `buildNodeAB` makes it a bit harder to get right. Unfortunately, building the tree is stuck somewhere, as if I had interdependent values in my `where` block of `buildChildren`. I have to debug this when I have more time.
+
 # Day 45 (Su, 2025-09-21)
 
 I quickly worked through exercise 4b, which practically didn't require me to do anything. Exercise 4c was much harder, because the existing tree structure didn't contain the moves. So I re-implemented the whole thing. There must still be an issue with the propagation of the leaf outcomes to the top of the tree, therefore the computer player always picks the first possible move instead of the best. I'll figure that out later or tomorrow. Building the entire tree up in advance is quite practical for tic-tac-toe, and moving down that tree is not an issue once the moves are part of the data structure.
