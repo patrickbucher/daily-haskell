@@ -158,7 +158,7 @@ buildTreeAB n p g ab = (Node (g, winner g) children, ab)
     terminal = winner g /= Nothing
     (children, ab)
       | terminal = ([], ab)
-      | otherwise = buildChildren (n - 1) (next p) g (possibleMoves g) ab
+      | otherwise = buildChildren n (next p) g (possibleMoves g) ab
 
 buildChildren ::
      Int
@@ -173,7 +173,7 @@ buildChildren d p g (m:ms) (a, b) = (result, (alpha, beta))
     g' = move g m p
     ((Node (_, _) children), _) = buildNodeAB d p g' (a, b)
     node = Node (g', winner g') children
-    (siblings, _) = buildChildren d p g ms (a, b)
+    (siblings, _) = buildChildren d p g ms (alpha, beta)
     result
       | quit = []
       | otherwise = ((m, node) : siblings)
@@ -201,7 +201,7 @@ outcomeAB p (Node (g, w) cs) =
     order
       | p == X = reverse
       | p == O = id
-    subs = map (\(m, t) -> (m, outcome (next p) (m, t))) $ cs
+    subs = map (\(m, t) -> (m, outcomeAB (next p) t)) $ cs
     sorted = order $ sortBy (\(_, l) (_, r) -> compare l r) subs
     best = snd $ head sorted
 
