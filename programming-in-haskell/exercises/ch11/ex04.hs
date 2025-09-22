@@ -168,13 +168,42 @@ buildChildren ::
   -> (Int, Int)
   -> ([(Int, Tree (Grid, Maybe Player))], (Int, Int))
 buildChildren d p g [] ab = ([], ab)
-buildChildren d p g (m:ms) (a, b) = ([], (a, b))
+buildChildren d p g (m:ms) (a, b) = (result, (alpha, beta))
   where
     g' = move g m p
-    (node, (alpha, beta)) = buildNodeAB d p g' (a, b)
-    (siblings, _) = buildChildren d p g ms (alpha, beta)
-    result = (node : map snd siblings)
-    value (Node (_, w) _) = rate w
+    ((Node (_, _) children), _) = buildNodeAB d p g' (a, b)
+    node = Node (g', winner g') children
+    (siblings, _) = buildChildren d p g ms (a, b)
+    result
+      | quit = []
+      | otherwise = ((m, node) : siblings)
+    (worst, optimize)
+      | p == X = (-9, max)
+      | p == O = (9, min)
+    value = foldl optimize worst $ map (\c -> outcomeAB p c) (map snd children)
+    alpha
+      | p == X = max value a
+      | otherwise = a
+    beta
+      | p == O = min value b
+      | otherwise = b
+    quit
+      | p == X = value > beta
+      | p == O = value < alpha
+
+outcomeAB :: Player -> Tree (Grid, Maybe Player) -> Int
+outcomeAB p (Node (g, w) []) = rate w
+outcomeAB p (Node (g, w) cs) =
+  if w == Nothing
+    then best
+    else rate w
+  where
+    order
+      | p == X = reverse
+      | p == O = id
+    subs = map (\(m, t) -> (m, outcome (next p) (m, t))) $ cs
+    sorted = order $ sortBy (\(_, l) (_, r) -> compare l r) subs
+    best = snd $ head sorted
 
 buildNodeAB ::
      Int
