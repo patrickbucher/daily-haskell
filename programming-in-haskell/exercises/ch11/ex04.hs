@@ -139,8 +139,34 @@ play' g p t
   where
     m = fst $ head $ bestMoves X t
 
+leaves :: Tree a -> Int
+leaves (Node _ []) = 1
+leaves (Node _ cs) = foldl (+) 0 $ map leaves (map snd cs)
+
 descend :: Tree a -> Int -> Tree a
 descend (Node _ cs) m = snd $ head $ filter (\(m', t) -> m' == m) cs
+
+buildTreeAB ::
+     Int
+  -> Player
+  -> Grid
+  -> (Int, Int)
+  -> (Tree (Grid, Maybe Player), (Int, Int))
+buildTreeAB 0 _ g ab = (Node (g, winner g) [], ab)
+buildTreeAB n p g ab = (Node (g, winner g) children, ab)
+  where
+    terminal = winner g /= Nothing
+    (children, ab)
+      | terminal = ([], ab)
+      | otherwise = buildChildren n p g ab
+
+buildChildren ::
+     Int
+  -> Player
+  -> Grid
+  -> (Int, Int)
+  -> ([(Int, Tree (Grid, Maybe Player))], (Int, Int))
+buildChildren d p g (a, b) = ([], (a, b))
 
 buildTree :: Int -> Player -> Grid -> Tree (Grid, Maybe Player)
 buildTree 0 _ g = Node (g, winner g) []
