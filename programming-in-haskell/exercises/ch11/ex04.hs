@@ -153,12 +153,13 @@ buildTreeAB ::
   -> (Int, Int)
   -> (Tree (Grid, Maybe Player), (Int, Int))
 buildTreeAB 0 _ g ab = (Node (g, winner g) [], ab)
-buildTreeAB n p g ab = (Node (g, winner g) children, ab)
+buildTreeAB n p g ab = (Node (g, w) children, ab)
   where
-    terminal = winner g /= Nothing
-    (children, ab)
-      | terminal = ([], ab)
-      | otherwise = buildChildren n (next p) g (possibleMoves g) ab
+    w = winner g
+    terminal = w /= Nothing
+    children
+      | terminal = []
+      | otherwise = fst $ buildChildren n (next p) g (possibleMoves g) ab
 
 buildChildren ::
      Int
