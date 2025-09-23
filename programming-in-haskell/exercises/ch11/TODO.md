@@ -1,4 +1,0 @@
-- 4
-    - b: change size of winning line
-    - c: generate game tree once
-    - d: alpha-beta pruning

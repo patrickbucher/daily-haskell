@@ -1,3 +1,7 @@
+# Day 47 (Tu, 2025-09-23)
+
+I managed to get the `buildTreeAB` function to run; it turns out, there was a pointless circular dependency within the `where` block. Having resolved it, the tree was built up properly—and had substantially less leaves. However, descending the pruned tree as in exercise 4c crashed the program, because some paths aren't supposed to be taken. I'll leave it at that for chapter 11 and will continue with chapter 12 tomorrow. That's it for today.
+
 # Day 46 (Mo, 2025-09-22)
 
 Before implementing Alpha-Beta pruning for exercise 4d, I counted the leaves of the original tree: 255,168 for a depth of 9, i.e. the full game tree. I made good progress working at the implementation, even though the additional layer to put together the node using `buildNodeAB` makes it a bit harder to get right. Unfortunately, building the tree is stuck somewhere, as if I had interdependent values in my `where` block of `buildChildren`. I have to debug this when I have more time.
