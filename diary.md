@@ -2,6 +2,8 @@
 
 I started working through chapter 12, which I already skimmed over two weeks ago. I summarized the part on functors, which is by far the easiest of that chapter. I'm looking forward to applicatives tomorrow!
 
+I decided to give myself exactly one week for this chapter. If I don't grasp it thoroughly by the end of September, I'll let Haskell rest and pick up something else for the time being. Then I'd like to come back to Haskell as soon as I have more mental resources available. I'm thinking of a _Frontend Grind_ again, as I did last year. But let's see how I'll be doing this week.
+
 # Day 47 (Tu, 2025-09-23)
 
 I managed to get the `buildTreeAB` function to run; it turns out, there was a pointless circular dependency within the `where` block. Having resolved it, the tree was built up properly—and had substantially less leaves. However, descending the pruned tree as in exercise 4c crashed the program, because some paths aren't supposed to be taken. I'll leave it at that for chapter 11 and will continue with chapter 12 tomorrow. That's it for today.
