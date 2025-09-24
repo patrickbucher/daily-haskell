@@ -1,3 +1,7 @@
+# Day 48 (We, 2025-09-24)
+
+I started working through chapter 12, which I already skimmed over two weeks ago. I summarized the part on functors, which is by far the easiest of that chapter. I'm looking forward to applicatives tomorrow!
+
 # Day 47 (Tu, 2025-09-23)
 
 I managed to get the `buildTreeAB` function to run; it turns out, there was a pointless circular dependency within the `where` block. Having resolved it, the tree was built up properly—and had substantially less leaves. However, descending the pruned tree as in exercise 4c crashed the program, because some paths aren't supposed to be taken. I'll leave it at that for chapter 11 and will continue with chapter 12 tomorrow. That's it for today.

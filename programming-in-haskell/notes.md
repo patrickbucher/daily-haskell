@@ -1236,3 +1236,105 @@ The program `tic-tac-toe-bot.hs` can be compiled an run as follows:
 ghc -dynamic -O2 tic-tac-toe-bot.hs
 ./tic-tac-toe-bot
 ```
+
+# Monads and more
+
+The level of generality of Haskell code can be increased by considering functions that are generic over a range of types such as lists, trees, and input/output actions.
+
+## Functors
+
+Consider these two functions that process the elements of a list in a similar manner but using a different transformation on each element:
+
+```haskell
+inc :: [Int] -> [Int]
+inc [] = []
+inc (n:ns) = n + 1 : inc ns
+
+sqr :: [Int] -> [Int]
+sqr [] = []
+sqr (n:ns) = n ^ 2 : sqr ns
+```
+
+Both functions process a list of integer values one by one, but apply a different function to each element: `(+1)` and `(^2)`, respectively. Abstracting this difference out by passing that particular function as an additional parameter gives the already known `map` function:
+
+```haskell
+map :: (a - B b) -> [a] -> [b]
+map f [] = []
+map f (x:xs) = f x : map f xs
+```
+
+Using `map`, the `inc` and `sqr` functions from above can be re-defined as follows:
+
+```haskell
+inc = map (+1)
+sqr = map (^2)
+```
+
+The idea of applying a function to each element of a container is captured in a type class called `Functor` taht supports the mapping operation `fmap`:
+
+```haskell
+class Functor f where
+  fmap :: (a -> b) -> f a -> f b
+```
+
+The type `f` is a `Functor` if it supports an operation `fmap` that takes a function of type `a -> b`, a container with elements of type `a`, and returns a container with elements of type `b`, i.e. the results of the transformation applied to all the elements.
+
+Lists and the `Maybe` type are functors:
+
+```haskell
+instance Functor [] where
+  fmap = map
+
+instance Functor Maybe where
+  fmap _ Nothing = Nothing
+  fmap g (Just x) = Just (g x)
+```
+
+Which can be applied as follows:
+
+```ghci
+> fmap (+1) []
+[]
+
+> fmap (+1) [1..5]
+[2,3,4,5,6]
+
+> fmap (+1) Nothing
+Nothing
+
+> fmap (+1) (Just 1)
+Just 2
+```
+
+Consider this user-defined binary tree type of node and leaves:
+
+```haskell
+data Tree a
+  = Leaf a
+  | Node (Tree a) (Tree a)
+  deriving (Show)
+```
+
+It can be turned into a functor by implementing the `fmap` function for it:
+
+```haskell
+instance Functor Tree where
+  fmap g (Leaf x) = Leaf (g x)
+  fmap g (Node l r) = Node (fmap g l) (fmap g r)
+```
+
+Which then can be used as follows:
+
+```ghci
+> fmap (+1) (Leaf 1)
+Leaf 2
+
+> fmap (+1) (Node (Leaf 1) (Leaf 2))
+Node (Leaf 2) (Leaf 3)
+```
+
+The function `fmap` has to adhere to the following two _functor laws_:
+
+1. `fmap id = id` states that `fmap` preserves the identity function including its type.
+2. `fmap (g . h) = fmap g . fmap h` states that `fmap` preserves function composition including its type, but also the order and amount of elements.
+
