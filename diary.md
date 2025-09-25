@@ -1,3 +1,7 @@
+# Day 49 (Th, 2025-09-25)
+
+I summarized the theory part of applicatives, which is quite understandable. In the context of `Maybe`, applicatives can be used to chain operations that might fail. For lists, applicatives produce all the possible results of applying a list of functions two a number of lists containing values, where the number of lists denotes the function's arity. In the context of `IO`, it helps chaining input/output actions and using pure functions in an impure context. More on the specific applications tomorrow.
+
 # Day 48 (We, 2025-09-24)
 
 I started working through chapter 12, which I already skimmed over two weeks ago. I summarized the part on functors, which is by far the easiest of that chapter. I'm looking forward to applicatives tomorrow!
