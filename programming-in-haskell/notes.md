@@ -1338,3 +1338,52 @@ The function `fmap` has to adhere to the following two _functor laws_:
 1. `fmap id = id` states that `fmap` preserves the identity function including its type.
 2. `fmap (g . h) = fmap g . fmap h` states that `fmap` preserves function composition including its type, but also the order and amount of elements.
 
+## Applicatives
+
+Functors apply single-argument functions to their wrapped values. _Applicatives_ generalise this idea by supporting multi-argument functions. Instead of defining a series of functors, one for each argument count, which would be impractical, applicatives make use of currying to support a variable number of arguments.
+
+This can be achieved using the two following definitions:
+
+```haskell
+pure :: a -> f a
+(<*>) :: f (a -> b) -> f a -> f b
+```
+
+The `pure` function wraps a value of type `a` in a structure of type `f`. The `<*>` operator is a generalised form of functoin application: The argument value, the argument function, and the return value are wrapped in `f` structures. If a function `g` is applied to the arguments `x`, `y`, and `z`:
+
+```haskell
+g x y z
+```
+
+Its _applicative style_ invocation looks as follows:
+
+```haskell
+pure g <*> x <*> y <*> z
+```
+
+However, in applicative style, the arguments are all of type `f a` instead of `a`.
+
+A series of `fmap` functions supporting different numbers of arguments can be defined as follows:
+
+```haskell
+fmap0 :: a -> f a
+fmap0 = pure
+
+fmap1 :: (a -> b) -> f a -> f b
+fmap1 g x = pure g <*> x
+
+fmap2 :: (a -> b -> c) -> f a -> f b -> f c
+fmap2 g x y = pure g <*> x <*> y
+
+fmap3 :: (a -> b -> c -> d) -> f a -> f b -> f c -> f d
+fmap3 g x y z = pure g <*> x <*> y <*> z
+```
+
+The `Applicative` type class, defining _applicative functors_, is pre-defined as follows:
+
+```haskell
+class Functor f => Applicative f where
+  pure :: a -> f a
+  (<*>) :: f (a -> b) -> f a -> f b
+```
+
