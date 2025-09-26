@@ -1387,3 +1387,28 @@ class Functor f => Applicative f where
   (<*>) :: f (a -> b) -> f a -> f b
 ```
 
+The `Maybe` functor is already defined as an applicative:
+
+```haskell
+instance Applicative Maybe where
+  pure = Just
+  Nothing <*> _ = Nothing
+  (Just g) <*> mx = fmap g mx
+```
+
+This allows for _exceptional_ programming by chaining possibly missing values without manually propagating errors:
+
+```ghci
+> pure (+1) <*> Nothing
+Nothing
+> pure (+1) <*> Just 5
+Just 6
+> pure (+) <*> Just 2 <*> Nothing
+Nothing
+> pure (+) <*> Just 2 <*> Just 3
+Just 5
+```
+
+The list is also already defined as an applicative:
+
+TODO
