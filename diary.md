@@ -1,3 +1,9 @@
+# Day 51 (Th, 2025-09-27)
+
+I started the day by processing the rest of my hand-written notes on applicatives from yesterday. I understand applicatives as a way to compose "lifting" functions, i.e. functions that put values in a certain context, such as `Maybe`, a list, or `IO`. The `pure` operation "lifts" the value in a certain context, which then can be processed by functions that work on such a "lfited" context. I thought that those were monads, but let's see what comes next.
+
+I feel my interest in Haskell fading a bit at the moment. This is probably because I have more pressing practical needs at the moment, and because I have to write a substantial amount of Go code in the next couple of weeks, and probably some JavaScript and TypeScript later on. So I'm really thinking about finishing chapter 12 and moving on.
+
 # Day 50 (Th, 2025-09-26)
 
 Just a little time today; I continued reading about applicatives and summarized some examples.
