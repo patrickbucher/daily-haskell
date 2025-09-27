@@ -1,10 +1,16 @@
-# Day 51 (Th, 2025-09-27)
+# Day 51 (Sa, 2025-09-27)
 
 I started the day by processing the rest of my hand-written notes on applicatives from yesterday. I understand applicatives as a way to compose "lifting" functions, i.e. functions that put values in a certain context, such as `Maybe`, a list, or `IO`. The `pure` operation "lifts" the value in a certain context, which then can be processed by functions that work on such a "lfited" context. I thought that those were monads, but let's see what comes next.
 
 I feel my interest in Haskell fading a bit at the moment. This is probably because I have more pressing practical needs at the moment, and because I have to write a substantial amount of Go code in the next couple of weeks, and probably some JavaScript and TypeScript later on. So I'm really thinking about finishing chapter 12 and moving on.
 
-# Day 50 (Th, 2025-09-26)
+In the evening, I decided to three more days one Haskell: Tomorrow, I'll work through the part of effectful programming using applicatives and the introduction on monads. On Monday, I'd like to work through the rest of the chapter. Ond on Tuesday, I'd like to try some of the exercises, which I probably won't be able to finish. (Maybe I can try the ones on sections already covered tomorrow and on Monday already.) But I'll leave it at chapter 12 for the moment.
+
+Then I'll repeat my last year's attempt of a _Daily Frontend Grind_, but this time I'll do it along a project: Reversi or maybe Spot. I still have time to think, but Spot is probably the more interesting alternative right now. It's also more interesting in terms of implementing the Minimax search algorithm, for its game tree is probably way smaller than for reversi due to the following reasons: It's played on a 7x7 field as opposed to the 8x8 field of Reversi, and there are also probably less fewer moves possible. Spot is also better suited for a graphical UI with its drag-and-drop mechanics. However, a console version is also quite feasible. (I could even do that in Haskell alongside.) But for the moment, I got out of Haskell what I wanted for the moment.
+
+So Q4 2025 will be JavaScript, TypeScript, and Angular. Q1 2026 might be Elixir, Ecto, and Phoenix, which roughly the same amount of time alotted to each: four, two, and six weeks, respectively.
+
+# Day 50 (Fr, 2025-09-26)
 
 Just a little time today; I continued reading about applicatives and summarized some examples.
 
