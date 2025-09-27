@@ -14,3 +14,7 @@ data Tree a
 instance Functor Tree where
   fmap g (Leaf x) = Leaf (g x)
   fmap g (Node l r) = Node (fmap g l) (fmap g r)
+
+getChars :: Int -> IO String
+getChars 0 = return []
+getChars n = pure (:) <*> getChar <*> getChars (n - 1)

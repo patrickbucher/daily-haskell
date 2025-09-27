@@ -1411,4 +1411,45 @@ Just 5
 
 The list is also already defined as an applicative:
 
-TODO
+```haskell
+instance Applicative [] where
+  pure x = [x]
+  gs <*> xs = [g x | g <- gs, x <- xs]
+```
+
+An empty list represents failure, whereas a non-empty list contains all the possible results from a computation:
+
+```ghci
+> pure (+1) <*> [1,2,3]
+[2,3,4]
+
+> pure (+) <*> [1] <*> [2]
+[3]
+
+> pure (*) <*> [1,2] <*> [3,4]
+[3,4,6,8]
+```
+
+In the last of the above examples, exery element of the first list is multiplied with every element of the second list. The resulting list contains the results of all the possible ways the integers in the two given lists can be multiplied.
+
+The `IO` type is defined as an applicative, too:
+
+```haskell
+instance Applicative IO where
+  pure = return
+  mg <*> mx = do
+    g <- mg
+    x <- mx
+    return (g x)
+```
+
+This allows for the definition of functions such as the following, which reads a number of characters from the keyboard:
+
+```haskell
+getChars :: Int -> IO String
+getChars 0 = return []
+getChars n = pure (:) <*> getChar <*> getChars (n - 1)
+```
+
+Using this applicative style for `IO` allows for applying pure functions to impure arguments without the need to deal with the sequencing operations manually.
+
