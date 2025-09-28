@@ -1333,6 +1333,8 @@ Leaf 2
 Node (Leaf 2) (Leaf 3)
 ```
 
+### Functor laws
+
 The function `fmap` has to adhere to the following two _functor laws_:
 
 1. `fmap id = id` states that `fmap` preserves the identity function including its type.
@@ -1452,4 +1454,45 @@ getChars n = pure (:) <*> getChar <*> getChars (n - 1)
 ```
 
 Using this applicative style for `IO` allows for applying pure functions to impure arguments without the need to deal with the sequencing operations manually.
+
+### Effectful programming
+
+In applicative style, functions are applied to arguments that may have effects: the possibility of failure, many ways to succeed, or performing input/output actions. Applicatives abstract the idea of applying pure functions to effectful arguments, where the nature of the effect is determined by their underlying functors. This allows for the definition of generic functions that can be used by any applicative function, such as:
+
+```haskell
+sequenceA :: Applicative f => [f a] -> f [a]
+sequenceA [] = pure []
+sequenceA (x:xs) = pure (:) <*> x <*> sequenceA xs
+```
+
+This pre-defined function transforms a list of applicative actions into a single such action that returns a list of values. Using `sequenceA`, the `getChars` function from before can be re-defined as follows:
+
+```haskell
+getChars :: Int -> IO String
+getChars n = sequenceA (replicate n getChar)
+```
+
+### Applicative laws
+
+Applicative functors are required to satisfy  the following _applicative laws_:
+
+1. `pure id <*> x = x`: `pure` preserves the identity function
+2. `pure (g x) = pure g <*> pure x`: `pure` preserves function application
+3. `x <*> pure y = pure (\g -> g y) <*> x`: the evaluation order of the two components doesn't matter
+4. `x <*> (y <*> z) = (pure (.) <*> x <*> y) <*> z`: the `<*>` operator is associative
+
+Haskell provides an infix operator for `fmap`, defined by `g <$> x = fmap g x`. So instead of using `pure` explicitly:
+
+```haskell
+pure g <*> x <*> y <*> z
+```
+
+The shorter notation can be used:
+
+```haskell
+g <$> x <*> y <*> z
+```
+
+## Monads
+
 
