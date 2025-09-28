@@ -1495,4 +1495,134 @@ g <$> x <*> y <*> z
 
 ## Monads
 
+Consider this data type to express division for natural numbers:
+
+```haskell
+data Expr
+  = Val Int
+  | Div Expr Expr
+```
+
+Such expressions can be evaluated as follows:
+
+```haskell
+eval :: Expr -> Int
+eval (Val n) = n
+eval (Div x y) = eval x `div` eval y
+```
+
+This definition allows for unsafe operations:
+
+```ghci
+> eval (Div (Val 1) (Val 0))
+*** Exception: divide by zero
+```
+
+A safe version of division takes this into account by using the `Maybe` type:
+
+```haskell
+safediv :: Int -> Int -> Maybe Int
+safediv _ 0 = Nothing
+safediv n m = Just (n `div` m)
+```
+
+However, using this safe division requirs the evaluation to make the according distinctions:
+
+```haskell
+eval :: Expr -> Maybe Int
+eval (Val n) = Just n
+eval (Div x y) =
+  case eval x of
+    Nothing -> Nothing
+    Just n ->
+      case eval y of
+        Nothing -> Nothing
+        Just m -> safediv n m
+```
+
+This new definition solves the issue from before:
+
+```ghci
+> eval (Div (Val 1) (Val 0))
+Nothing
+```
+
+However, the two nested `case` expressions render this implementation rather verbose.
+
+A definition using applicative style would be more concise:
+
+```haskell
+eval :: Expr -> Maybe Int
+eval (Val n) = pure n
+eval (Div x y) = pure safediv <*> eval x <*> eval y
+```
+
+Unfortunately, the types of `safediv` (`Int -> Int -> Maybe Int`) deviates from the one required (`Int -> Int -> Int`). Applicatives are only the solution if pure functions shall be applied to effectful arguments, but not if the function is effectful, as in the case of `safediv`, which can fail to produce a result.
+
+The common pattern of `eval`—mapping `Nothing` to itself, and `Just x` to a computation involving `x`—can be abstracted out using the `>>=` operator:
+
+```haskell
+(>>=) :: Maybe a -> (a -> Maybe b) -> Maybe b
+mx >>= f =
+  case mx of
+    Nothing -> Nothing
+    Just x -> f x
+```
+
+The `>>=` operator takes an argument of type `a` that may fail, a function of type `a -> b` that may fail, and returns a result of type `b` that may fail. The failure of a missing argument is propagated, whereas a present argument value is processed using the given function `f`. Thus, the `>>=` operator integrates the sequencing of values of the `Maybe` type with the processing of their results. The `>>=` operator is pronounced as _bind_, because its second argument binds the first.
+
+The `eval` definition can be simplified using the `>>=` operator:
+
+```haskell
+eval :: Expr -> Maybe Int
+eval (Val n) = pure n
+eval (Div x y) = eval x >>= \n -> eval y >>= \m -> safediv n m
+```
+
+In general, a typical expression built using the `>>=` operator has the following structure:
+
+```haskell
+m1 >>= \x1 ->
+m2 >>= \x2 ->
+…
+mn >>= \xn ->
+f x1 x2 … xn
+```
+
+The expressions `m1`, `m2`, …, `mn` are evaluated in turn and their resulting values `x1`, `x2`, …, `xn` combined by applying the function `f`. The expression as a whole succeeds if every component (`m1`, `m2`, …, `mn`) succeeds.
+
+The `do` notation simplifies expressions such as the one above:
+
+```haskell
+do
+  x1 <- m1
+  x2 <- m2
+  …
+  xn <- mn
+  f x1 x2 … xn
+```
+
+Using this `do` notation, `eval` can be further simplified:
+
+```haskell
+eval :: Expr -> Maybe Int
+eval (Val n) = pure n
+eval (Div x y) = do
+  n <- eval x
+  m <- eval y
+  safediv n m
+```
+
+The `do` notation can be used with any monad, which is pre-declared as follows:
+
+```haskell
+class Applicative m =>
+      Monad m
+  where
+  return :: a -> m a
+  (>>=) :: m a -> (a -> m b) -> m b
+  return = pure
+```
+
+A monad is an applicative that supports `return` and `>>=`, which `return` just being an alias for `pure`.
 
