@@ -1,3 +1,7 @@
+# Day 52 (Su, 2025-09-28)
+
+I worked through the rest about applicatives and started the section on monads. Tomorrow, I'll read the rest of the chapter, but will only summarize what I already know how to make productive use of. The rest of the chapter including the exercises will have to wait for some later occasion. Instead, I'd like to write the game _Spot_ in Haskell.
+
 # Day 51 (Sa, 2025-09-27)
 
 I started the day by processing the rest of my hand-written notes on applicatives from yesterday. I understand applicatives as a way to compose "lifting" functions, i.e. functions that put values in a certain context, such as `Maybe`, a list, or `IO`. The `pure` operation "lifts" the value in a certain context, which then can be processed by functions that work on such a "lfited" context. I thought that those were monads, but let's see what comes next.
