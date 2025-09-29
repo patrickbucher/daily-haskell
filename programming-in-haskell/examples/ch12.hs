@@ -33,9 +33,39 @@ eval (Div x y) = do
   m <- eval y
   safediv n m
 
-class Applicative m =>
-      Monad m
-  where
-  return :: a -> m a
-  (>>=) :: m a -> (a -> m b) -> m b
-  return = pure
+--class Applicative m =>
+--      Monad m
+--  where
+--  return :: a -> m a
+--  (>>=) :: m a -> (a -> m b) -> m b
+--  return = pure
+type State = Int
+
+newtype ST a =
+  S (State -> (a, State))
+
+app :: ST a -> State -> (a, State)
+app (S st) x = st x
+
+instance Functor ST where
+  fmap g st =
+    S
+      (\s ->
+         let (x, s') = app st s
+          in (g x, s'))
+
+instance Applicative ST where
+  pure x = S (\s -> (x, s))
+  stf <*> stx =
+    S
+      (\s ->
+         let (f, s') = app stf s
+             (x, s'') = app stx s'
+          in (f x, s''))
+
+instance Monad ST where
+  st >>= f =
+    S
+      (\s ->
+         let (x, s') = app st s
+          in app (f x) s')

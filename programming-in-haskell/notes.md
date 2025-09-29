@@ -1626,3 +1626,87 @@ class Applicative m =>
 
 A monad is an applicative that supports `return` and `>>=`, which `return` just being an alias for `pure`.
 
+### The State Monad
+
+Consider a type for functions tat manipulate state, e.g. a natural number:
+
+```haskell
+type State = Int
+```
+
+Such a function is a state transformer, which also returns a value alongside the updated state:
+
+```haskell
+type ST a = State (a, State)
+```
+
+Such a function can also take an additional argument using currying. A state transformer accepting a label and returning a natural number can be declared as `Char -> ST Int`, which is an abbreviation for `Char -> State -> (Int, State)`.
+
+Unfortunately, types declared using the `type` mechanism cannot be made into instances of classes. Therefore, `ST` is redefined as follows (using a dummy constructor `S`):
+
+```haskell
+newtype ST a =
+  S (State -> (a, State))
+```
+
+A utility application function removes this dummy constructor:
+
+```haskell
+app :: ST a -> State -> (a, State)
+app (S st) x = st x
+```
+
+`ST` can be turned into a functor as follows:
+
+```haskell
+instance Functor ST where
+  fmap g st =
+    S
+      (\s ->
+         let (x, s') = app st s
+          in (g x, s'))
+```
+
+(The `let` keyword allows for variable definitions that then can be used within the `in` expression.) This functor allows for function application to the result value of a state transformer.
+
+Next, `ST` is turned into an applicative as follows:
+
+```haskell
+instance Applicative ST where
+  pure x = S (\s -> (x, s))
+  stf <*> stx =
+    S
+      (\s ->
+         let (f, s') = app stf s
+             (x, s'') = app stx s'
+          in (f x, s''))
+```
+
+The `pure` function transforms a value into a state transformer that returns this value without modifying the state.
+
+The `<*>` operator:
+
+1. applies a state transformer
+2. that returns a function to a state transformer
+3. that returns an argument to give a state transformer
+4. that returns the result of applying the function to an argument
+
+Finally, `ST` is turned into a monad as follows:
+
+```haskell
+instance Monad ST where
+  st >>= f =
+    S
+      (\s ->
+         let (x, s') = app st s
+          in app (f x) s')
+```
+
+The `>>=` operator:
+
+1. applies the state transformer `st` to the initial state `s`
+2. then applies the function `f` to the value `x`
+3. which gives a new state transformer `f x`
+4. which then is applied to the new state `s'` to give the final result
+
+TODO: relabeling trees (p. 171)
