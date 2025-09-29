@@ -1,3 +1,7 @@
+# Day 53 (Mo, 2025-09-29)
+
+I worked through the monad examples, which I understood more or less, but I wouldn't be able to write those implementations down on my own. So probably this was it with Haskell for the moment. However, working through _Learn You a Haskell for Great Good_ would be a good supplementary exercise just to repeat the basics. I'd like to work a bit on _Spot_ tomorrow, but then start over with JavaScript. But I'll give it a careful thought during my little holiday that starts just about… now.
+
 # Day 52 (Su, 2025-09-28)
 
 I worked through the rest about applicatives and started the section on monads. Tomorrow, I'll read the rest of the chapter, but will only summarize what I already know how to make productive use of. The rest of the chapter including the exercises will have to wait for some later occasion. Instead, I'd like to write the game _Spot_ in Haskell.
