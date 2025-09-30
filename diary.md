@@ -1,3 +1,7 @@
+# Day 54 (Tu, 2025-09-30)
+
+Upon my return, I read chapter 1 in _Learn You a Haskell for Great Good_ and wrote down a couple of points to start my summary of it.
+
 # Day 53 (Mo, 2025-09-29)
 
 I worked through the monad examples, which I understood more or less, but I wouldn't be able to write those implementations down on my own. So probably this was it with Haskell for the moment. However, working through _Learn You a Haskell for Great Good_ would be a good supplementary exercise just to repeat the basics. I'd like to work a bit on _Spot_ tomorrow, but then start over with JavaScript. But I'll give it a careful thought during my little holiday that starts just about… now.
