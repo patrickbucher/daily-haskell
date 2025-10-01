@@ -1,3 +1,5 @@
+import Data.Char
+
 data Player
   = X
   | O
@@ -7,7 +9,11 @@ type Field = Maybe Player
 
 type Grid = [[Field]]
 
-type Move = (Int, Int, Player)
+type Pos = (Int, Int)
+
+type Change = (Int, Int, Player)
+
+type Move = (Pos, Pos)
 
 side :: Int
 side = 7
@@ -22,7 +28,7 @@ initial =
     , ((side - 1), (side - 1), X)
     ]
 
-applyChanges :: Grid -> [Move] -> Grid
+applyChanges :: Grid -> [Change] -> Grid
 applyChanges g ms =
   chop
     side
@@ -55,3 +61,26 @@ displayField :: Field -> Char
 displayField (Just X) = 'X'
 displayField (Just O) = 'O'
 displayField Nothing = '-'
+
+parseMove :: String -> Maybe Move
+parseMove [x, y, ' ', x', y'] =
+  if ok
+    then Just ((r, c), (r', c'))
+    else Nothing
+  where
+    rows = take side ['1' ..]
+    cols = take side ['a' ..]
+    ok = x `elem` cols && y `elem` rows && x' `elem` cols && y' `elem` rows
+    r = ord y - ord '1'
+    c = ord x - ord 'a'
+    r' = ord y' - ord '1'
+    c' = ord x' - ord 'a'
+parseMove _ = Nothing
+
+renderMove :: Move -> String
+renderMove ((r, c), (r', c')) = [x, y, ' ', x', y']
+  where
+    x = chr (c + ord 'a')
+    y = chr (r + ord '1')
+    x' = chr (c' + ord 'a')
+    y' = chr (r' + ord '1')
