@@ -1,3 +1,7 @@
+# Day 55 (We, 2025-10-01)
+
+I quickly worked through chapter 2 and wrote down some notes. There are very few gaps to close, but it's totally worth the little effort so far. I'd like to work on _Spot_ today on the train.
+
 # Day 54 (Tu, 2025-09-30)
 
 Upon my return, I read chapter 1 in _Learn You a Haskell for Great Good_ and wrote down a couple of points to start my summary of it.
