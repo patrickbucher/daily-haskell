@@ -11,7 +11,7 @@ type Grid = [[Field]]
 
 type Pos = (Int, Int)
 
-type Change = (Int, Int, Player)
+type Change = (Int, Int, Field)
 
 type Move = (Pos, Pos)
 
@@ -22,10 +22,10 @@ initial :: Grid
 initial =
   applyChanges
     (replicate side (replicate side Nothing))
-    [ (0, 0, X)
-    , (0, (side - 1), O)
-    , ((side - 1), 0, O)
-    , ((side - 1), (side - 1), X)
+    [ (0, 0, Just X)
+    , (0, (side - 1), Just O)
+    , ((side - 1), 0, Just O)
+    , ((side - 1), (side - 1), Just X)
     ]
 
 applyChanges :: Grid -> [Change] -> Grid
@@ -42,8 +42,8 @@ applyChanges g ms =
     ]
   where
     moves p ms = map (\(r, c, _) -> (r, c)) $ filter (\(_, _, v) -> v == p) ms
-    xs = moves X ms
-    os = moves O ms
+    xs = moves (Just X) ms
+    os = moves (Just O) ms
 
 chop :: Int -> [a] -> [[a]]
 chop n [] = []
