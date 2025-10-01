@@ -2,6 +2,8 @@
 
 I quickly worked through chapter 2 and wrote down some notes. There are very few gaps to close, but it's totally worth the little effort so far. I'd like to work on _Spot_ today on the train.
 
+During my train ride, I found some time to stark working on _Spot_. I managed to create the initial field by applying changes to an empty grid. I also parsed and rendered moves, which use coordinates of the form "a1 b2". Those coordinates are printed around the grid, as I did in my _Reversi_ game; but I chose letters for the columns and numbers for the rows, as it's done in chess. That's it for today.
+
 # Day 54 (Tu, 2025-09-30)
 
 Upon my return, I read chapter 1 in _Learn You a Haskell for Great Good_ and wrote down a couple of points to start my summary of it.
