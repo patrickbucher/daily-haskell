@@ -84,3 +84,11 @@ renderMove ((r, c), (r', c')) = [x, y, ' ', x', y']
     y = chr (r + ord '1')
     x' = chr (c' + ord 'a')
     y' = chr (r' + ord '1')
+
+isValid :: Grid -> Player -> Move -> Bool
+isValid g p ((r, c), (r', c')) = properSource && onGrid && withinRange
+  where
+    properSource = g !! r !! c == Just p
+    onGrid = r `elem` idx && c `elem` idx && r' `elem` idx && c' `elem` idx
+    withinRange = abs (r' - r) <= 2 && abs (c' - c) <= 2
+    idx = take side [0 ..]
