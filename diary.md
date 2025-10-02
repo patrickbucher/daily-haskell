@@ -1,3 +1,7 @@
+# Day 56 (We, 2025-10-02)
+
+I worked through chapter 3 in the morning and took quite some notes, especially about `let`/`in`, which isn't used much in the other book.
+
 # Day 55 (We, 2025-10-01)
 
 I quickly worked through chapter 2 and wrote down some notes. There are very few gaps to close, but it's totally worth the little effort so far. I'd like to work on _Spot_ today on the train.
