@@ -32,16 +32,14 @@ applyChanges :: Grid -> [Change] -> Grid
 applyChanges g ms =
   chop
     side
-    -- TODO: refactor this mess
-    [ if (r, c) `elem` xs
-      then Just X
-      else if (r, c) `elem` os
-             then Just O
-             else if (r, c) `elem` bs
-                    then Nothing
-                    else g !! r !! c
+    [ case (m `elem` xs, m `elem` os, m `elem` bs) of
+      (True, _, _) -> Just X
+      (_, True, _) -> Just O
+      (_, _, True) -> Nothing
+      _ -> g !! r !! c
     | r <- [0 .. side - 1]
     , c <- [0 .. side - 1]
+    , let m = (r, c)
     ]
   where
     moves p ms = map (\(r, c, _) -> (r, c)) $ filter (\(_, _, v) -> v == p) ms
