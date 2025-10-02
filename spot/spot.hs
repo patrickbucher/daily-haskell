@@ -32,11 +32,14 @@ applyChanges :: Grid -> [Change] -> Grid
 applyChanges g ms =
   chop
     side
+    -- TODO: refactor this mess
     [ if (r, c) `elem` xs
       then Just X
       else if (r, c) `elem` os
              then Just O
-             else g !! r !! c
+             else if (r, c) `elem` bs
+                    then Nothing
+                    else g !! r !! c
     | r <- [0 .. side - 1]
     , c <- [0 .. side - 1]
     ]
@@ -44,6 +47,7 @@ applyChanges g ms =
     moves p ms = map (\(r, c, _) -> (r, c)) $ filter (\(_, _, v) -> v == p) ms
     xs = moves (Just X) ms
     os = moves (Just O) ms
+    bs = moves Nothing ms
 
 chop :: Int -> [a] -> [[a]]
 chop n [] = []
@@ -92,3 +96,22 @@ isValid g p ((r, c), (r', c')) = properSource && onGrid && withinRange
     onGrid = r `elem` idx && c `elem` idx && r' `elem` idx && c' `elem` idx
     withinRange = abs (r' - r) <= 2 && abs (c' - c) <= 2
     idx = take side [0 ..]
+
+applyMove :: Grid -> Player -> Move -> Grid
+applyMove g p m = applyChanges g changes
+  where
+    jump ((r, c), (r', c')) = abs (r - r') == 2 && abs (c - c') == 2
+    toChange (r, c) f = (r, c, f)
+    -- TODO: consider changes made to neighbouring opponent fields
+    changes =
+      if jump m
+        then [toChange (fst m) Nothing, toChange (snd m) (Just p)]
+        else [toChange (snd m) (Just p)]
+
+neighbourCoords :: Grid -> Pos -> [Pos]
+neighbourCoords g (r, c) =
+  filter (\(r, c) -> r `elem` range && c `elem` range) neighbours
+  where
+    dirs = [(r, c) | r <- [-1, 0, 1], c <- [-1, 0, 1], r /= 0 || c /= 0]
+    neighbours = map (\(dr, dc) -> (r + dr, c + dc)) dirs
+    range = take side [0 ..]
