@@ -95,16 +95,22 @@ isValid g p ((r, c), (r', c')) = properSource && onGrid && withinRange
     withinRange = abs (r' - r) <= 2 && abs (c' - c) <= 2
     idx = take side [0 ..]
 
+opponent :: Player -> Player
+opponent X = O
+opponent O = X
+
 applyMove :: Grid -> Player -> Move -> Grid
 applyMove g p m = applyChanges g changes
   where
     jump ((r, c), (r', c')) = abs (r - r') == 2 && abs (c - c') == 2
     toChange (r, c) f = (r, c, f)
-    -- TODO: consider changes made to neighbouring opponent fields
+    neighbours = neighbourCoords g (snd m)
+    caught = filter (\(r, c) -> (g !! r !! c) == Just (opponent p)) neighbours
     changes =
-      if jump m
-        then [toChange (fst m) Nothing, toChange (snd m) (Just p)]
-        else [toChange (snd m) (Just p)]
+      map (\m -> toChange m (Just p)) caught
+        ++ if jump m
+             then [toChange (fst m) Nothing, toChange (snd m) (Just p)]
+             else [toChange (snd m) (Just p)]
 
 neighbourCoords :: Grid -> Pos -> [Pos]
 neighbourCoords g (r, c) =

@@ -1,4 +1,8 @@
-# Day 56 (We, 2025-10-02)
+# Day 57 (Fr, 2025-10-03)
+
+I read chapter 4 in the morning and didn't take any notes, because there's was nothing new in it for me. Therefore, I continued with my _Spot_ implementation, for which I finished the function that applies moves to a grid. Having done this, I can start with interactive game play.
+
+# Day 56 (Th, 2025-10-02)
 
 I worked through chapter 3 in the morning and took quite some notes, especially about `let`/`in`, which isn't used much in the other book.
 
