@@ -119,3 +119,36 @@ Bindings introduced with `let` in GHCi are available for the entire session and 
 ## Hello, Recursion!
 
 -
+
+## Higher-Order Functions
+
+`scanl` and `scanr` work like `foldl` and `foldr` but return a list of all intermediate accumulator states, including the initial one:
+
+    > scanl (+) 0 [1..4]
+    [0,1,3,6,10]
+    > scanr (+) 0 [1..4]
+    [10,9,7,4,0]
+
+The resulting list is one element longer then the processed one, the additional element being the initial accumulator value.
+
+There are also `scanl1` and `scanr1` variants, which assume the first or last element, respectively, as the initial accumulator value:
+
+    > scanl1 (+) [1..4]
+    [1,3,6,10]
+    > scanr1 (+) [1..4]
+    [10,9,7,4]
+
+Now the list being returned and the one processed have the same length.
+
+The function application operator `$` has the lowest precedence and is right-associative. Its use makes allows to remove the surrounding parentheses from the expression on the right-hand side:
+
+    > sum (map (^2) [0..4])
+    30
+    > sum $ map (^2) [0..4]
+    30
+
+It can be used to apply functions to values:
+
+    > map ($ 4) [(1+),(2^),(3*),(4-)]
+    [5,16,12,0]
+
