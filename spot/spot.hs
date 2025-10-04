@@ -52,7 +52,8 @@ chop n [] = []
 chop n xs = take n xs : chop n (drop n xs)
 
 displayGrid :: Grid -> String
-displayGrid g = concat [r ++ "\n" | r <- colcaps : rows ++ [colcaps]]
+displayGrid g =
+  concat [r ++ "\n" | r <- (displayScore g) : "" : colcaps : rows ++ [colcaps]]
   where
     colcaps = "  " ++ take side ['a' ..]
     rowcaps = take side ['1' ..]
@@ -63,6 +64,21 @@ displayField :: Field -> Char
 displayField (Just X) = 'X'
 displayField (Just O) = 'O'
 displayField Nothing = '-'
+
+displayScore :: Grid -> String
+displayScore g =
+  (show X) ++ "  " ++ (scoreStr X) ++ ":" ++ (scoreStr O) ++ "  " ++ (show O)
+  where
+    scoreStr p = zeroPad (show $ score p) 2
+    score p = length $ filter (== (Just p)) $ concat g
+
+zeroPad :: String -> Int -> String
+zeroPad s n =
+  if l >= n
+    then s
+    else take (n - l) (repeat '0') ++ s
+  where
+    l = length s
 
 parseMove :: String -> Maybe Move
 parseMove [x, y, ' ', x', y'] =
@@ -119,3 +135,18 @@ neighbourCoords g (r, c) =
     dirs = [(r, c) | r <- [-1, 0, 1], c <- [-1, 0, 1], r /= 0 || c /= 0]
     neighbours = map (\(dr, dc) -> (r + dr, c + dc)) dirs
     range = take side [0 ..]
+
+validMoves :: Grid -> Player -> Pos -> [Move]
+validMoves g p (r, c) =
+  case field of
+    Just p'
+      | p' == p -> map (\(r', c') -> ((r, c), (r', c'))) onEmpty
+      | otherwise -> []
+    Nothing -> []
+  where
+    field = g !! r !! c
+    onEmpty = filter (\(r', c') -> g !! r' !! c' == Nothing) onGrid
+    onGrid = filter (\(r', c') -> r' `elem` limits && c' `elem` limits) coords
+    limits = take side [0 ..]
+    coords = map (\(r', c') -> (r + r', c + c')) shifts
+    shifts = [(r', c') | r' <- [-2 .. 2], c' <- [-2 .. 2]]

@@ -2,6 +2,8 @@
 
 It took me almost an hour to read chapter 5. There wasn't much new for me in it, because _Programming Haskell_ already goes deep into those topics covered there. However, I learned about the `scanl` and `scanr` functions.
 
+Afterwards, I wrote the `validMoves` function for _Spot_, which returns all valid moves for a given player for a given position on a given grid. I also wrote a function that displays the score nicely. On towards interactive game play… tomorrow.
+
 # Day 57 (Fr, 2025-10-03)
 
 I read chapter 4 in the morning and didn't take any notes, because there's was nothing new in it for me. Therefore, I continued with my _Spot_ implementation, for which I finished the function that applies moves to a grid. Having done this, I can start with interactive game play.
