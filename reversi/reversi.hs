@@ -140,15 +140,21 @@ display g = concat ((title : rowsCaptioned) ++ [title] ++ ["\n", standings])
   where
     standings =
       show X
-        ++ " "
-        ++ (show (score X g))
-        ++ ":"
-        ++ (show (score O g))
-        ++ " "
+        ++ "  "
+        ++ pad (score X g) 2 '0'
+        ++ "  "
+        ++ pad (score O g) 2 '0'
+        ++ "  "
         ++ show O
     title = "  " ++ (foldl1 (++) $ (map show [1 .. sides])) ++ "\n"
     rows = zip ['a' ..] (map concat $ map (map show) g)
     rowsCaptioned = map (\(c, r) -> [c, ' '] ++ r ++ [' ', c, '\n']) rows
+
+pad :: Int -> Int -> Char -> String
+pad n l c = padding ++ s
+  where
+    s = show n
+    padding = replicate (l - length s) c
 
 parseMove :: String -> Maybe Pos
 parseMove [r, c] =
