@@ -152,3 +152,149 @@ It can be used to apply functions to values:
     > map ($ 4) [(1+),(2^),(3*),(4-)]
     [5,16,12,0]
 
+## Modules
+
+A Haskell _module_ is a file containing functions, some of which are exported. Functions from other modules, e.g. `Data.Char` from the standard library, can be imported using `import`:
+
+```haskell
+import Data.Char
+```
+
+Use [haskell.org/hoogle](https://hoogle.haskell.org/) to find modules that contain functions for your needs.
+
+In GHCi, use the `:m +` (short for `:module +`) command to import modules:
+
+    > :module + Data.Char
+    > :m + Data.List
+
+Multiple modules can be imported on one line:
+
+    > :m + Data.List Data.Char
+
+Import individual functions as follows:
+
+```haskell
+import Data.Char (digitToInt, isDigit)
+```
+
+Import all but certain functions with `hiding`:
+
+```haskell
+import Data.List hiding (sort)
+```
+
+Use qualified imports to avoid namespace clashes:
+
+```haskell
+import qualified Data.Char as C
+import qualified Data.List as List
+
+toLargestNumber :: String -> Int
+toLargestNumber =
+  read
+    . map C.intToDigit
+    . reverse
+    . List.sort
+    . map C.digitToInt
+    . filter C.isDigit
+```
+
+Use the `foldl'` (or `foldl1'`) alternatives from `Data.List` for _strict folds_ that do not defer computations:
+
+    > foldl (+) 0 (replicate 100000000 1)
+    *** Exception: stack overflow
+    > import Data.List (foldl')
+    > foldl' (+) 0 (replicate 100000000 1)
+    100000000
+
+The `Data.Map` module provides _maps_ to store key-value pairs:
+
+```haskell
+import qualified Data.Map as Map
+```
+
+Create a map from a list of key-value tuples:
+
+    > let capitals = Map.fromList [("Switzerland","Bern"),("Germany","Berlin"),("USA","Washington D.C.")]
+    > capitals
+    fromList [("Germany","Berlin"),("Switzerland","Bern"),("USA","Washington D.C.")]
+    > Map.size capitals
+    3
+
+Use `lookup` to find and `insert` to add or overwrite values:
+
+    > Map.lookup "Germany" capitals
+    Just "Berlin"
+    > Map.insert "USA" "Tel Aviv" capitals
+    > updated
+    fromList [("Germany","Berlin"),("Switzerland","Bern"),("USA","Tel Aviv")] 
+
+When possibly importing duplicates, use `fromListWith` with a function that deals with duplicates:
+
+    > Map.fromListWith max [("Alice",7.44),("Bob",8.21),("Alice",7.99)]
+    fromList [("Alice",7.99),("Bob",8.21)]
+
+Declare your own module (e.g. `Geometry`) in its own file (e.g. `Geometry.hs`):
+
+```haskell
+module Geometry
+  ( circleCircumference
+  , circleArea
+  , squareCircumference
+  , squareArea
+  ) where
+
+circleCircumference :: Double -> Double
+circleCircumference r = 2 * r * pi
+
+circleArea :: Double -> Double
+circleArea r = r * pi ^ 2
+
+squareCircumference :: Double -> Double
+squareCircumference s = 4 * s
+
+squareArea :: Double -> Double
+squareArea s = s ^ 2
+```
+
+For hiearchical modules, create a folder for the top-level module (e.g. `Geometry`) containing the files for the lower-level modules (e.g. `Circle.hs` and `Square.hs`).
+
+`Geometry/Circle.hs`:
+
+```haskell
+module Geometry.Circle
+  ( circleCircumference
+  , circleArea
+  ) where
+
+circleCircumference :: Double -> Double
+circleCircumference r = 2 * r * pi
+
+circleArea :: Double -> Double
+circleArea r = r * pi ^ 2
+```
+
+`Geometry/Square.hs`:
+
+```haskell
+module Geometry.Square
+  ( squareCircumference
+  , squareArea
+  ) where
+
+squareCircumference :: Double -> Double
+squareCircumference s = 4 * s
+
+squareArea :: Double -> Double
+squareArea s = s ^ 2
+```
+
+Use those modules in GHCi:
+
+    $ ghci Geometry/*.hs
+    > import qualified Geometry.Circle as C
+    > import qualified Geometry.Square as S
+    > C.circleCircumference 5
+    31.41592653589793
+    > S.squareArea 4
+    16.0

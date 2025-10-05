@@ -1,3 +1,7 @@
+# Day 59 (Su, 2025-10-05)
+
+I worked through chapter 6 on modules, which taught me how to split up my source files into smaller parts, and how to use maps. I'd like to split up my _Revesi_ and _Spot_ code now.
+
 # Day 58 (Sa, 2025-10-04)
 
 It took me almost an hour to read chapter 5. There wasn't much new for me in it, because _Programming Haskell_ already goes deep into those topics covered there. However, I learned about the `scanl` and `scanr` functions.
