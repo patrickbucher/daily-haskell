@@ -1,4 +1,6 @@
+import Control.Concurrent (threadDelay)
 import Data.Char
+import System.Random (randomRIO)
 
 data Player
   = X
@@ -118,7 +120,7 @@ opponent O = X
 applyMove :: Grid -> Player -> Move -> Grid
 applyMove g p m = applyChanges g changes
   where
-    jump ((r, c), (r', c')) = abs (r - r') == 2 && abs (c - c') == 2
+    jump ((r, c), (r', c')) = abs (r - r') == 2 || abs (c - c') == 2
     toChange (r, c) f = (r, c, f)
     neighbours = neighbourCoords g (snd m)
     caught = filter (\(r, c) -> (g !! r !! c) == Just (opponent p)) neighbours
@@ -150,3 +152,72 @@ validMoves g p (r, c) =
     limits = take side [0 ..]
     coords = map (\(r', c') -> (r + r', c + c')) shifts
     shifts = [(r', c') | r' <- [-2 .. 2], c' <- [-2 .. 2]]
+
+cls :: IO ()
+cls = putStr "\ESC[2J\ESC[0;0H"
+
+pickPlayer :: IO Player
+pickPlayer = do
+  cls
+  putStrLn
+    $ "Would you like to play as "
+        ++ show X
+        ++ " (first) or as "
+        ++ show O
+        ++ " (second)?"
+  input <- getLine
+  case input of
+    "X" -> return X
+    "O" -> return O
+    otherwise -> pickPlayer
+
+promptMove :: Grid -> Player -> IO Move
+promptMove g p = do
+  putStr $ show p ++ ": "
+  input <- getLine
+  case (parseMove input) of
+    Just (s, d) ->
+      case ((s, d) `elem` validMoves g p s) of
+        True -> return (s, d)
+        False -> promptMove g p
+    Nothing -> promptMove g p
+
+randomMove :: Grid -> Player -> IO Move
+randomMove g p = do
+  i <- randomRIO (0, (length moves) - 1)
+  putStr $ show p ++ ": "
+  threadDelay 1_000_000
+  let move = moves !! i
+  putStr $ renderMove $ move
+  threadDelay 1_000_000
+  return $ move
+  where
+    moves = concat $ map (\(r', c') -> validMoves g p (r', c')) fields
+    fields =
+      [ (r', c')
+      | r' <- take side [0 ..]
+      , c' <- take side [0 ..]
+      , g !! r' !! c' == Just p
+      ]
+
+-- TODO: check for win, draw, stuck game etc.
+play :: Grid -> Player -> Player -> IO Player
+play g p human = do
+  cls
+  putStrLn $ displayGrid g
+  m <-
+    if p == human
+      then do
+        promptMove g p
+      else do
+        randomMove g p
+  play (applyMove g p m) (opponent p) human
+  where
+    opponent X = O
+    opponent O = X
+
+main :: IO ()
+main = do
+  player <- pickPlayer
+  play initial X player
+  return ()
