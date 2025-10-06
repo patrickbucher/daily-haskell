@@ -17,6 +17,12 @@ type Change = (Int, Int, Field)
 
 type Move = (Pos, Pos)
 
+data Outcome
+  = Open
+  | Draw
+  | WinX
+  | WinO
+
 side :: Int
 side = 7
 
@@ -71,8 +77,10 @@ displayScore :: Grid -> String
 displayScore g =
   (show X) ++ "  " ++ (scoreStr X) ++ ":" ++ (scoreStr O) ++ "  " ++ (show O)
   where
-    scoreStr p = zeroPad (show $ score p) 2
-    score p = length $ filter (== (Just p)) $ concat g
+    scoreStr p = zeroPad (show $ score g p) 2
+
+score :: Grid -> Player -> Int
+score g p = length $ filter (== (Just p)) $ concat g
 
 zeroPad :: String -> Int -> String
 zeroPad s n =
@@ -189,10 +197,14 @@ randomMove g p = do
   threadDelay 1_000_000
   let move = moves !! i
   putStr $ renderMove $ move
-  threadDelay 1_000_000
+  threadDelay 1_500_000
   return $ move
   where
-    moves = concat $ map (\(r', c') -> validMoves g p (r', c')) fields
+    moves = possibleMoves g p
+
+possibleMoves :: Grid -> Player -> [Move]
+possibleMoves g p = concat $ map (\(r', c') -> validMoves g p (r', c')) fields
+  where
     fields =
       [ (r', c')
       | r' <- take side [0 ..]
@@ -200,11 +212,28 @@ randomMove g p = do
       , g !! r' !! c' == Just p
       ]
 
--- TODO: check for win, draw, stuck game etc.
-play :: Grid -> Player -> Player -> IO Player
-play g p human = do
-  cls
-  putStrLn $ displayGrid g
+outcome :: Grid -> Outcome
+outcome g =
+  if full || stuck
+    then case (compare movesX movesO) of
+           GT -> WinX
+           LT -> WinO
+           EQ -> Draw
+    else case (eliminated X, eliminated O) of
+           (True, _) -> WinO
+           (_, True) -> WinX
+           otherwise -> Open
+  where
+    full = all (== Nothing) $ concat g
+    scoreX = score g X
+    scoreO = score g O
+    movesX = possibleMoves g X
+    movesO = possibleMoves g O
+    stuck = null movesX && null movesO
+    eliminated p = all (/= (Just p)) $ concat g
+
+play' :: Grid -> Player -> Player -> IO ()
+play' g p human = do
   m <-
     if p == human
       then do
@@ -212,9 +241,27 @@ play g p human = do
       else do
         randomMove g p
   play (applyMove g p m) (opponent p) human
+
+play :: Grid -> Player -> Player -> IO ()
+play g p human = do
+  paint
+  case result of
+    WinX -> putStrLn "Player X wins!"
+    WinO -> putStrLn "Player O wins!"
+    Draw -> putStrLn "Draw!"
+    Open -> do
+      if stuck p
+        then do
+          putStrLn $ "Player " ++ show p ++ " is stuck, skipping…"
+          threadDelay 1_000_000
+          play' g (opponent p) human
+        else play' g p human
   where
-    opponent X = O
-    opponent O = X
+    result = outcome g
+    stuck p = null $ possibleMoves g p
+    paint = do
+      cls
+      putStrLn $ displayGrid g
 
 main :: IO ()
 main = do
