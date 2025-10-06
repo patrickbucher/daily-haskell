@@ -1,5 +1,6 @@
 import Control.Concurrent (threadDelay)
 import Data.Char
+import System.IO
 import System.Random (randomRIO)
 
 data Player
@@ -265,6 +266,7 @@ play g p human = do
 
 main :: IO ()
 main = do
+  hSetBuffering stdout NoBuffering
   player <- pickPlayer
   play initial X player
   return ()
