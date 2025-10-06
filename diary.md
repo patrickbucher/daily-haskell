@@ -1,3 +1,7 @@
+# Day 60 (Mo, 2025-10-06)
+
+No time for reading today, but I managed to finish the gameplay logic for _Spot_ in an acceptable manner. Now I can dominate the random player before I implement the Minimax algorithm for a stronger opponent.
+
 # Day 59 (Su, 2025-10-05)
 
 I worked through chapter 6 on modules, which taught me how to split up my source files into smaller parts, and how to use maps. I'd like to split up my _Revesi_ and _Spot_ code now.
