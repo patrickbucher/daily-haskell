@@ -1,3 +1,7 @@
+# Day 61 (Mo, 2025-10-07)
+
+I slightly extended the _Spot_ gameplay logic by now picking the strongest random move for the computer opponent rather than just a random move. I also discovered an embarassing mistake in the winning condition check: I compared the possible moves rather than the score. An interesting game of mine ended in a draw, even though its score read 25:24. (A draw is possible if both players are stuck and have the same score, so the board won't be filled completely.)
+
 # Day 60 (Mo, 2025-10-06)
 
 No time for reading today, but I managed to finish the gameplay logic for _Spot_ in an acceptable manner. Now I can dominate the random player before I implement the Minimax algorithm for a stronger opponent.
