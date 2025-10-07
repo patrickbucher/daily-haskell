@@ -220,7 +220,7 @@ possibleMoves g p = concat $ map (\(r', c') -> validMoves g p (r', c')) fields
 outcome :: Grid -> Outcome
 outcome g =
   if full || stuck
-    then case (compare movesX movesO) of
+    then case (compare scoreX scoreO ) of
            GT -> WinX
            LT -> WinO
            EQ -> Draw
@@ -249,8 +249,8 @@ play' g p human = do
 
 play :: Grid -> Player -> Player -> IO ()
 play g p human = do
-  paint
-  case result of
+  paint g
+  case (outcome g) of
     WinX -> putStrLn "Player X wins!"
     WinO -> putStrLn "Player O wins!"
     Draw -> putStrLn "Draw!"
@@ -262,9 +262,8 @@ play g p human = do
           play' g (opponent p) human
         else play' g p human
   where
-    result = outcome g
     stuck p = null $ possibleMoves g p
-    paint = do
+    paint g = do
       cls
       putStrLn $ displayGrid g
 
