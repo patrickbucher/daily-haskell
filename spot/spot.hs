@@ -220,7 +220,7 @@ possibleMoves g p = concat $ map (\(r', c') -> validMoves g p (r', c')) fields
 outcome :: Grid -> Outcome
 outcome g =
   if full || stuck
-    then case (compare scoreX scoreO ) of
+    then case (compare scoreX scoreO) of
            GT -> WinX
            LT -> WinO
            EQ -> Draw
