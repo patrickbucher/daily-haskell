@@ -193,15 +193,19 @@ promptMove g p = do
 
 randomMove :: Grid -> Player -> IO Move
 randomMove g p = do
-  i <- randomRIO (0, (length moves) - 1)
+  i <- randomRIO (0, (length strongestMoves) - 1)
   putStr $ show p ++ ": "
   threadDelay 1_000_000
-  let move = moves !! i
+  let move = strongestMoves !! i
   putStr $ renderMove $ move
   threadDelay 1_500_000
   return $ move
   where
     moves = possibleMoves g p
+    moveStrenghts = map (\m -> (m, score (applyMove g p m) p)) moves
+    maxMoveStrength = maximum $ map snd moveStrenghts
+    strongestMoves =
+      map fst $ filter (\(_, s) -> s == maxMoveStrength) moveStrenghts
 
 possibleMoves :: Grid -> Player -> [Move]
 possibleMoves g p = concat $ map (\(r', c') -> validMoves g p (r', c')) fields
