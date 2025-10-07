@@ -1,0 +1,1 @@
+- [ ] the score isn't updated when the game ends
