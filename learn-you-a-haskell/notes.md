@@ -298,3 +298,84 @@ Use those modules in GHCi:
     31.41592653589793
     > S.squareArea 4
     16.0
+
+## Making Our Own Types and Type Classes
+
+Export the value constructors for export within parentheses. Use `(..)` to export all defined constructors:
+
+```haskell
+module RockPaperScissors
+  ( Player(First, Second)
+  , Move(..)
+  , Outcome(..)
+  ) where
+
+data Player
+  = First
+  | Second
+
+data Move
+  = Rock
+  | Paper
+  | Scissors
+
+data Outcome
+  = Win Player
+  | Draw
+```
+
+Use record syntax to name the fields of a new data type:
+
+```haskell
+data Athlete = Athlete
+  { fullName :: String
+  , age :: Int
+  , country :: String
+  , winRatio :: Float
+  } deriving (Show)
+
+joe :: Athlete
+joe = Athlete "Joe Doe" 26 "USA" 0.37
+
+jay :: Athlete
+jay = Athlete {fullName = "Jay Day", winRatio = 0.68, age = 39, country = "GB"}
+```
+
+Use type constraints with functions rather than `Data` declarations to avoid unnecessary rigid constraints.
+
+Derive `Enum` for things with predecessors (`pred`) and successors (`succ`). Derive `Bounded` for things with a lower (`minBound`) and an upper (`maxBound`) bound:
+
+```haskell
+data Day
+  = Mo
+  | Tu
+  | We
+  | Th
+  | Fr
+  | Sa
+  | Su
+  deriving (Bounded, Enum, Show)
+```
+
+    > (pred Sa, succ Sa)
+    (Fr,Su)
+    > [minBound..maxBound] :: [Day]
+    [Mo,Tu,We,Th,Fr,Sa,Su]
+
+This only works for _nullary_ declarations, i.e. for constructors that don't require additional fields:
+
+```haskell
+data WorkDay
+  = Monday Bool
+  | Tuesday Bool
+  | Wednesday Bool
+  | Thursday Bool
+  | Friday Bool
+  | Saturday Bool
+  | Sunday Bool
+  deriving (Bounded, Enum, Show)
+```
+
+    error:
+        Can't make a derived instance of ‘Enum WorkDay’
+        …

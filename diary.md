@@ -1,6 +1,8 @@
-# Day 61 (Mo, 2025-10-07)
+# Day 61 (Tu, 2025-10-07)
 
 I slightly extended the _Spot_ gameplay logic by now picking the strongest random move for the computer opponent rather than just a random move. I also discovered an embarassing mistake in the winning condition check: I compared the possible moves rather than the score. An interesting game of mine ended in a draw, even though its score read 25:24. (A draw is possible if both players are stuck and have the same score, so the board won't be filled completely.)
+
+I also worked through chapter 7 up to page 127 and took some notes; the rest of the chapter has to wait until tomorrow.
 
 # Day 60 (Mo, 2025-10-06)
 
