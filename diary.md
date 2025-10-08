@@ -1,3 +1,9 @@
+# Day 62 (We, 2025-10-08)
+
+Little time today, but I managed to restructure _Reversi_ and build it using Cabal. However, I don't fully understand how the small part of Cabal I'm using now actually works.
+
+Also no time for reading today.
+
 # Day 61 (Tu, 2025-10-07)
 
 I slightly extended the _Spot_ gameplay logic by now picking the strongest random move for the computer opponent rather than just a random move. I also discovered an embarassing mistake in the winning condition check: I compared the possible moves rather than the score. An interesting game of mine ended in a draw, even though its score read 25:24. (A draw is possible if both players are stuck and have the same score, so the board won't be filled completely.)
