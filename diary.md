@@ -1,3 +1,7 @@
+# Day 64 (Th, 2025-10-09)
+
+Again very little time today, I managed to work through chapter 7 up to page 135, that's it.
+
 # Day 62 (We, 2025-10-08)
 
 Little time today, but I managed to restructure _Reversi_ and build it using Cabal. However, I don't fully understand how the small part of Cabal I'm using now actually works.
