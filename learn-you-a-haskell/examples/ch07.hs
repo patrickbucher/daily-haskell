@@ -48,4 +48,21 @@ data WorkDay
   | Friday Bool
   | Saturday Bool
   | Sunday Bool
-  deriving (Bounded, Enum, Show)
+
+--  deriving (Bounded, Enum, Show)
+type KeyValuePair k v = (k, v)
+
+type StringLookup v = KeyValuePair String v
+
+type IntByStringLookup = StringLookup Int
+
+divide :: Int -> Int -> Either Int Float
+divide p q =
+  case (p `mod` q) of
+    0 -> Left (p `div` q)
+    _ -> Right (fromIntegral p / fromIntegral q)
+
+infixr 1 *:
+
+(*:) :: Num a => a -> [a] -> [a]
+(*:) l r = l : map (* l) r

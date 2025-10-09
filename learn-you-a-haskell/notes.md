@@ -379,3 +379,41 @@ data WorkDay
     error:
         Can't make a derived instance of ‘Enum WorkDay’
         …
+
+Like value parameters, type parameters can be applied partially:
+
+```haskell
+type KeyValuePair k v = (k, v)
+type StringLookup v = KeyValuePair String v
+type IntByStringLookup = StringLookup Int
+```
+
+Use `Either` to distinguish between different results by type:
+
+```haskell
+divide :: Int -> Int -> Either Int Float
+divide p q =
+  case (p `mod` q) of
+    0 -> Left (p `div` q)
+    _ -> Right (fromIntegral p / fromIntegral q)
+```
+
+    > divide 10 2
+    Left 5
+    > divide 10 4
+    Right 2.5
+
+Define new infix operators using `infixr` or `infixl` for right and left associative operations, respectively, and supply a _fixity_ (9 binds stronger than 1):
+
+```haskell
+infixr 1 *:
+
+(*:) :: Num a => a -> [a] -> [a]
+(*:) l r = l : map (* l) r
+```
+
+This newly introduced `*:` operator prepends a value to a list, of which each element is multiplied by the new value:
+
+    > 10 *: [0,1,2,34
+    [10,0,10,20,30]
+
