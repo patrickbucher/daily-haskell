@@ -1,3 +1,7 @@
+# Day 65 (Th, 2025-10-10)
+
+Almost no time today, so I just continued reading in the book with no relevant notes to take.
+
 # Day 64 (Th, 2025-10-09)
 
 Again very little time today, I managed to work through chapter 7 up to page 135, that's it.
