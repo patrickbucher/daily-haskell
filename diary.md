@@ -1,4 +1,8 @@
-# Day 65 (Th, 2025-10-10)
+# Day 66 (Sa, 2025-10-11)
+
+Little time again; I continued reading chapter 7.
+
+# Day 65 (Fr, 2025-10-10)
 
 Almost no time today, so I just continued reading in the book with no relevant notes to take.
 

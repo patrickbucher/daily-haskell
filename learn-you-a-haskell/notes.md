@@ -417,3 +417,10 @@ This newly introduced `*:` operator prepends a value to a list, of which each el
     > 10 *: [0,1,2,34
     [10,0,10,20,30]
 
+Use the `:info` (short: `:i`) command in GHCi to see a type's definition:
+
+    > :info Maybe
+    type Maybe :: * -> *
+    data Maybe a = Nothing | Just a
+    …
+
