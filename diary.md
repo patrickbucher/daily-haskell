@@ -1,3 +1,14 @@
+# Day 67 (Su, 2025-10-12)
+
+Today, I finished chapter 7 (finally). I wonder where my journey should go from now. There are various options:
+
+- Implementing Minimax and Alpha-Beta pruning for _Spot_. However, since the naive Minimax-1-like AI is already quite strong, I lack the motivation to do that.
+- Continuing working through the current book, which is a bit too much of skimming at the moment.
+- Going down the practical road by reading _Haskell in Depth_.
+- Or figure out how to work with Cabal, which will be necessary sooner or later anyway.
+
+So I tend to do a little break with the book and have a look at Cabal. But I'll decide on that tomorrow.
+
 # Day 66 (Sa, 2025-10-11)
 
 Little time again; I continued reading chapter 7.

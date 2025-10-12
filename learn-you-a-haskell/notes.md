@@ -424,3 +424,21 @@ Use the `:info` (short: `:i`) command in GHCi to see a type's definition:
     data Maybe a = Nothing | Just a
     …
 
+The `:kind` (short: `:k`) command in GHCi returns the _kind_ of a type:
+
+    > :kind Int
+    Int :: *
+    > :k Maybe
+    Maybe :: * -> *
+    > :k Either
+    Either :: * -> * -> *
+
+`Int` is a concrete type (`*`). `Maybe` requires a concrete type as a type parameter, and `Either` requires two; both then return a concrete type:
+
+    > :k Maybe Int
+    Maybe Int :: *
+    > :k Either Int
+    Either Int :: * -> *
+    > :k Either Int String
+    Either Int String :: *
+
