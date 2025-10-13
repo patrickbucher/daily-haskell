@@ -1,3 +1,9 @@
+# Day 68 (Mo, 2025-10-13)
+
+I have to put this on a halt for now. But I have bigger plans: I'd like to learn Haskell in a way and to extend in order to be able to write productive CRUD applications in it. I'd like to plan this after Christmas and start in January 2026 with this project. If I can't pull this off, I'll look into Elixir/Phoenix or Rust again.
+
+But for now, I need to focus on my professional obligations. There's enough to do now.
+
 # Day 67 (Su, 2025-10-12)
 
 Today, I finished chapter 7 (finally). I wonder where my journey should go from now. There are various options:
