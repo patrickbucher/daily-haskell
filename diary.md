@@ -1,3 +1,9 @@
+# Day 69 (Su, 2026-04-12)
+
+After a break of almost exactly six months, I'm back in the Haskell game. I'd like to work through _Effective Haskell_ to 1) repeat everything I already knew, 2) learn about project management using Cabal, and 3) to then go even further at a modest pace.
+
+Having worked with Haskell on a daily basis for three months, everything else just feels inferior. There are other tools for specific tasks, but Haskell teaches me the most. And I'd like to work in Haskell. Maybe not this year, but maybe in 2027. Let's go for it once again!
+
 # Day 68 (Mo, 2025-10-13)
 
 I have to put this on a halt for now. But I have bigger plans: I'd like to learn Haskell in a way and to extend in order to be able to write productive CRUD applications in it. I'd like to plan this after Christmas and start in January 2026 with this project. If I can't pull this off, I'll look into Elixir/Phoenix or Rust again.
