@@ -128,3 +128,79 @@ Use `print`, which combines `putStrLn` with `show`:
 λ print [1..3]
 [1,2,3]
 ```
+
+Write a self-containing "Hello, World!" program (`Hello.hs`):
+
+```haskell
+module Main where
+main = print "Hello, World!"
+```
+
+Compile the program using GHC and run it:
+
+```sh
+$ ghc Hello # or ghc Hello.hs
+$ ./Hello
+"Hello, World!"
+```
+
+Use the `runhaskell` utility for single runs:
+
+```sh
+$ runhaskell Hello.hs
+```
+
+Run the module into GHCi:
+
+```ghci
+λ :load Hello
+λ main
+"Hello, World!"
+```
+
+Shadow existing variables:
+
+```ghci
+λ one = 1
+λ two = one + one
+λ one = 42
+λ one
+42
+λ two
+2
+```
+
+Only re-define variable names in GHCi, not in proper Haskell programs.
+
+Even though the underlying value of `one` changed, `two` is still based on its old value.
+
+Shadow a variable recursively:
+
+```ghci
+λ two = 1
+λ two = two + 1
+λ two
+^CInterrupted.
+```
+
+Since Haskell is a lazy language, it lets you define infinite computations (`two = two + 1`), which will only fail upon evaluation.
+
+By convention, variables suffixed with `'` are used to indicate its evolution:
+
+```ghci
+λ x = 1
+λ x' = x + 1
+λ x'' = x + x'
+λ (x,x',x'')
+(1,2,3)
+```
+
+Join strings using the list concatenation operator `<>`:
+
+```ghci
+λ salutation = "Hello"
+λ person = "George"
+λ greeting = salutation <> " " <> person
+λ greeting
+"Hello George"
+```
