@@ -204,3 +204,50 @@ Join strings using the list concatenation operator `<>`:
 λ greeting
 "Hello George"
 ```
+
+Define and call a _named_ function:
+
+```ghci
+λ greet salutation person = salutation <> " " <> person
+λ greet "Hello" "Joe"
+"Hello Joe"
+```
+
+Define and call a _anonymous_ or _lambda_ function:
+
+```ghci
+λ (\salutation person -> salutation <> " " <> person) "Hello" "Joe"
+"Hello Joe"
+```
+
+Partially apply a function (_η-reduction_):
+
+```ghci
+λ add a b = a + b
+λ addTwo = add 2
+λ addTwo 3
+5
+```
+
+Partially apply infix operators:
+
+```ghci
+λ twice = (*2)
+λ half = (/2)
+λ recip = (1/)
+λ twice 3
+6
+λ half 12
+6.0
+λ recip 2
+0.5
+```
+
+Use regular function as an infix operator:
+
+```ghci
+λ "Hello" `greet` "John"
+"Hello John"
+```
+
+TODO: p.16 "Composing Functions"
