@@ -1,3 +1,11 @@
+# Day 71 (Tu, 2026-04-14)
+
+Today, I continued working on chapter 1; nothing spectacular.
+
+# Day 70 (Mo, 2026-04-13)
+
+I forgot to make an entry for this day; I just continued working on chapter 1.
+
 # Day 69 (Su, 2026-04-12)
 
 After a break of almost exactly six months, I'm back in the Haskell game. I'd like to work through _Effective Haskell_ to 1) repeat everything I already knew, 2) learn about project management using Cabal, and 3) to then go even further at a modest pace.
