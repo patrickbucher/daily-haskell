@@ -1,3 +1,7 @@
+# Day 72 (Tu, 2026-04-15)
+
+I continued working through chapter 1 and posted an erratum about a typo I discovered. Slowly but steadily…
+
 # Day 71 (Tu, 2026-04-14)
 
 Today, I continued working on chapter 1; nothing spectacular.
