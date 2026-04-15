@@ -233,11 +233,11 @@ Partially apply infix operators:
 
 ```ghci
 λ twice = (*2)
-λ half = (/2)
+λ halve = (/2)
 λ recip = (1/)
 λ twice 3
 6
-λ half 12
+λ halve 12
 6.0
 λ recip 2
 0.5
@@ -250,4 +250,64 @@ Use regular function as an infix operator:
 "Hello John"
 ```
 
-TODO: p.16 "Composing Functions"
+Use the right-associative _function application operator_ `$`, which has a very low precedence, instead of nested parentheses:
+
+```ghci
+λ twice (recip (halve 10))
+0.4
+λ twice $ recip $ halve 10
+0.4
+```
+
+Use the _function composition operator_ `.` to combine two functions into one:
+
+```ghci
+λ f x = x + 1
+λ g x = x * 2
+λ f(g(3))
+7
+λ (f . g) 3
+7
+λ f . g $ 3
+7
+```
+
+Use _pointfree_ style to reduce explicit parameters:
+
+```ghci
+λ twice x = (*) 2 x
+λ twice = (*) 2
+```
+
+Define a new operator to calculate the hypotenuse of two catheti in _prefix_ style:
+
+```ghci
+λ (@) a b = sqrt $ a^2 + b^2
+λ 3 @ 4
+5.0
+```
+
+Define the same operator in _infix_ style:
+
+```ghci
+λ a @ b = sqrt $ a^2 + b^2
+```
+
+Figure out associativity and precedence of an operator:
+
+```ghci
+λ :info @
+infixl 9 @
+```
+
+The operator is left-associative (`infixl`) and has the highest precedence (9). The higher the precedence, the stronger the operator binds, e.g. `*` has precedence 7, `+` has precedence 6.
+
+Define the operator with a lower precedence:
+
+```ghci
+λ a @ b = sqrt $ a^2 + b^2; infixl 5 @
+```
+
+In GHCi, the declaration has to take place on a single line. In a source code file, it can stand on a separate line.
+
+TODO: p. 31
