@@ -1,4 +1,10 @@
-# Day 72 (Tu, 2026-04-15)
+# Day 73 (Th, 2026-04-16)
+
+I finished working through chapter 1. The last exercise causes trouble in proper Haskell code, wheres it worked well in GHCi. I guess, GHCi has some fallbacks for types defined, which isn't applied outside of it.
+
+The book tries to introduce types as late as possible. While this is a didactically sound approach to limit novelty for each step, it severly limits the set of programs that can be written at this early stage.
+
+# Day 72 (We, 2026-04-15)
 
 I continued working through chapter 1 and posted an erratum about a typo I discovered. Slowly but steadily…
 
