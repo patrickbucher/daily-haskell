@@ -27,6 +27,8 @@ Use arithmetic operators:
 4.0
 ```
 
+## Lists
+
 Define some lists:
 
 ```ghci
@@ -67,6 +69,8 @@ Enclose multi-line definitions within `:{` and `}:`:
 [1,2,3,4]
 ```
 
+## Tuples
+
 Create tuples (consisting of different types):
 
 ```ghci
@@ -101,6 +105,8 @@ ERROR
 λ [(1,2),(3,4),(5,6,7)]
 ERROR
 ```
+
+## Strings and Output
 
 Print strings, with and without a trailing newline:
 
@@ -158,6 +164,8 @@ Run the module into GHCi:
 "Hello, World!"
 ```
 
+## Variables
+
 Shadow existing variables:
 
 ```ghci
@@ -194,6 +202,8 @@ By convention, variables suffixed with `'` are used to indicate its evolution:
 λ (x,x',x'')
 (1,2,3)
 ```
+
+## Functions
 
 Join strings using the list concatenation operator `<>`:
 
@@ -279,6 +289,8 @@ Use _pointfree_ style to reduce explicit parameters:
 λ twice = (*) 2
 ```
 
+## Operators
+
 Define a new operator to calculate the hypotenuse of two catheti in _prefix_ style:
 
 ```ghci
@@ -310,4 +322,88 @@ Define the operator with a lower precedence:
 
 In GHCi, the declaration has to take place on a single line. In a source code file, it can stand on a separate line.
 
-TODO: p. 31
+## Bindings
+
+Use `let`/`in` to define bindings to be used in an expression:
+
+```haskell
+greet salutation firstName lastName =
+  salutation <> ", " <> firstName <> " " <> lastName
+
+greet' salutation firstName lastName =
+  let fullName = firstName <> " " <> lastName
+  in salutation <> ", " <> fullName
+```
+
+Earlier `let` bindings can be used in subsequent ones. In fact, the order does not matter, so that forward references are also allowed.
+
+Bindings defined in a `where` block can be used inside the function body:
+
+```haskell
+greet' salutation firstName lastName =
+  salutation <> ", " <> fullName
+  where fullName = firstName <> " " <> lastName
+```
+
+No `let` bindings will be available within `where`.
+
+Use `let` bindings for intermediary values and `where` bindings for auxiliary functions.
+
+## Conditionals
+
+Use an `if`/`then`/`else` expression:
+
+```haskell
+formatMoney currency amount =
+  if currency == "USD"
+  then show amount <> " $"
+  else currency <> " " <> (show amount)
+```
+
+Next `if`/`then`/`else` expressions:
+
+```haskell
+rate stars =
+  if stars == 5
+  then "great"
+  else
+    if stars == 4
+    then "good"
+    else
+      if stars == 3
+      then "mediocre"
+      else
+        if stars == 2
+        then "insufficient"
+        else
+          if stars == 1
+          then "horrible"
+          else "unknown"
+```
+
+Use _gard clauses_ to simplify such expressions:
+
+```haskell
+rate' stars
+  | stars == 5 = "great"
+  | stars == 4 = "good"
+  | stars == 3 = "mediocre"
+  | stars == 2 = "insufficient"
+  | stars == 1 = "horrible"
+  | otherwise = "unknown"
+```
+
+Implement _FizzBuzz_:
+
+```haskell
+fizzbuzz n =
+  if n == 0
+  then ""
+  else fizzbuzz (n - 1) <> "\n" <> denote n
+  where
+    denote n
+      | n `rem` 15 == 0 = "FizzBuzz"
+      | n `rem` 5 == 0 = "Buzz"
+      | n `rem` 3 == 0 = "Fizz"
+      | otherwise = show n
+```
