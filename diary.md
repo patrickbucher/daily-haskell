@@ -1,3 +1,7 @@
+# Day 74 (Fr, 2026-04-17)
+
+I started working on chapter 2, which now increases the pace. The section on `foldl` and `foldr` has been enlightening.
+
 # Day 73 (Th, 2026-04-16)
 
 I finished working through chapter 1. The last exercise causes trouble in proper Haskell code, wheres it worked well in GHCi. I guess, GHCi has some fallbacks for types defined, which isn't applied outside of it.
