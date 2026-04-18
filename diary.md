@@ -1,3 +1,7 @@
+# Day 75 (Sa, 2026-04-18)
+
+Little time in the morning, so I continued with chapter 2. This book is a bit tedious for my level of knowledge, but I'll stick to it to make sure I'm not missing anything.
+
 # Day 74 (Fr, 2026-04-17)
 
 I started working on chapter 2, which now increases the pace. The section on `foldl` and `foldr` has been enlightening.

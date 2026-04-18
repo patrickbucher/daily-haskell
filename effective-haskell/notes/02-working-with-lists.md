@@ -65,6 +65,8 @@ Build up a list recursively:
 [10,9,8,7,6,5,4,3,2,1]
 ```
 
+## Folding
+
 Re-implement `foldl` and `foldr`:
 
 ```haskell
@@ -97,4 +99,72 @@ Subtract using `foldl` and `foldr`:
 5
 ```
 
-TODO: p 59
+## Transformations
+
+Apply a function to every element using `map`:
+
+```ghci
+λ map (+1) [0..9]
+[1,2,3,4,5,6,7,8,9,10]
+```
+
+Apply a value to a list of functions:
+
+```ghci
+λ map ($ 10) [(+1), (*2), (1/)]
+[11.0,20.0,0.1]
+```
+
+Write your own `map` function:
+
+```haskell
+map' f xs =
+  if null xs
+  then []
+  else f (head xs) : map' f (tail xs)
+```
+
+Apply a predicate function to every element to _filter_ the list:
+
+```ghci
+λ filter (\x -> x `rem` 2 == 0) [0..9]
+[0,2,4,6,8]
+```
+
+Build a list using a _list comprehension_:
+
+```ghci
+λ [2 * x | x <- [0..9]]
+[0,2,4,6,8,10,12,14,16,18]
+```
+
+To the left of the `|` operator goes the expression that ends up in the list, to its right is the generator expression that comes up with the individual values.
+
+Build a list with an additional predicate:
+
+```ghci
+λ [2 * x | x <- [1..9], even x]
+[4,8,12,16]
+```
+
+Build a list with multiple generator expressions (building the carthesian product):
+
+```ghci
+λ [(x,y) | x <- ["a","b","c"], y <- [1,2]]
+[("a",1),("a",2),("b",1),("b",2),("c",1),("c",2)]
+```
+
+Think of the first generator expression as the outer and the second as the inner "loop" to predict the order of elements.
+
+Combine the elements of two lists pair-wise:
+
+```ghci
+λ zip ["a","b","c"] [1..]
+[("a",1),("b",2),("c",3)]
+```
+
+The result will be as long as the shorter of the two input lists.
+
+## Pattern Matching
+
+TODO: p. 66
