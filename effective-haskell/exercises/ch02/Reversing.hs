@@ -1,8 +1,8 @@
 rev1 :: [t] -> [t]
-rev1 = foldl (\acc -> \e -> (e:acc)) []
+rev1 = foldl (\acc e -> (e:acc)) []
 
 rev2 :: [t] -> [t]
-rev2 = foldr (\e -> \acc -> append e acc) []
+rev2 = foldr (\e acc -> append e acc) []
   where
     append x [] = [x]
     append y (x:xs) = x : append y xs
