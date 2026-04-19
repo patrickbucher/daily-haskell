@@ -167,4 +167,55 @@ The result will be as long as the shorter of the two input lists.
 
 ## Pattern Matching
 
-TODO: p. 66
+Match function arguments against specific values:
+
+```haskell
+fib 1 = 1
+fib 2 = 1
+fib n = fib (n - 2) + fib (n - 1)
+```
+
+The specific cases must be listed above the general case; a variable will match any expression.
+
+Match tuples and lists:
+
+```haskell
+describePoint (0, 0) = "origin"
+describePoint (0, y) = "on x-axis; y = " <> show y
+describePoint (x, 0) = "x = " <> show x <> "; on y-axis"
+describePoint (x, y) = "P(" <> show x <> "," <> show y <> ")"
+
+addUp [] = 0
+addUp (h:t) = h + addUp t
+```
+
+Keep a matched value in its entirety using the `@` operator:
+
+```haskell
+describePoint p@(0,0) = show p <> "is the origin"
+describePoint p@(0,y) = show p <> "is on x-axis with y=" <> show y
+describePoint p@(x,0) = show p <> "is on y-axis with x=" <> show x
+describePoint p@(x,y) =
+  show p <> "is on no axis with x=" <> show x <> ", y=" <> show y
+```
+
+Prefix or replace a variable with `_` to match everything and to discard the value.
+
+Match using `case`/`of`:
+
+```haskell
+prefix x =
+  case round (logBase 10 x) of
+    0 -> ""
+    1 -> "deka"
+    2 -> "hekta"
+    3 -> "kilo"
+    _ -> "?"
+```
+
+Use the `-Wincomplete-patterns` flag to detect non-exhaustive patterns (works for both the compiler `ghc` and the interpreter `ghci`). In GHCi, the option can be toggled interactively:
+
+```ghci
+λ :set -Wincomplete-patterns
+λ :set -Wno-incomplete-patterns
+```
