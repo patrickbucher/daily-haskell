@@ -1,0 +1,2 @@
+-- foldl only starts the actual evaluation of the elements once the end of the list is reached, which is never the case.
+-- foldl instead builds up the tail of the list as potential computations and already starts evaluating elements.
