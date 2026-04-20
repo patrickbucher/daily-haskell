@@ -56,7 +56,7 @@ Define the increment by example:
 [9,7,5,3,1]
 ```
 
-Enclose multi-line definitions within `:{` and `}:`:
+Enclose multi-line definitions within `:{` and `:}`:
 
 ```ghci
 λ :{
@@ -65,7 +65,7 @@ Enclose multi-line definitions within `:{` and `}:`:
   ,3
   ,4
   ]
-  }:
+  :}
 [1,2,3,4]
 ```
 

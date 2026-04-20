@@ -1,4 +1,8 @@
-# Day 76 (Sa, 2026-04-19)
+# Day 77 (Mo, 2026-04-20)
+
+I started working through chapter 3, which I'd like to go through as quickly as possible.
+
+# Day 76 (Su, 2026-04-19)
 
 I finished chapter 2, which ended with quite some tough exercises.
 
