@@ -1,3 +1,7 @@
+# Day 78 (Tu, 2026-04-21)
+
+Today, I had a glimpse into the book _Learn Physics with Functional Programming_, which I bought long ago. Now it quite appeals to me, so I quickly worked through the first chapter.
+
 # Day 77 (Mo, 2026-04-20)
 
 I started working through chapter 3, which I'd like to go through as quickly as possible.
