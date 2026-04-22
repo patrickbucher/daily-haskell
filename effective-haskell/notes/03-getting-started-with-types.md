@@ -60,4 +60,20 @@ hypot a b = sqrt $ a^2 + b^2
 
 Since Haskell's functions are curried, above function applied to a single `Float` argument returns a function that takes another `Float` argument and returns a `Float` value.
 
-TODO: p. 95 "Considering Readability …"
+Use _polymorphism_, i.e. a type parameter, to implement your own `id` function:
+
+```haskell
+identity :: a -> a
+identity x = x
+```
+
+Type parameters commonly use lower-case single-letter names.
+
+Use `undefined` as a place-holder that matches all types during developmente:
+
+```haskell
+gcd :: Int -> Int -> Int
+gcd x y = undefined
+```
+
+Use `_` as a _type hole_ to get hints from the compiler what types would work.
