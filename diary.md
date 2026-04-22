@@ -2,6 +2,8 @@
 
 I plodded through the rest of chapter 3 of _Effective Haskell_ and then managed to do the exercises rather quickly.
 
+Later, I started working on chapter 4.
+
 # Day 78 (Tu, 2026-04-21)
 
 Today, I had a glimpse into the book _Learn Physics with Functional Programming_, which I bought long ago. Now it quite appeals to me, so I quickly worked through the first chapter.
