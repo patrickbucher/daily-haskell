@@ -258,3 +258,5 @@ toList :: [a] -> List a
 toList [] = Void
 toList (x:xs) = Cons x (toList xs)
 ```
+
+TODO: p. 144 "Functions as Values"
