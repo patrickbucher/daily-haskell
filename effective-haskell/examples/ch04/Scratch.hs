@@ -64,3 +64,33 @@ safeDivide _ 0 = Undefined
 safeDivide x y = Some $ x `div` y
 
 data Result a = Empty | Value a
+
+data Peano = Z | S Peano
+
+fromPeano :: Peano -> Int
+fromPeano Z = 0
+fromPeano (S x) = 1 + (fromPeano x)
+
+toPeano :: Int -> Peano
+toPeano 0 = Z
+toPeano x = S (toPeano (x - 1))
+
+eqPeano :: Peano -> Peano -> Bool
+eqPeano Z Z = True
+eqPeano Z _ = False
+eqPeano _ Z = False
+eqPeano (S x) (S y) = eqPeano x y
+
+addPeano :: Peano -> Peano -> Peano
+addPeano Z (S y) = (S y)
+addPeano (S x) (S y) = S (addPeano x (S y))
+
+data List a = Void | Cons a (List a)
+
+fromList :: List a -> [a]
+fromList Void = []
+fromList (Cons x xs) = x : fromList xs
+
+toList :: [a] -> List a
+toList [] = Void
+toList (x:xs) = Cons x (toList xs)
