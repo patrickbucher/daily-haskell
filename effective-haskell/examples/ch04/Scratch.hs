@@ -94,3 +94,11 @@ fromList (Cons x xs) = x : fromList xs
 toList :: [a] -> List a
 toList [] = Void
 toList (x:xs) = Cons x (toList xs)
+
+type Op = Int -> Int -> Int
+
+add :: Op
+add x y = x + y
+
+sub :: Op
+sub x y = x - y

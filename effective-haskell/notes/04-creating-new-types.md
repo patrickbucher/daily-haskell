@@ -259,4 +259,16 @@ toList [] = Void
 toList (x:xs) = Cons x (toList xs)
 ```
 
-TODO: p. 144 "Functions as Values"
+## Type Aliases
+
+Define an alternative name for a type:
+
+```haskell
+type Op = Int -> Int -> Int
+
+add :: Op
+add x y = x + y
+
+sub :: Op
+sub x y = x - y
+```
