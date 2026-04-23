@@ -1,3 +1,7 @@
+# Day 79 (Th, 2026-04-23)
+
+I continued with chapter 4 in _Effective Haskell_.
+
 # Day 78 (We, 2026-04-22)
 
 I plodded through the rest of chapter 3 of _Effective Haskell_ and then managed to do the exercises rather quickly.

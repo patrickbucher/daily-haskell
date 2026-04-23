@@ -1,5 +1,7 @@
 # Creating New Types
 
+## Product Types
+
 Create a new type with a type constructor:
 
 ```haskell
@@ -67,4 +69,156 @@ Use _record update syntax_ to get an updated value:
 0.24
 ```
 
-TODO: p. 123
+Enable the `RecordWildCards` language extension using a _language pragma_ in a source code file:
+
+```haskell
+{-# LANGUAGE RecordWildCards #-}
+```
+
+Enable the `RecordWildCards` language extension in GHCi:
+
+```ghci
+λ :set -XRecordWildCards
+λ :seti -XRecordWildCards
+```
+
+`:seti` only enables the extension for interactively entered code, whereas `:set` also affects external code loaded into the session.
+
+The `RecordWildCards` extension allows to binds all record fields to variables using the matching pattern `{..}`:
+
+```haskell
+describeCoin :: Coin -> String
+describeCoin Coin{..} =
+  name <> " USD " <> show value
+
+createCoin :: String -> Float -> Coin
+createCoin s f =
+  let
+    name = s
+    value = f
+  in
+    Coin{..}
+```
+
+Record field names must be unique:
+
+```haskell
+data Book = Book
+  { title :: String
+  , author :: String
+  , pages :: Int
+  }
+
+data Song = Song
+  { artist :: String
+  , title :: String -- ERROR: duplicate declaration
+  , duration :: Float
+  }
+```
+
+Either put the record declarations into different _modules_ or use prefixes:
+
+```haskell
+data Book = Book
+  { bookTitle :: String
+  , bookAuthor :: String
+  , bookPages :: Int
+  }
+
+data Song = Song
+  { songArtist :: String
+  , songTitle :: String
+  , songDuration :: Float
+  }
+```
+
+## Sum Types
+
+Create a type using a fixed set of values:
+
+```haskell
+data Direction = North | East | South | West
+```
+
+Add data fields:
+
+```haskell
+data Operation
+  = Add Int Int
+  | Sub Int Int
+  | Increment Int
+  | Decrement Int
+
+evaluate :: Operation -> Int
+evaluate op =
+  case op of
+    Add a b -> a + b
+    Sub a b -> a - b
+    Increment a -> a + 1
+    Decrement a -> a - 1
+```
+
+Match against, say, `Decrement{}` to ignore the fields.
+
+Use those variants:
+
+```ghci
+λ evaluate $ Add 3 4
+7
+λ evaluate $ Sub 9 2
+7
+λ evaluate $ Increment 4
+5
+λ evaluate $ Decrement 9
+8
+```
+
+Use record syntax for sum types:
+
+```haskell
+data Contact
+  = Email { username :: String, domain :: String }
+  | Phone { prefix :: String, number :: String }
+
+formatContact :: Contact -> String
+formatContact contact =
+  case contact of
+    Email { username, domain } -> username <> "@" <> domain
+    Phone { prefix, number } -> prefix <> number
+
+email = Email { username = "webmaster", domain = "paedubucher.ch" }
+phone = Phone { prefix = "0041", number = "123456789" }
+```
+
+The variants (e.g. `Email` and `Phone`) can also be defined seperately and then be put into the data type (e.g. `Contact`) as fields:
+
+```haskell
+data EmailInfo = EmailInfo { username :: String, domain :: String }
+data PhoneInfo = PhoneInfo { prefix :: String, number :: String }
+
+data Contact
+  = Email EmailInfo
+  | Phone PhoneInfo 
+
+formatContact :: Contact -> String
+formatContact contact =
+  case contact of
+    Email EmailInfo { username, domain } -> username <> "@" <> domain
+    Phone PhoneInfo { prefix, number } -> prefix <> number
+```
+
+Use a sum type to avoid partial functions:
+
+```haskell
+safeDivide :: Int -> Int -> DivisionResult
+safeDivide _ 0 = Undefined
+safeDivide x y = Some $ x `div` y
+```
+
+Use a type parameter for a type:
+
+```haskell
+data Result a = Empty | Value a
+```
+
+TODO: p. 136
