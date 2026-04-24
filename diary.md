@@ -1,3 +1,9 @@
+# Day 80 (Fr, 2026-04-24)
+
+I already started with chapter 4 yesterday, but now I got through all things related to Cabal.
+
+I'll should finally tackle my _Soccer Table_ stock program with Haskell and write a couple of accompanying blog articles.
+
 # Day 79 (Th, 2026-04-23)
 
 I continued with chapter 4 in _Effective Haskell_.
