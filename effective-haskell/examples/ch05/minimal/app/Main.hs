@@ -1,8 +1,4 @@
 module Main where
-import Prelude hiding (length)
+import Foobar as F (greet)
 
-length :: [a] -> Int
-length [] = 0
-length (x:xs) = 1 + length xs
-
-main = print $ length "Hello, World!"
+main = print $ F.greet "myself"
