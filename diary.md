@@ -1,3 +1,7 @@
+# Day 81 (Sa, 2026-04-25)
+
+I got a minimal Cabal example with library and executable to work. I think it's now time to tackle the _Soccer Table_ stock program. (I already updated the teams yesterday in order to generate random data for the current season.)
+
 # Day 80 (Fr, 2026-04-24)
 
 I already started with chapter 4 yesterday, but now I got through all things related to Cabal.
