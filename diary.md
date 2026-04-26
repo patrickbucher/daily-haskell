@@ -1,3 +1,7 @@
+# Day 82 (Su, 2026-04-26)
+
+I wrote the [first article](https://www.paedubucher.ch/articles/haskell-soccer-table-1-problem-setup/) about implementing my _Soccer Table_ stock program in Haskell. My goal is to write the entire library logic during next week, so that I'll be able to write the second article during the upcoming weekend.
+
 # Day 81 (Sa, 2026-04-25)
 
 I got a minimal Cabal example with library and executable to work. I think it's now time to tackle the _Soccer Table_ stock program. (I already updated the teams yesterday in order to generate random data for the current season.)
