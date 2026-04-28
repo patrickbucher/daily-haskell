@@ -1,3 +1,9 @@
+# Day 84 (Di, 2026-04-28)
+
+I managed to implement the rest of the library logic for my _Soccer Table_ project. I'd like to rework some of the code again before I write my article. The code so far encompasses 120 lines, which is quite a lot for a language like Haskell. But the source code formatting I applied uses a lot of very short lines for better readability.
+
+I had a major issue in the code due picking the wrong team name when creating the two single-game table entries from a game result. Having fixed that, everything worked.
+
 # Day 83 (Mo, 2026-04-27)
 
 I started implementing the library logic for my _Soccer Table_ project. I was able to match a result string on GHCi, but compilation fails within my module for some typing reason I need to figure out later.
