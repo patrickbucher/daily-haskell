@@ -1,3 +1,7 @@
+# Day 85 (Mi, 2026-04-29)
+
+Late start today, but I managed to simplify the code for my _Soccer Table_ project. I'm quite happy with it now, so I'll start writing the second article in the series tomorrow.
+
 # Day 84 (Di, 2026-04-28)
 
 I managed to implement the rest of the library logic for my _Soccer Table_ project. I'd like to rework some of the code again before I write my article. The code so far encompasses 120 lines, which is quite a lot for a language like Haskell. But the source code formatting I applied uses a lot of very short lines for better readability.
