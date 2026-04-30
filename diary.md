@@ -1,3 +1,7 @@
+# Day 86 (Th, 2026-04-30)
+
+Today I wrote and published the [second article](https://www.paedubucher.ch/articles/haskell-soccer-table-2-library-logic/) about implementing _Soccer Table_ in Haskell. Tomorrow, I'll look into I/O, for which I'd like to read chapters 8 and 9 of _Learn you a Haskell for Great Good_.
+
 # Day 85 (Mi, 2026-04-29)
 
 Late start today, but I managed to simplify the code for my _Soccer Table_ project. I'm quite happy with it now, so I'll start writing the second article in the series tomorrow.
