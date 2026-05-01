@@ -1,3 +1,7 @@
+# Day 87 (Fr, 2026-05-01)
+
+I quickly worked through chapter 8 of _Learn you a Haskell for Great Good_ in order to get a refresh on Haskell's way of doing I/O. Chapter 9 contains information about file access, which is the perfect fit for the issue I'm trying to solve.
+
 # Day 86 (Th, 2026-04-30)
 
 Today I wrote and published the [second article](https://www.paedubucher.ch/articles/haskell-soccer-table-2-library-logic/) about implementing _Soccer Table_ in Haskell. Tomorrow, I'll look into I/O, for which I'd like to read chapters 8 and 9 of _Learn you a Haskell for Great Good_.
