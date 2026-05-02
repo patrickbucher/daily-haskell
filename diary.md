@@ -1,3 +1,7 @@
+# Day 88 (Sa, 2026-05-02)
+
+I read the first half of chapter 9 in _Learn you a Haskell for Great Good_. This gives me everything I'll need to implement the interactive part of my _Soccer Table_ program.
+
 # Day 87 (Fr, 2026-05-01)
 
 I quickly worked through chapter 8 of _Learn you a Haskell for Great Good_ in order to get a refresh on Haskell's way of doing I/O. Chapter 9 contains information about file access, which is the perfect fit for the issue I'm trying to solve.
