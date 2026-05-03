@@ -1,3 +1,7 @@
+# Day 89 (Su, 2026-05-03)
+
+I implemented the first part of the interactive program: Reading the files from a directory and calling the library logic to create the table. Next up: formatted output.
+
 # Day 88 (Sa, 2026-05-02)
 
 I read the first half of chapter 9 in _Learn you a Haskell for Great Good_. This gives me everything I'll need to implement the interactive part of my _Soccer Table_ program.
