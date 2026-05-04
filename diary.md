@@ -1,3 +1,7 @@
+# Day 90 (Mo, 2026-05-04)
+
+In the morning, I wrote two formatting routines that allow me to avoid additional dependencies for formatted output. Since I don't use any floating point numbers but just integers, formatting is a simple task. I need to finish the _Soccer Table_ program later today.
+
 # Day 89 (Su, 2026-05-03)
 
 I implemented the first part of the interactive program: Reading the files from a directory and calling the library logic to create the table. Next up: formatted output.
