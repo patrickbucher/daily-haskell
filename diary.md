@@ -1,3 +1,7 @@
+# Day 92 (We, 2026-05-06)
+
+I wrote the third article on my _Soccer Table_ stock program. I'd like to publish it to Hackage after I've written some unit tests for it, for which I have to pick between HSpec and HUnit. I'll also need to pick a license. Having done that and written the fourth article, I shall continue with working through _Effective Haskell_.
+
 # Day 91 (Tu, 2026-05-05)
 
 Today, I managed to implement a working version of my _Soccer Table_ stock program in Haskell. It was mostly formatting work, which could be done nicer, but at least it works reliably and relatively fast. Tomorrow, I'll review and improve the code, then I'm ready to write the third article on that little project.
