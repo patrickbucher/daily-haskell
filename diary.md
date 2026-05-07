@@ -1,3 +1,7 @@
+# Day 93 (Th, 2026-05-07)
+
+I configured my _Soccer Table_ project for testing using Hspec and wrote the first couple of tests for it. I'll continue with the grunt work tomorrow. I wonder if there's a notion of "test coverage" in Haskell programming.
+
 # Day 92 (We, 2026-05-06)
 
 I wrote the third article on my _Soccer Table_ stock program. I'd like to publish it to Hackage after I've written some unit tests for it, for which I have to pick between HSpec and HUnit. I'll also need to pick a license. Having done that and written the fourth article, I shall continue with working through _Effective Haskell_.
