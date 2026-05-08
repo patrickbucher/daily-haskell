@@ -1,3 +1,7 @@
+# Day 94 (Fr, 2026-05-08)
+
+A headache after teaching, but no Haskell today.
+
 # Day 93 (Th, 2026-05-07)
 
 I configured my _Soccer Table_ project for testing using Hspec and wrote the first couple of tests for it. I'll continue with the grunt work tomorrow. I wonder if there's a notion of "test coverage" in Haskell programming.
