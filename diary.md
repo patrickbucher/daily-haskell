@@ -4,6 +4,8 @@ I organized the test cases for _Soccer Table_ into different modules. I'm ready 
 
 I started writing a centralized developer diary. This diary will be abandoned once I finished the fourth article on my _Soccer Table_ program.
 
+Later in the evening, I wrote some more tests. Some syntax restrictions annoyed me a bit.
+
 # Day 94 (Fr, 2026-05-08)
 
 A headache after teaching, but no Haskell today.
