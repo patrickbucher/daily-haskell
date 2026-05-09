@@ -1,3 +1,9 @@
+# Day 95 (Sa, 2026-05-09)
+
+I organized the test cases for _Soccer Table_ into different modules. I'm ready now for all the grunt work: writing the tests.
+
+I started writing a centralized developer diary. This diary will be abandoned once I finished the fourth article on my _Soccer Table_ program.
+
 # Day 94 (Fr, 2026-05-08)
 
 A headache after teaching, but no Haskell today.
