@@ -1,3 +1,11 @@
+# Day 96 (Su, 2026-05-10)
+
+I managed to write the remaining tests for my _Soccer Table_ program. Within the Hspec code, the syntax behaves somewhat differently. Writing those tests was somewhat repetetive, since it is mostly stating the test data. Maybe I could have re-used some of it, but writing dumb and repetetive code is a better fit for testing, where readability counts the most.
+
+I probably won't describe all the tests in my article; I'll just give an example on how Hspec works.
+
+Now I'll have to figure out how to publish Haskell packages. Then I'm done with Haskell for the moment. I'd like to properly package my Spot and Reversi games later. But now I'd like to pivot to Rust once again.
+
 # Day 95 (Sa, 2026-05-09)
 
 I organized the test cases for _Soccer Table_ into different modules. I'm ready now for all the grunt work: writing the tests.
