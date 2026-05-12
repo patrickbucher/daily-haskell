@@ -1,3 +1,11 @@
+# Day 97 (Tu, 2026-05-12)
+
+Having skipped any efforts on Haskell yesterday, I wrote the fourth article in my series on the _Soccer Table_ stock program today. This marks exactly one month after I picked up Haskell again.
+
+This is a good marker for a break. When I'll pick Haskell again, which will happen sooner or later, I'll write about that in my [dev-diary](https://github.com/patrickbucher/dev-diary).
+
+Goodbye!
+
 # Day 96 (Su, 2026-05-10)
 
 I managed to write the remaining tests for my _Soccer Table_ program. Within the Hspec code, the syntax behaves somewhat differently. Writing those tests was somewhat repetetive, since it is mostly stating the test data. Maybe I could have re-used some of it, but writing dumb and repetetive code is a better fit for testing, where readability counts the most.
